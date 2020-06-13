@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block imports %}
+    <link rel="stylesheet" href="/static/css/index.css">
+    <script src="/static/scripts/index.js"></script>
+{% endblock %}
+{% block content %}
+    <div class="row p-4">
+        <div class="col-md-3">
+            <h1 class="text-center">KALORIE</h1>
+        </div>
+        <div class="col-md-6">
+            <h1 class="text-center">POSIŁKI</h1>
+        </div>
+        <div class="col-md-3">
+            <h1 class="text-center">TRENING</h1>
+        </div>
+    </div>
+    <div class="row h-100 p-4">
+        <div id="today_data" class="col-md-3">
+            <label for="kcal">Liczba kalorii:</label>
+            <input id="kcal" class="form-control" type="number" name="kcal" value="0" required>
+            <p>Pozostała liczba kalorii: <span id="kcal_left"></span></p>
+        </div>
+        <div id="meals" class="col-md-6">
+            <div id="breakfast" class="text-center">
+                <div class="row text-center">
+                    <div class="col-md-12">
+                        <h3>Śniadanie</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"><div class="plus radius"></div></div>
+                </div>
+            </div>
+            <hr/>
+            <div id="lunch" class="text-center">
+                <div class="row text-center">
+                    <div class="col-md-12">
+                        <h3>Obiad</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"><div class="plus radius"></div></div>
+                </div>
+            </div>
+            <hr/>
+            <div id="dinner" class="text-center">
+                <div class="row text-center">
+                    <div class="col-md-12">
+                        <h3>Kolacja</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"><div class="plus radius"></div></div>
+                </div>
+            </div>
+            <hr/>
+            <div id="other_meals" class="text-center">
+                <div class="row text-center">
+                    <div class="col-md-12">
+                        <h3>Inne posiłki</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"><div class="plus radius"></div></div>
+                </div>
+            </div>
+            <hr/>
+            <div id="snacks" class="text-center">
+                <div class="row text-center">
+                    <div class="col-md-12">
+                        <h3>Przekąski</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"><div class="plus radius"></div></div>
+                </div>
+            </div>
+            <hr/>
+            <div id="water" class="text-center">
+                <div class="row text-center">
+                    <div class="col-md-12">
+                        <h3>Woda</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"><div class="plus radius"></div></div>
+                </div>
+            </div>
+        </div>
+        <div id="activity" class="col-md-3">
+            <label for="steps">Liczba kroków:</label>
+            <input id="age" class="form-control" type="number" name="age" placeholder="Podaj kroki" value="0" required>
+            <p>Pozostała liczba kroków: <span id="steps"></span></p>
+            <ul>
+                <li>Trening 1</li>
+                <li>Trening 2</li>
+            </ul>
+            <p>Spalone kalorie: <span id="kcal_lose"></span></p>
+        </div>
+    </div>
+{% endblock %}
