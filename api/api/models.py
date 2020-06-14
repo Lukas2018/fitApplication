@@ -14,7 +14,7 @@ class User(models.Model):
     carbohydrates = models.IntegerField(blank=True, null=True)
     fats = models.IntegerField(blank=True, null=True)
     water = models.IntegerField(blank=True, null=True)
-	steps = models.IntegerField(blank=True, null=True)
+    steps = models.IntegerField(blank=True, null=True)
     dishes = models.ForeignKey('Dish', on_delete=models.CASCADE, blank=True, null=True)
     active_days = models.ForeignKey('Day', on_delete=models.CASCADE, blank=True, null=True)
     trainings = models.ForeignKey('Training', on_delete=models.CASCADE, blank=True, null=True)

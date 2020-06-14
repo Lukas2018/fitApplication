@@ -108,6 +108,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             'carbohydrates',
             'fats',
             'water',
+            'steps'
             'active_days'
         ]
         read_only_fields = ['id']

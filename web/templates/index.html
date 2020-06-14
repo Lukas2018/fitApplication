@@ -24,66 +24,50 @@
         <div id="meals" class="col-md-6">
             <div id="breakfast" class="text-center">
                 <div class="row text-center">
-                    <div class="col-md-12">
+                    <div class="col-md-4 meal-image"></div>
+                    <div class="col-md-4">
                         <h3>Śniadanie</h3>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-md-4"><div class="plus radius"></div></div>
                 </div>
             </div>
             <hr/>
             <div id="lunch" class="text-center">
                 <div class="row text-center">
-                    <div class="col-md-12">
+                    <div class="col-md-4 meal-image"></div>
+                    <div class="col-md-4">
                         <h3>Obiad</h3>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-md-4"><div class="plus radius"></div></div>
                 </div>
             </div>
             <hr/>
             <div id="dinner" class="text-center">
                 <div class="row text-center">
-                    <div class="col-md-12">
+                    <div class="col-md-4 meal-image"></div>
+                    <div class="col-md-4">
                         <h3>Kolacja</h3>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-md-4"><div class="plus radius"></div></div>
                 </div>
             </div>
             <hr/>
             <div id="other_meals" class="text-center">
                 <div class="row text-center">
-                    <div class="col-md-12">
+                    <div class="col-md-4 meal-image"></div>
+                    <div class="col-md-4">
                         <h3>Inne posiłki</h3>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4"><div class="plus radius"></div></div>
-                </div>
-            </div>
-            <hr/>
-            <div id="snacks" class="text-center">
-                <div class="row text-center">
-                    <div class="col-md-12">
-                        <h3>Przekąski</h3>
-                    </div>
-                </div>
-                <div class="row">
                     <div class="col-md-4"><div class="plus radius"></div></div>
                 </div>
             </div>
             <hr/>
             <div id="water" class="text-center">
                 <div class="row text-center">
-                    <div class="col-md-12">
+                    <div class="col-md-4 meal-image"></div>
+                    <div class="col-md-4">
                         <h3>Woda</h3>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-md-4"><div class="plus radius"></div></div>
                 </div>
             </div>
@@ -99,4 +83,14 @@
             <p>Spalone kalorie: <span id="kcal_lose"></span></p>
         </div>
     </div>
+    <div class="row p-4">
+        <div class="col-md-10"></div>
+        <div id="menu" class="col-md-2">
+            <div id="user_settings"></div>
+            <form method="POST" action="/logout">
+                <div id="logout"></div>
+            </form>
+        </div>
+    </div>
+
 {% endblock %}

@@ -51,7 +51,8 @@ class UserDataForm(FlaskForm):
 
 class ProductForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired('Pole wymagane')])
-    manufacturer = StringField('Manufacturer', validators=[DataRequired('Pole wymagane')])
+    manufacturer = StringField('Manufacturer')
+    portion = FloatField('Portion', validators=[DataRequired('Pole wymagane')])
     kcal = FloatField('Kcal', validators=[DataRequired('Pole wymagane')])
     protein = FloatField('Protein', validators=[DataRequired('Pole wymagane')])
     carbohydrates = FloatField('Carbohydrates', validators=[DataRequired('Pole wymagane')])
