@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block imports %}
+    <link rel="stylesheet" href="/static/css/user_panel.css">
+    <script src="/static/scripts/user_panel.js"></script>
+{% endblock %}
+{% block content %}
+    <section id="user_panel">
+        <div class="col-lg-1">
+
+        </div>
+        <div class="col-lg-4 p-3 p-sm-3 my-auto rounded shadow-custom">
+            <ul>
+                <li>Account Data</li>
+                <li onclick="load_products()">My Products</li>
+                <li onclick="load_meals()">My Meals</li>
+            </ul>
+        </div>
+        <div class="col-lg-6 p-3 p-sm-3 my-auto rounded shadow-custom">
+            <div id="account_data">
+
+            </div>
+            <div id="user_products">
+                <button><a href="/product/">Dodaj produkt</a></button>
+                <div id="user_products_list">
+
+                </div>
+            </div>
+            <div id="user_meals">
+                <button><a href="/meal/"></a></button>
+                <div id="user_meals_list">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-1">
+
+        </div>
+    </section>
+{% endblock %}
