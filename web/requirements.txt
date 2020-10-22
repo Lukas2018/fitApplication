@@ -1,8 +1,0 @@
-passlib
-PyJWT
-flask
-requests
-python-dotenv
-flask_wtf
-email_validator
-argon2-cffi==16.3.0
