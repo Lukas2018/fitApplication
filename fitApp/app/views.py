@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from app.forms import LoginForm, RegisterForm, UserDataForm, ProductForm
+from app.forms import LoginForm, RegisterForm, UserDataForm, PasswordChangeForm, ProductForm
 from app.models import Product
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -18,7 +18,6 @@ def login(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             user = authenticate(username=email, email=email, password=password)
-            print(user)
             if user is not None:
                 auth_login(request, user)
                 if user.userprofile.first_login == 1:
@@ -28,7 +27,7 @@ def login(request):
     context = {
         'form': form
     }
-    return render(request, 'login.html')
+    return render(request, 'login.html', context)
 
 def logout(request):
     auth_logout(request)
@@ -72,7 +71,22 @@ def user_data(request):
     return render(request, 'user_data.html', context)
 
 def user_panel(request):
-    return render(request, "user_panel.html")
+    return render(request, 'user_panel.html')
+
+def password_change(request):
+    user = request.user
+    form = PasswordChangeForm(user, request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            new_password = form.cleaned_data['new_password']
+            user.set_password(new_password)
+            user.save()
+            return redirect('/user_panel')
+        print(form.errors)
+    context = {
+        'form': form
+    }
+    return render(request, 'password_change.html', context)
 
 def product(request):
     form = ProductForm(request.POST or None)

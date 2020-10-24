@@ -5,35 +5,45 @@
 {% endblock %}
 {% block content %}
     <section id="user_panel">
-        <div class="col-lg-1">
-
-        </div>
-        <div class="col-lg-4 p-3 p-sm-3 my-auto rounded shadow-custom">
-            <ul>
-                <li>Account Data</li>
-                <li onclick="load_products()">My Products</li>
-                <li onclick="load_meals()">My Meals</li>
-            </ul>
-        </div>
-        <div class="col-lg-6 p-3 p-sm-3 my-auto rounded shadow-custom">
-            <div id="account_data">
+        <div class="row h-100 p-4 p-s-0">
+            <div class="col-lg-2">
 
             </div>
-            <div id="user_products">
-                <button><a href="/product/">Dodaj produkt</a></button>
-                <div id="user_products_list">
+            <div id="user_panel_menu" class="col-lg-3 rounded shadow-custom">
+                <ul class="col-lg-12">
+                    <li onclick="show_account_data()">Account Data</li>
+                    <li onclick="load_products()">My Products</li>
+                    <li onclick="load_meals()">My Meals</li>
+                </ul>
+            </div>
+            <div class="col-lg-5 p-3 p-sm-3 rounded shadow-custom">
+                <div id="account_data">
+                    <h1>Account Data</h1>
+                    <div class ="form-group">
+                        <p class="one-line">E-mail: {{ user }}</p><p class="one-line"><a href="/">Zmień adres e-mail</a></p><div style="clear:both;"></div>
+                        <p class="one-line">Hasło: ********</p><p class="one-line"><a href="/password_change/">Zmień hasło</a></p><div style="clear:both;"></div>
+                        <p>Age: {{ user.userprofile.age }}</p>
+                        <p>Height: {{ user.userprofile.height }} [cm]</p>
+                    </div>
+                </div>
+                <div id="user_products">
+                    <h1>Your products</h1>
+                    <button><a href="/product/">Dodaj produkt</a></button>
+                    <div id="user_products_list">
 
+                    </div>
+                </div>
+                <div id="user_meals">
+                    <h1>Your meals</h1>
+                    <button><a href="/meal/">Dodaj posiłek</a></button>
+                    <div id="user_meals_list">
+
+                    </div>
                 </div>
             </div>
-            <div id="user_meals">
-                <button><a href="/meal/"></a></button>
-                <div id="user_meals_list">
+            <div class="col-lg-2">
 
-                </div>
             </div>
-        </div>
-        <div class="col-lg-1">
-
         </div>
     </section>
 {% endblock %}

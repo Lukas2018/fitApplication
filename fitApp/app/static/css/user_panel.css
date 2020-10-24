@@ -1,0 +1,30 @@
+#user_meals, #user_products {
+    display: none;
+}
+
+#user_panel h1 {
+    text-align: center;
+}
+
+#user_panel_menu {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#user_panel_menu ul {
+    list-style-type: none;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#user_panel_menu li {
+    text-align: center;
+    border: solid 2px black;
+    padding: 20px;
+    margin-bottom: 1px;
+}
+
+#user_panel_menu li:hover {
+    background-color: rgba(70, 101, 180, 1);
+    cursor: pointer;
+}

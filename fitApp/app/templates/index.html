@@ -86,7 +86,7 @@
     <div class="row p-4">
         <div class="col-md-10"></div>
         <div id="menu" class="col-md-2">
-            <img src="/static/media/person.svg"/>
+            <a href="/user_panel/"><img src="/static/media/person.svg"/></a>
             <form id="logout" method="POST" action="/logout/">
                 {% csrf_token %}
                 <img onclick="document.getElementById('logout').submit();" src="/static/media/logout.svg"/>

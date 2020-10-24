@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-	<section id="register">
+	<section id="custom_form">
         <div class="row h-100 p-4 p-s-0">
             <div class="col-lg-4">
 
@@ -12,23 +12,14 @@
                     <div class="form-group">
                         <label for="email">E-mail</label>
                         <input id="email" class="form-control" type="text" name="email" placeholder="E-mail" required>
-                        {% for error in form.email.errors %}
-                            <p class="invalid_data">[{{ error }}]</p>
-                        {% endfor %}
                     </div>
                     <div class="form-group">
                         <label for="password">Hasło</label>
                         <input id="password" class="form-control" type="password" name="password" placeholder="Hasło" required>
-                        {% for error in form.password.errors %}
-                            <p class="invalid_data">[{{ error }}]</p>
-                        {% endfor %}
                     </div>
                     <div class="form-group">
                         <label for="password_repeat">Powtórz hasło</label>
                         <input id="password_repeat" class="form-control" type="password" name="password_repeat" placeholder="Powtórz hasło" required>
-                        {% for error in form.password_repeat.errors %}
-                            <p class="invalid_data">[{{ error }}]</p>
-                        {% endfor %}
                     </div>
                     <div class="form-group">
                         <button class="btn btn-primary btn-block active" type="sumbit">Prześlij formularz</button>
@@ -36,6 +27,15 @@
                     <div class="form-group">
                         <p>Masz konto? <a href="/login">Zaloguj się</a></p>
                     </div>
+                    {% for error in form.email.errors %}
+                        <p class="invalid_data">[{{ error }}]</p>
+                    {% endfor %}
+                    {% for error in form.password.errors %}
+                        <p class="invalid_data">[{{ error }}]</p>
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <p class="invalid_data">[{{ error }}]</p>
+                    {% endfor %}
                 </form>
             </div>
             <div class="col-lg-4">
