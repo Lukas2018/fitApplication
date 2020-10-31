@@ -10,6 +10,7 @@ class UserProfile(models.Model):
     age = models.IntegerField(blank=True, null=True)
     sex = models.CharField(max_length=1, blank=True, null=True)
     weight = models.FloatField(blank=True, null=True)
+    pulse = models.IntegerField(blank=True, null=True)
     height = models.FloatField(blank=True, null=True)
     kcal = models.IntegerField(blank=True, null=True)
     protein = models.IntegerField(blank=True, null=True)
@@ -17,9 +18,6 @@ class UserProfile(models.Model):
     fats = models.IntegerField(blank=True, null=True)
     water = models.IntegerField(blank=True, null=True)
     steps = models.IntegerField(blank=True, null=True)
-    dishes = models.ForeignKey('Dish', on_delete=models.CASCADE, blank=True, null=True)
-    active_days = models.ForeignKey('Day', on_delete=models.CASCADE, blank=True, null=True)
-    trainings = models.ForeignKey('Training', on_delete=models.CASCADE, blank=True, null=True)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -38,6 +36,7 @@ class Dish(models.Model):
     summary_fats = models.FloatField()
     summary_water = models.IntegerField()
     products = models.ManyToManyField('Product')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class Product(models.Model):
@@ -53,14 +52,16 @@ class Product(models.Model):
 
 class Day(models.Model):
     date = models.DateField()
-    summary_kcal = models.FloatField()
-    summary_protein = models.FloatField()
-    summary_carbohydrates = models.FloatField()
-    summary_fats = models.FloatField()
-    water = models.IntegerField()
-    steps = models.IntegerField()
+    summary_kcal = models.FloatField(default=0)
+    summary_protein = models.FloatField(default=0)
+    summary_carbohydrates = models.FloatField(default=0)
+    summary_fats = models.FloatField(default=0)
+    water = models.IntegerField(default=0)
+    steps = models.IntegerField(default=0)
     weight = models.FloatField()
+    pulse = models.IntegerField(default=60)
     meals = models.ForeignKey('Meal', on_delete=models.CASCADE, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class Meal(models.Model):

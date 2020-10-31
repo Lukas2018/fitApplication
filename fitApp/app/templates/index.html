@@ -4,9 +4,10 @@
     <script src="/static/scripts/index.js"></script>
 {% endblock %}
 {% block content %}
+{% load mathfilters %}
     <div class="row p-4">
         <div class="col-md-3">
-            <h1 class="text-center">KALORIE</h1>
+            <h1 class="text-center">PRZEGLĄD</h1>
         </div>
         <div class="col-md-6">
             <h1 class="text-center">POSIŁKI</h1>
@@ -17,58 +18,174 @@
     </div>
     <div class="row h-100 p-4">
         <div id="today_data" class="col-md-3">
-            <label for="kcal">Liczba kalorii:</label>
-            <input id="kcal" class="form-control" type="number" name="kcal" value="0" required>
-            <p>Pozostała liczba kalorii: <span id="kcal_left"></span></p>
+            <div class="row col-md-12">Kalorie</div>
+            <div class="row col-md-12">
+                <div class="col-md-3 image eat"></div>
+                <div class="col-md-6 data"> {{ day.summary_kcal }}/{{ user.userprofile.kcal }}</div>
+                <div class="col-md-3">
+                {% if user.userprofile.kcal > day.summary_kcal %}
+                    <div class="status bad image"></div>
+                {% else %}
+                    <div class="status good image"></div>
+                {% endif %}
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-3 image lose"></div>
+                <div class="col-md-6 data"> {{ day.summary_kcal }}</div>
+                <div class="col-md-3"></div>
+            </div>
+            <div class="row col-md-12">Makroskładniki</div>
+            <div class="row col-md-12">
+                <div class="col-md-3 image protein"></div>
+                <div class="col-md-6 data">{{ day.summary_protein }}/{{ user.userprofile.protein }} [g]</div>
+                <div class="col-md-3">
+                {% if user.userprofile.protein > day.summary_protein %}
+                    <div class="status bad image"></div>
+                {% else %}
+                    <div class="status good image"></div>
+                {% endif %}
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-3 image carbohydrates"></div>
+                <div class="col-md-6 data">{{ day.summary_carbohydrates }}/{{ user.userprofile.carbohydrates }} [g]</div>
+                <div class="col-md-3">
+                {% if user.userprofile.carbohydrates > day.summary_carbohydrates %}
+                    <div class="status bad image"></div>
+                {% else %}
+                    <div class="status good image"></div>
+                {% endif %}
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-3 image fats"></div>
+                <div class="col-md-6 data">{{ day.summary_fats }}/{{ user.userprofile.fats }} [g]</div>
+                <div class="col-md-3">
+                {% if user.userprofile.fats > day.summary_fats %}
+                    <div class="status bad image"></div>
+                {% else %}
+                    <div class="status good image"></div>
+                {% endif %}
+                </div>
+            </div>
+            <div class="row col-md-12">Aktywność fizyczna</div>
+            <div class="row col-md-12">
+                <div class="col-md-3 image steps"></div>
+                <div class="col-md-6 data"> {{ day.summary_kcal }}/{{ user.userprofile.steps }}</div>
+                <div class="col-md-3">
+                {% if user.userprofile.steps > day.steps %}
+                    <div class="status bad image"></div>
+                {% else %}
+                    <div class="status good image"></div>
+                {% endif %}
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-3 image workout"></div>
+                <div class="col-md-6 data">1:20:00</div>
+                <div class="col-md-3"></div>
+            </div>
+            <div class="row col-md-12">Zdrowie</div>
+            <div class="row col-md-12">
+                <div class="col-md-3 image water"></div>
+                <div class="col-md-6 data"> {{ day.water }}/{{ user.userprofile.water }}</div>
+                <div class="col-md-3">
+                {% if user.userprofile.water > day.water %}
+                    <div class="status bad image"></div>
+                {% else %}
+                    <div class="status good image"></div>
+                {% endif %}
+                </div>
+            </div>
+            <div class="row col-md-12 weight_data">
+                <div class="col-md-3 image weight"></div>
+                <div class="col-md-6 data">{{ day.weight }}</div>
+                <div class="row">
+                    <div class="image minus"></div>
+                    <div class="image plus"></div>
+                </div>
+            </div>
+            <div class="row col-md-12 heart_data">
+                <div class="col-md-3 image heart"></div>
+                <div class="col-md-6 data">{{ day.pulse }}</div>
+                <div class="row">
+                    <div class="image minus"></div>
+                    <div class="image plus"></div>
+                </div>
+            </div>
         </div>
         <div id="meals" class="col-md-6">
             <div id="breakfast" class="text-center">
                 <div class="row text-center">
-                    <div class="col-md-4 meal-image"></div>
+                    <div class="col-md-4 image"></div>
                     <div class="col-md-4 align-self-center">
                         <h3>Śniadanie</h3>
                     </div>
-                    <div class="col-md-4"><div class="plus radius"></div></div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-1"><div class="image plus"></div></div>
+                    <div class="col-md-1"><div class="image arrow-down"></div></div>
+                    <div class="col-md-1"></div>
                 </div>
             </div>
             <hr/>
             <div id="lunch" class="text-center">
                 <div class="row text-center">
-                    <div class="col-md-4 meal-image"></div>
+                    <div class="col-md-4 image"></div>
                     <div class="col-md-4 align-self-center">
                         <h3>Obiad</h3>
                     </div>
-                    <div class="col-md-4"><div class="plus radius"></div></div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-1"><div class="image plus"></div></div>
+                    <div class="col-md-1"><div class="image arrow-down"></div></div>
+                    <div class="col-md-1"></div>
                 </div>
             </div>
             <hr/>
             <div id="dinner" class="text-center">
                 <div class="row text-center">
-                    <div class="col-md-4 meal-image"></div>
+                    <div class="col-md-4 image"></div>
                     <div class="col-md-4 align-self-center">
                         <h3>Kolacja</h3>
                     </div>
-                    <div class="col-md-4"><div class="plus radius"></div></div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-1"><div class="image plus"></div></div>
+                    <div class="col-md-1"><div class="image arrow-down"></div></div>
+                    <div class="col-md-1"></div>
                 </div>
             </div>
             <hr/>
             <div id="other_meals" class="text-center">
                 <div class="row text-center">
-                    <div class="col-md-4 meal-image"></div>
+                    <div class="col-md-4 image"></div>
                     <div class="col-md-4 align-self-center">
                         <h3>Inne posiłki</h3>
                     </div>
-                    <div class="col-md-4"><div class="plus radius"></div></div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-1"><div class="image plus"></div></div>
+                    <div class="col-md-1"><div class="image arrow-down"></div></div>
+                    <div class="col-md-1"></div>
                 </div>
             </div>
             <hr/>
             <div id="water" class="text-center">
                 <div class="row text-center">
-                    <div class="col-md-4 meal-image"></div>
+                    <div class="col-md-4 image"></div>
                     <div class="col-md-4 align-self-center">
                         <h3>Woda</h3>
                     </div>
-                    <div class="col-md-4"><div class="plus radius"></div></div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-1"><div class="image plus"></div></div>
+                    <div class="col-md-1"><div class="image arrow-down"></div></div>
+                    <div class="col-md-1"></div>
+                </div>
+                <div class="row details">
+                    <ul>
+                        {% for i in loop_times %}
+                            <li class="empty-bottle image"></li>
+                        {% endfor %}
+                    <div style="clear: both;"></div>
+                    </ul>
                 </div>
             </div>
         </div>

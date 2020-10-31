@@ -2,22 +2,6 @@ html, body {
     height: auto
 }
 
-.plus {
-    text-align: right;
-  display:inline-block;
-  width:50px;
-  height:50px;
-
-  background:
-    linear-gradient(#fff,#fff),
-    linear-gradient(#fff,#fff),
-    #000;
-  background-position:center;
-  background-size: 50% 2px,2px 50%; /*thickness = 2px, length = 50% (25px)*/
-  background-repeat:no-repeat;
-  transition: all 1s;
-}
-
 .alt {
   background:
     linear-gradient(#000,#000),
@@ -26,46 +10,157 @@ html, body {
   background-size: 50% 2px,2px 50%; /*thickness = 2px, length = 50% (25px)*/
   background-repeat:no-repeat;
 }
-.radius {
-  border-radius:50%;
+
+#today_data {
+    font-size: large;
+    font-weight: 600;
 }
 
-.plus:hover{
-    background:
-        linear-gradient(#000,#000),
-        linear-gradient(#000,#000),
-        #fff;
-
-    cursor: pointer;
+#today_data .data {
+    text-align: center;
 }
 
-.meal-image {
+#today_data div {
+    margin-bottom: 5px;
+}
+
+#today_data .eat {
+    background-image: url('/static/media/eating.svg');
+}
+
+#today_data .lose {
+    background-image: url('/static/media/runner.svg');
+}
+
+#today_data .bad {
+    background-image: url('/static/media/x.png');
+}
+
+#today_data .good {
+    background-image: url('/static/media/check.png');
+}
+
+#today_data .protein {
+    background-image: url('/static/media/proteins.svg');
+}
+
+#today_data .carbohydrates {
+    background-image: url('/static/media/carbohydrates.svg');
+}
+
+#today_data .fats {
+    background-image: url('/static/media/fats.svg');
+}
+
+#today_data .steps {
+    background-image: url('/static/media/footstep.svg');
+}
+
+#today_data .workout {
+    background-image: url('/static/media/stopwatch.svg');
+}
+
+#today_data .water {
+    background-image: url('/static/media/water-cup-full.svg');
+}
+
+#today_data .weight {
+    background-image: url('/static/media/scale.svg');
+}
+
+#today_data .heart {
+    background-image: url('/static/media/heartbeat.svg');
+}
+
+.weight_data .data {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+#today_data .minus {
+    background-image: url('/static/media/minus.svg');
+    width: 25px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+#today_data .minus:hover {
+    opacity: 0.5;
+}
+
+#today_data .plus {
+    background-image: url('/static/media/plus2.svg');
+    width: 25px;
+    margin-left: 5px;
+}
+
+#today_data .plus:hover {
+    opacity: 0.5;
+}
+
+.status {
+    height: 100%;
+    width: 100%;
+}
+.image {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-#breakfast .meal-image {
+#meals .image.plus {
+    background-image: url('/static/media/plus.svg');
+    height: 40px;
+    width: 40px;
+}
+
+#meals .image.arrow-down {
+    background-image: url('/static/media/down-arrow.svg');
+    height: 40px;
+    width: 40px;
+}
+
+#meals .image.arrow-up {
+    background-image: url('/static/media/up-arrow.svg');
+    height: 40px;
+    width: 40px;   
+}
+
+#breakfast .image {
     background-image: url('/static/media/breakfast.svg');
 }
 
-#lunch .meal-image {
+#lunch .image {
     background-image: url('/static/media/meat.svg');
 }
 
-#dinner .meal-image {
+#dinner .image {
     background-image: url('/static/media/sandwich.svg');
 }
 
-#other_meals .meal-image {
+#other_meals .image {
     background-image: url('/static/media/food.svg');
 }
 
-#water .meal-image {
+#water .image {
     background-image: url('/static/media/water.svg');
 }
 
+#water .details {
+    display: none;
+}
+
+#water .empty-bottle {
+    background-image: url('/static/media/water-cup-empty.svg');
+    float: left;
+    height: 30px;
+    width: 30px;
+}
+
 #menu {
+    position: absolute;
+    right: 0;
+    bottom: 0;
     text-align: right;
 }
 

@@ -28,5 +28,7 @@ urlpatterns = [
     path('user_data/', views.user_data, name='user_data'),
     path('user_panel/', views.user_panel, name='user_panel'),
     path('password_change/', views.password_change, name='password_change'),
-    path('product/', views.product, name='product')
+    path('product/', views.product, name='product'),
+    path('save_weight/', views.save_weight, name='save_weight'),
+    path('save_pulse/', views.save_pulse, name='save_pulse')
 ]

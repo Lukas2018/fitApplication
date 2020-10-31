@@ -1,15 +1,28 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from app.forms import LoginForm, RegisterForm, UserDataForm, PasswordChangeForm, ProductForm
-from app.models import Product
+from app.models import Product, Day
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
+from django.http import HttpResponse
+from datetime import datetime
+import json
 
 @login_required
 def index(request):
-    return render(request, 'index.html')
+    user = request.user
+    day = user.day_set.filter(date=datetime.now()).first()
+    if day is None:
+        day = Day(date=datetime.now(), weight=user.userprofile.weight, pulse=user.userprofile.pulse, user=user)
+        day.save()
+    context = {
+        'loop_times': range(1, 8),
+        'day': day
+    }
+    print(context['day'])
+    return render(request, 'index.html', context)
 
 def login(request):
     form = LoginForm(request.POST or None)
@@ -21,11 +34,13 @@ def login(request):
             if user is not None:
                 auth_login(request, user)
                 if user.userprofile.first_login == 1:
-                    print(user.userprofile.first_login)
                     return redirect('/user_data')
+                if user.day_set.filter(date=datetime.now()) is None:
+                    day = Day(date=datetime.now(), weight=user.userprofile.weight, pulse=user.userprofile.pulse, user=user)
+                    day.save()
                 return redirect('/index')
     context = {
-        'form': form
+        'form': form,
     }
     return render(request, 'login.html', context)
 
@@ -64,6 +79,8 @@ def user_data(request):
             user.userprofile.steps = form.cleaned_data['steps']
             user.userprofile.first_login = 0
             user.save()
+            day = Day(date=datetime.now(), weight=user.userprofile.weight, pulse=user.userprogile.pulse, user=user)
+            day.save()
             return redirect('/index')
     context = {
         'form': form
@@ -105,4 +122,26 @@ def product(request):
     }
     return render(request, 'product_create.html', context)
 
+def save_weight(request):
+    if request.is_ajax():
+        if request.method == 'POST':
+            user = request.user
+            day = user.day_set.filter(date=datetime.now()).first() #to do pass date in json 
+            data = json.loads(request.body)
+            user.userprofile.weight = data['weight']
+            day.weight = data['weight']
+            user.save()
+            day.save()
+    return HttpResponse('OK', status=200)
 
+def save_pulse(request):
+    if request.is_ajax():
+        if request.method == 'POST':
+            user = request.user
+            day = user.day_set.filter(date=datetime.now()).first() #to do pass date in json 
+            data = json.loads(request.body)
+            user.userprofile.pulse = data['pulse']
+            day.pulse = data['pulse']
+            user.save()
+            day.save()
+    return HttpResponse('OK', status=200)
