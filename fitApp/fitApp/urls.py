@@ -29,6 +29,8 @@ urlpatterns = [
     path('user_panel/', views.user_panel, name='user_panel'),
     path('password_change/', views.password_change, name='password_change'),
     path('product/', views.product, name='product'),
+    path('save_index_data/', views.save_index_data, name='save_index_data'),
     path('save_weight/', views.save_weight, name='save_weight'),
-    path('save_pulse/', views.save_pulse, name='save_pulse')
+    path('save_pulse/', views.save_pulse, name='save_pulse'),
+    path('save_water/', views.save_water, name='save_water')
 ]

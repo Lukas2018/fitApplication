@@ -9,6 +9,7 @@ from django.contrib.auth import logout as auth_logout
 from django.http import HttpResponse
 from datetime import datetime
 import json
+import math
 
 @login_required
 def index(request):
@@ -17,11 +18,13 @@ def index(request):
     if day is None:
         day = Day(date=datetime.now(), weight=user.userprofile.weight, pulse=user.userprofile.pulse, user=user)
         day.save()
+    empty_bottles = math.ceil((user.userprofile.water - day.water)/250)
+    full_bottles = math.ceil(user.userprofile.water / 250) - empty_bottles
     context = {
-        'loop_times': range(1, 8),
+        'empty_loop_times': range(1, empty_bottles + 1),
+        'full_loop_times': range(1, full_bottles + 1),
         'day': day
     }
-    print(context['day'])
     return render(request, 'index.html', context)
 
 def login(request):
@@ -56,7 +59,6 @@ def register(request):
             password = form.cleaned_data['password']
             user = User.objects.create_user(username=email, email=email, password=password)
             return redirect('/login')
-        print(form.errors)
     context = {
         'form': form
     }
@@ -99,7 +101,6 @@ def password_change(request):
             user.set_password(new_password)
             user.save()
             return redirect('/user_panel')
-        print(form.errors)
     context = {
         'form': form
     }
@@ -122,6 +123,21 @@ def product(request):
     }
     return render(request, 'product_create.html', context)
 
+def save_index_data(request):
+    if request.method == 'POST':
+        user = request.user
+        day = user.day_set.filter(date=datetime.now()).first() #to do pass date in json 
+        data = request._post
+        user.userprofile.weight = data['weight']
+        user.userprofile.pulse = data['pulse']
+        day.weight = data['weight']
+        day.pulse = data['pulse']
+        day.water = data['water']
+        user.save()
+        day.save()
+    return HttpResponse('OK', status=200)
+        
+
 def save_weight(request):
     if request.is_ajax():
         if request.method == 'POST':
@@ -142,6 +158,17 @@ def save_pulse(request):
             data = json.loads(request.body)
             user.userprofile.pulse = data['pulse']
             day.pulse = data['pulse']
+            user.save()
+            day.save()
+    return HttpResponse('OK', status=200)
+
+def save_water(request):
+    if request.is_ajax():
+        if request.method == 'POST':
+            user = request.user
+            day = user.day_set.filter(date=datetime.now()).first() #to do pass date in json 
+            data = json.loads(request.body)
+            day.water = data['water']
             user.save()
             day.save()
     return HttpResponse('OK', status=200)

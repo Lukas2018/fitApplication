@@ -19,9 +19,9 @@
     <div class="row h-100 p-4">
         <div id="today_data" class="col-md-3">
             <div class="row col-md-12">Kalorie</div>
-            <div class="row col-md-12">
+            <div class="row col-md-12 kcal_data">
                 <div class="col-md-3 image eat"></div>
-                <div class="col-md-6 data"> {{ day.summary_kcal }}/{{ user.userprofile.kcal }}</div>
+                <div class="col-md-6 data"><span class="current">{{ day.summary_kcal }}</span>/<span class="expected">{{ user.userprofile.kcal }}</span></div>
                 <div class="col-md-3">
                 {% if user.userprofile.kcal > day.summary_kcal %}
                     <div class="status bad image"></div>
@@ -36,9 +36,9 @@
                 <div class="col-md-3"></div>
             </div>
             <div class="row col-md-12">Makroskładniki</div>
-            <div class="row col-md-12">
+            <div class="row col-md-12 protein_data">
                 <div class="col-md-3 image protein"></div>
-                <div class="col-md-6 data">{{ day.summary_protein }}/{{ user.userprofile.protein }} [g]</div>
+                <div class="col-md-6 data"><span class="current">{{ day.summary_protein }}</span>/<span class="expected">{{ user.userprofile.protein }}</span> [g]</div>
                 <div class="col-md-3">
                 {% if user.userprofile.protein > day.summary_protein %}
                     <div class="status bad image"></div>
@@ -47,9 +47,9 @@
                 {% endif %}
                 </div>
             </div>
-            <div class="row col-md-12">
+            <div class="row col-md-12 carbohydrates_data">
                 <div class="col-md-3 image carbohydrates"></div>
-                <div class="col-md-6 data">{{ day.summary_carbohydrates }}/{{ user.userprofile.carbohydrates }} [g]</div>
+                <div class="col-md-6 data"><span class="current">{{ day.summary_carbohydrates }}</span>/<span class="expected">{{ user.userprofile.carbohydrates }}</span> [g]</div>
                 <div class="col-md-3">
                 {% if user.userprofile.carbohydrates > day.summary_carbohydrates %}
                     <div class="status bad image"></div>
@@ -58,9 +58,9 @@
                 {% endif %}
                 </div>
             </div>
-            <div class="row col-md-12">
+            <div class="row col-md-12 fats_data">
                 <div class="col-md-3 image fats"></div>
-                <div class="col-md-6 data">{{ day.summary_fats }}/{{ user.userprofile.fats }} [g]</div>
+                <div class="col-md-6 data"><span class="current">{{ day.summary_fats }}</span>/<span class="expected">{{ user.userprofile.fats }}</span> [g]</div>
                 <div class="col-md-3">
                 {% if user.userprofile.fats > day.summary_fats %}
                     <div class="status bad image"></div>
@@ -70,9 +70,9 @@
                 </div>
             </div>
             <div class="row col-md-12">Aktywność fizyczna</div>
-            <div class="row col-md-12">
+            <div class="row col-md-12 steps_data">
                 <div class="col-md-3 image steps"></div>
-                <div class="col-md-6 data"> {{ day.summary_kcal }}/{{ user.userprofile.steps }}</div>
+                <div class="col-md-6 data"><span class="current">{{ day.steps }}</span>/<span class="expected">{{ user.userprofile.steps }}</span></div>
                 <div class="col-md-3">
                 {% if user.userprofile.steps > day.steps %}
                     <div class="status bad image"></div>
@@ -87,9 +87,9 @@
                 <div class="col-md-3"></div>
             </div>
             <div class="row col-md-12">Zdrowie</div>
-            <div class="row col-md-12">
+            <div class="row col-md-12 water_data">
                 <div class="col-md-3 image water"></div>
-                <div class="col-md-6 data"> {{ day.water }}/{{ user.userprofile.water }}</div>
+                <div class="col-md-6 data"><span class="current">{{ day.water }}</span>/<span class="expected">{{ user.userprofile.water }}</span></div>
                 <div class="col-md-3">
                 {% if user.userprofile.water > day.water %}
                     <div class="status bad image"></div>
@@ -124,7 +124,7 @@
                     </div>
                     <div class="col-md-1"></div>
                     <div class="col-md-1"><div class="image plus"></div></div>
-                    <div class="col-md-1"><div class="image arrow-down"></div></div>
+                    <div class="col-md-1"><div class="image arrow arrow-down"></div></div>
                     <div class="col-md-1"></div>
                 </div>
             </div>
@@ -137,7 +137,7 @@
                     </div>
                     <div class="col-md-1"></div>
                     <div class="col-md-1"><div class="image plus"></div></div>
-                    <div class="col-md-1"><div class="image arrow-down"></div></div>
+                    <div class="col-md-1"><div class="image arrow arrow-down"></div></div>
                     <div class="col-md-1"></div>
                 </div>
             </div>
@@ -150,7 +150,7 @@
                     </div>
                     <div class="col-md-1"></div>
                     <div class="col-md-1"><div class="image plus"></div></div>
-                    <div class="col-md-1"><div class="image arrow-down"></div></div>
+                    <div class="col-md-1"><div class="image arrow arrow-down"></div></div>
                     <div class="col-md-1"></div>
                 </div>
             </div>
@@ -163,7 +163,7 @@
                     </div>
                     <div class="col-md-1"></div>
                     <div class="col-md-1"><div class="image plus"></div></div>
-                    <div class="col-md-1"><div class="image arrow-down"></div></div>
+                    <div class="col-md-1"><div class="image arrow arrow-down"></div></div>
                     <div class="col-md-1"></div>
                 </div>
             </div>
@@ -176,16 +176,19 @@
                     </div>
                     <div class="col-md-1"></div>
                     <div class="col-md-1"><div class="image plus"></div></div>
-                    <div class="col-md-1"><div class="image arrow-down"></div></div>
+                    <div class="col-md-1"><div class="image arrow arrow-down"></div></div>
                     <div class="col-md-1"></div>
                 </div>
                 <div class="row details">
-                    <ul>
-                        {% for i in loop_times %}
+                    <ul id="bottles">
+                        {% for i in full_loop_times %}
+                            <li class="full-bottle image"></li>
+                        {% endfor %}
+                        {% for i in empty_loop_times %}
                             <li class="empty-bottle image"></li>
                         {% endfor %}
-                    <div style="clear: both;"></div>
                     </ul>
+                    <div style="clear: both;"></div>
                 </div>
             </div>
         </div>

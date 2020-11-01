@@ -148,10 +148,18 @@ html, body {
 
 #water .details {
     display: none;
+    margin-top: 20px;
 }
 
 #water .empty-bottle {
     background-image: url('/static/media/water-cup-empty.svg');
+    float: left;
+    height: 30px;
+    width: 30px;
+}
+
+#water .full-bottle {
+    background-image: url('/static/media/water-cup-full.svg');
     float: left;
     height: 30px;
     width: 30px;
