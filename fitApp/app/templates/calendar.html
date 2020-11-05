@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block imports %}
+    <link rel="stylesheet" href="/static/css/calendar.css">
+    <script src="/static/scripts/calendar.js"></script>
+{% endblock %}
+{% block content %}
+<div class="wrapper">
+    <div class="c-calendar">
+        <div class="c-calendar-style c-aside">
+            <div class="c-aside-day">
+                <span class="c-aside-num"></span> <span class="c-aside-month"></span>
+            </div>
+        </div>
+        <div class="c-cal-container c-calendar-style">
+            <div class="c-monthyear">
+                <div class="c-month c-float">
+                    <span class="prev prev-month">&lt</span>
+                    <div class="c-paginator-month"></div>
+                    <span class="next next-month">&gt</span>
+                </div>
+                <div class="c-year c-float">
+                    <span class="prev prev-year">&lt</span>
+                    <div class="c-paginator-year"></div>
+                    <span class="next next-year">&gt</span>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+            <div class='c-cal-row'>
+                <div class='c-cal-col'>Mon</div>
+                <div class='c-cal-col'>Tue</div>
+                <div class='c-cal-col'>Wed</div>
+                <div class='c-cal-col'>Thu</div>
+                <div class='c-cal-col'>Fri</div>
+                <div class='c-cal-col'>Sat</div>
+                <div class='c-cal-col'>Sun</div>
+            </div>
+        </div>
+    </div>
+  
+    <div class="c-event-creator c-calendar-style js-event-creator">
+        <a href="javascript:;" class="o-btn js-event-close">CLOSE <span class="fa fa-close"></span></a>
+        <form id="addEvent">
+            <input placeholder="Event name" type="text" name="name">
+            <input type="date" name="date">
+            <textarea placeholder="Notes" name="notes" cols="30" rows="10"></textarea>
+            <select name="tags">
+                <option value="event">event</option>
+                <option value="important">important</option>
+                <option value="birthday">birthday</option>
+                <option value="festivity">festivity</option>
+            </select>
+        </form>
+         <br>
+        <a href="javascript:;" class="o-btn js-event-save">SAVE <span class="fa fa-save"></span></a>
+    </div>
+</div>
+{% endblock %}

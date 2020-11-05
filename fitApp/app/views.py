@@ -89,6 +89,9 @@ def user_data(request):
     }
     return render(request, 'user_data.html', context)
 
+def calendar(request):
+    return render(request, 'calendar.html')
+    
 def user_panel(request):
     return render(request, 'user_panel.html')
 
