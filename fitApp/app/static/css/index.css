@@ -11,6 +11,13 @@ html, body {
   background-repeat:no-repeat;
 }
 
+.calendar {
+    background-image: url('/static/media/calendar.svg');
+    height: 40px;
+    cursor: pointer;
+    margin-left: 10%;
+}
+
 #today_data {
     font-size: large;
     font-weight: 600;
