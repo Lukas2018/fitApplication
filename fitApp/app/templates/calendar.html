@@ -8,7 +8,9 @@
     <div class="c-calendar">
         <div class="c-calendar-style c-aside">
             <div class="c-aside-day">
-                <span class="c-aside-num"></span> <span class="c-aside-month"></span>
+                <span class="c-aside-num"></span>
+                <span class="c-aside-month"></span>
+                <span class="c-aside-year"></span>
             </div>
         </div>
         <div class="c-cal-container c-calendar-style">
@@ -35,23 +37,6 @@
                 <div class='c-cal-col'>Sun</div>
             </div>
         </div>
-    </div>
-  
-    <div class="c-event-creator c-calendar-style js-event-creator">
-        <a href="javascript:;" class="o-btn js-event-close">CLOSE <span class="fa fa-close"></span></a>
-        <form id="addEvent">
-            <input placeholder="Event name" type="text" name="name">
-            <input type="date" name="date">
-            <textarea placeholder="Notes" name="notes" cols="30" rows="10"></textarea>
-            <select name="tags">
-                <option value="event">event</option>
-                <option value="important">important</option>
-                <option value="birthday">birthday</option>
-                <option value="festivity">festivity</option>
-            </select>
-        </form>
-         <br>
-        <a href="javascript:;" class="o-btn js-event-save">SAVE <span class="fa fa-save"></span></a>
     </div>
 </div>
 {% endblock %}

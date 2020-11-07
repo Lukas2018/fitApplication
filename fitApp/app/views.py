@@ -175,3 +175,28 @@ def save_water(request):
             user.save()
             day.save()
     return HttpResponse('OK', status=200)
+
+def get_day_data(request):
+    if request.is_ajax():
+        if request.method == 'GET':
+            user = request.user
+            data = json.loads(list(request.GET.dict().keys())[0])
+            day = data['day']
+            month = data['month']
+            year = data['year']
+            date = datetime(year, month, day)
+            day = user.day_set.filter(date=date).first()
+            if day is None:
+                return HttpResponse(status=204)
+            data = {
+                'kcal': day.summary_kcal,
+                'protein': day.summary_protein,
+                'carbohydrates': day.summary_carbohydrates,
+                'fats': day.summary_fats,
+                'water': day.water,
+                'steps': day.steps,
+                'weight': day.weight,
+                'pulse': day.pulse,
+            }
+            data = json.dumps(data)
+            return HttpResponse(data, content_type='application/json', status=200)

@@ -167,18 +167,6 @@ section > .wrapper a {
 	padding-top: 75%;
 }
 
-.c-cal-cel:nth-child(1) p {
-	background: fade(#d7110f, 20%);
-}
-
-.c-cal-cel:nth-child(7) p {
-	background: #003b71;
-}
-
-.c-cal-cel:hover {
-	background-color: #004b8f !important;
-}
-
 .c-cal-cel:hover p {
 	background: #003b71 !important;
 }
@@ -234,8 +222,10 @@ section > .wrapper a {
 }
 
 .c-aside-day {
-	font-size: 28px;
-	margin: 50px 0;
+    font-size: x-large;
+    color: white;
+    margin: 10px 0;
+    text-align: center;
 }
 
 .c-aside-event {

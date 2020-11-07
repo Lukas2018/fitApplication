@@ -15,10 +15,18 @@ var monthText = [
 
 window.onload = function () {
     let today = new Date();
+    let day = today.getDate();
     let month = today.getMonth();
     let year = today.getFullYear();
     fillTable(month, year);
     fillHeader(month, year);
+    fillBar(day, month, year);
+    let data = JSON.stringify({
+        'year': 2021,
+        'month': 11,
+        'day': 7
+    });
+    getData('/get_day_data/', data)
     $('.prev-month').click(function() {
         prevMonth();
     })
@@ -38,6 +46,10 @@ function fillTable(month, year) {
     let day = date.getDay();
     let dayIterator = 1;
     let monthLength = daysInMonth(month, year);
+    let today = new Date();
+    let currentDay = today.getDate();
+    let currentMonth = today.getMonth();
+    let currentYear = today.getFullYear();
     if(day == 0) {
         day = 7;
     }
@@ -47,19 +59,22 @@ function fillTable(month, year) {
         element.append('<div class="c-cal-cel"></div>');
     }
     for(let i = day; i < 8; i++) {
-        element.append('<div data-day="' + year + '-' + (month+1) + '-' + dayIterator + '"class="c-cal-cel"><p>' + dayIterator + '</p></div>');
+        element.append('<div class="c-cal-cel ' + year + '-' + (month+1) + '-' + dayIterator + '"><p>' + dayIterator + '</p></div>');
         dayIterator++;
     }
     for(dayIterator; dayIterator <= monthLength;) {
         let newElement = $('<div class="c-cal-row c-days"></div>');
         $('.c-cal-container').append(newElement);
         for(let i = 1; i < 8; i++) {
-            newElement.append('<div data-day="' + year + '-' + (month+1) + '-' + dayIterator + '"class="c-cal-cel"><p>' + dayIterator + '</p></div>');
+            newElement.append('<div class="c-cal-cel ' + year + '-' + (month+1) + '-' + dayIterator + '"><p>' + dayIterator + '</p></div>');
             dayIterator++;
             if(dayIterator > monthLength) {
                 break;
             }
         }
+    }
+    if((month == currentMonth) && (year == currentYear)) {
+        $('.' + year + '-' + (month + 1) + '-' + currentDay + ' p').css('background-color', '#003b71');
     }
     let rows = $('.c-cal-container').find('.c-days').length;
     if(rows == 6) {
@@ -76,6 +91,12 @@ function fillTable(month, year) {
 function fillHeader(month, year) {
     $('.c-paginator-month').text(monthText[month]);
     $('.c-paginator-year').text(year);
+}
+
+function fillBar(day, month, year) {
+    $('.c-aside-num').text(day);
+    $('.c-aside-month').text(monthText[month]);
+    $('.c-aside-year').text(year);
 }
 
 function clearTable() {
@@ -136,4 +157,22 @@ function monthNumber(month) {
             return i;
         }
     }
+}
+
+function getData(endpoint, data) {
+    $.ajax({
+        url: endpoint,
+        type: 'GET',
+        data: data,
+        contentType: "application/json",
+        dataType: 'json',
+        statusCode: {
+            200: function(data) {
+                console.log(data['kcal']);
+            },
+            204: function() {
+                console.log('No data on this day');
+            }
+        }
+    });
 }
