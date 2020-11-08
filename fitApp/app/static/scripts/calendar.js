@@ -20,13 +20,14 @@ window.onload = function () {
     let year = today.getFullYear();
     fillTable(month, year);
     fillHeader(month, year);
-    fillBar(day, month, year);
+    fillBarHeader(day, month, year);
+    $('.' + year + '-' + (month + 1) + '-' + day + ' p').addClass('active');
     let data = JSON.stringify({
-        'year': 2021,
-        'month': 11,
-        'day': 7
+        'year': year,
+        'month': month + 1,
+        'day': day
     });
-    getData('/get_day_data/', data)
+    getData('/get_day_data/', data);
     $('.prev-month').click(function() {
         prevMonth();
     })
@@ -74,17 +75,20 @@ function fillTable(month, year) {
         }
     }
     if((month == currentMonth) && (year == currentYear)) {
-        $('.' + year + '-' + (month + 1) + '-' + currentDay + ' p').css('background-color', '#003b71');
+        $('.' + year + '-' + (month + 1) + '-' + currentDay + ' p').addClass('today');
     }
+    $('.c-cal-cel p').click(function() {
+        addClickOnCells(this);
+    })
     let rows = $('.c-cal-container').find('.c-days').length;
     if(rows == 6) {
-        $('.c-cal-container').css('padding-bottom', '58%');
+        $('.c-cal-container').css('padding-bottom', '57%');
     }
     else if(rows == 5) {
-        $('.c-cal-container').css('padding-bottom', '50%');
+        $('.c-cal-container').css('padding-bottom', '51%');
     }
     else {
-        $('.c-cal-container').css('padding-bottom', '42%');
+        $('.c-cal-container').css('padding-bottom', '46%');
     }
 }
 
@@ -93,14 +97,47 @@ function fillHeader(month, year) {
     $('.c-paginator-year').text(year);
 }
 
-function fillBar(day, month, year) {
+function fillBarHeader(day, month, year) {
     $('.c-aside-num').text(day);
     $('.c-aside-month').text(monthText[month]);
     $('.c-aside-year').text(year);
 }
 
+function fillBarData(data) {
+    $('.kcal-data .data .current').text(data['kcal']);
+    $('.kcal-lose .data').text(data['lose_kcal']);
+    $('.protein-data .data .current').text(data['protein']);
+    $('.carbohydrates-data .data .current').text(data['carbohydrates']);
+    $('.fats-data .data .current').text(data['fats']);
+    $('.steps-data .data .current').text(data['steps']);
+    $('.water-data .data .current').text(data['water']);
+    $('.weight-data .data').text(data['weight']);
+    $('.heart-data .data').text(data['pulse']);
+}
+
 function clearTable() {
     $('.c-cal-container').find('.c-days').remove();
+}
+
+function addClickOnCells(element) {
+    let classList = $(element).parent().attr('class').split(" ");
+        for(let i = 0; i < classList.length; i++) {
+            if(classList[i] != 'c-cal-cel') {
+                let date = classList[i].split("-");
+                let year = date[0];
+                let month = date[1];
+                let day = date[2];
+                let data = JSON.stringify({
+                    'year': year,
+                    'month': month,
+                    'day': day
+                });
+                fillBarHeader(day, month - 1, year);
+                getData('/get_day_data/', data);
+                $('.c-cal-container').find('.active').removeClass('active');
+                $(element).addClass('active');
+            }
+        }
 }
 
 function prevMonth() {
@@ -168,7 +205,7 @@ function getData(endpoint, data) {
         dataType: 'json',
         statusCode: {
             200: function(data) {
-                console.log(data['kcal']);
+                fillBarData(data);
             },
             204: function() {
                 console.log('No data on this day');

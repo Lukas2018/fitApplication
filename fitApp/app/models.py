@@ -53,11 +53,13 @@ class Product(models.Model):
 class Day(models.Model):
     date = models.DateField()
     summary_kcal = models.FloatField(default=0)
+    lose_kcal = models.FloatField(default=0)
     summary_protein = models.FloatField(default=0)
     summary_carbohydrates = models.FloatField(default=0)
     summary_fats = models.FloatField(default=0)
     water = models.IntegerField(default=0)
     steps = models.IntegerField(default=0)
+    activity_time = models.IntegerField(default=0)
     weight = models.FloatField()
     pulse = models.IntegerField(default=60)
     meals = models.ForeignKey('Meal', on_delete=models.CASCADE, blank=True, null=True)

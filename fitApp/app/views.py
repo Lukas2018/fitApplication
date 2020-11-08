@@ -91,6 +91,9 @@ def user_data(request):
 
 def calendar(request):
     return render(request, 'calendar.html')
+
+def analyze(request):
+    return render(request, 'analyze.html')
     
 def user_panel(request):
     return render(request, 'user_panel.html')
@@ -131,11 +134,11 @@ def save_index_data(request):
         user = request.user
         day = user.day_set.filter(date=datetime.now()).first() #to do pass date in json 
         data = request._post
-        user.userprofile.weight = data['weight']
-        user.userprofile.pulse = data['pulse']
-        day.weight = data['weight']
-        day.pulse = data['pulse']
-        day.water = data['water']
+        user.userprofile.weight = float(data['weight'])
+        user.userprofile.pulse = int(data['pulse'])
+        day.weight = float(data['weight'])
+        day.pulse = int(data['pulse'])
+        day.water = int(data['water'])
         user.save()
         day.save()
     return HttpResponse('OK', status=200)
@@ -147,8 +150,8 @@ def save_weight(request):
             user = request.user
             day = user.day_set.filter(date=datetime.now()).first() #to do pass date in json 
             data = json.loads(request.body)
-            user.userprofile.weight = data['weight']
-            day.weight = data['weight']
+            user.userprofile.weight = float(data['weight'])
+            day.weight = float(data['weight'])
             user.save()
             day.save()
     return HttpResponse('OK', status=200)
@@ -159,8 +162,8 @@ def save_pulse(request):
             user = request.user
             day = user.day_set.filter(date=datetime.now()).first() #to do pass date in json 
             data = json.loads(request.body)
-            user.userprofile.pulse = data['pulse']
-            day.pulse = data['pulse']
+            user.userprofile.pulse = int(data['pulse'])
+            day.pulse = int(data['pulse'])
             user.save()
             day.save()
     return HttpResponse('OK', status=200)
@@ -171,7 +174,7 @@ def save_water(request):
             user = request.user
             day = user.day_set.filter(date=datetime.now()).first() #to do pass date in json 
             data = json.loads(request.body)
-            day.water = data['water']
+            day.water = int(data['water'])
             user.save()
             day.save()
     return HttpResponse('OK', status=200)
@@ -181,20 +184,22 @@ def get_day_data(request):
         if request.method == 'GET':
             user = request.user
             data = json.loads(list(request.GET.dict().keys())[0])
-            day = data['day']
-            month = data['month']
-            year = data['year']
+            day = int(data['day'])
+            month = int(data['month'])
+            year = int(data['year'])
             date = datetime(year, month, day)
             day = user.day_set.filter(date=date).first()
             if day is None:
                 return HttpResponse(status=204)
             data = {
                 'kcal': day.summary_kcal,
+                'lose_kcal': day.lose_kcal,
                 'protein': day.summary_protein,
                 'carbohydrates': day.summary_carbohydrates,
                 'fats': day.summary_fats,
                 'water': day.water,
                 'steps': day.steps,
+                'activity_time': day.activity_time,
                 'weight': day.weight,
                 'pulse': day.pulse,
             }

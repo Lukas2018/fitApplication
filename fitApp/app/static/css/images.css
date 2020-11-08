@@ -1,0 +1,135 @@
+.image {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.calendar {
+    background-image: url('/static/media/calendar.svg');
+    height: 40px;
+    cursor: pointer;
+    margin-left: 10%;
+}
+
+.eat {
+    background-image: url('/static/media/eating.svg');
+}
+
+.lose {
+    background-image: url('/static/media/runner.svg');
+}
+
+.bad {
+    background-image: url('/static/media/x.png');
+}
+
+.good {
+    background-image: url('/static/media/check.png');
+}
+
+.protein {
+    background-image: url('/static/media/proteins.svg');
+}
+
+.carbohydrates {
+    background-image: url('/static/media/carbohydrates.svg');
+}
+
+.fats {
+    background-image: url('/static/media/fats.svg');
+}
+
+.steps {
+    background-image: url('/static/media/footstep.svg');
+}
+
+.workout {
+    background-image: url('/static/media/stopwatch.svg');
+}
+
+.water {
+    background-image: url('/static/media/water-cup-full.svg');
+}
+
+.weight {
+    background-image: url('/static/media/scale.svg');
+}
+
+.heart {
+    background-image: url('/static/media/heartbeat.svg');
+}
+
+#today-data .plus {
+    background-image: url('/static/media/plus2.svg');
+    width: 25px;
+    margin-left: 5px;
+}
+
+#today-data .minus {
+    background-image: url('/static/media/minus.svg');
+    width: 25px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+#today-data .minus:hover {
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+#today-data .plus:hover {
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.breakfast {
+    background-image: url('/static/media/breakfast.svg');
+}
+
+.lunch {
+    background-image: url('/static/media/meat.svg');
+}
+
+.dinner {
+    background-image: url('/static/media/sandwich.svg');
+}
+
+.other-meals {
+    background-image: url('/static/media/food.svg');
+}
+
+.water {
+    background-image: url('/static/media/water.svg');
+}
+
+#meals .image.plus {
+    background-image: url('/static/media/plus.svg');
+    height: 40px;
+    width: 40px;
+}
+
+.arrow-down {
+    background-image: url('/static/media/down-arrow.svg');
+    height: 40px;
+    width: 40px;
+}
+
+.arrow-up {
+    background-image: url('/static/media/up-arrow.svg');
+    height: 40px;
+    width: 40px;   
+}
+
+.empty-bottle {
+    background-image: url('/static/media/water-cup-empty.svg');
+    float: left;
+    height: 30px;
+    width: 30px;
+}
+
+.full-bottle {
+    background-image: url('/static/media/water-cup-full.svg');
+    float: left;
+    height: 30px;
+    width: 30px;
+}

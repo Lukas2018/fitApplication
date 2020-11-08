@@ -1,5 +1,5 @@
 html, body {
-    height: auto
+    height: auto;
 }
 
 .alt {
@@ -11,165 +11,32 @@ html, body {
   background-repeat:no-repeat;
 }
 
-.calendar {
-    background-image: url('/static/media/calendar.svg');
-    height: 40px;
-    cursor: pointer;
-    margin-left: 10%;
-}
-
-#today_data {
+#today-data {
     font-size: large;
     font-weight: 600;
 }
 
-#today_data .data {
+#today-data .data {
     text-align: center;
 }
 
-#today_data div {
+#today-data div {
     margin-bottom: 5px;
 }
 
-#today_data .eat {
-    background-image: url('/static/media/eating.svg');
-}
-
-#today_data .lose {
-    background-image: url('/static/media/runner.svg');
-}
-
-#today_data .bad {
-    background-image: url('/static/media/x.png');
-}
-
-#today_data .good {
-    background-image: url('/static/media/check.png');
-}
-
-#today_data .protein {
-    background-image: url('/static/media/proteins.svg');
-}
-
-#today_data .carbohydrates {
-    background-image: url('/static/media/carbohydrates.svg');
-}
-
-#today_data .fats {
-    background-image: url('/static/media/fats.svg');
-}
-
-#today_data .steps {
-    background-image: url('/static/media/footstep.svg');
-}
-
-#today_data .workout {
-    background-image: url('/static/media/stopwatch.svg');
-}
-
-#today_data .water {
-    background-image: url('/static/media/water-cup-full.svg');
-}
-
-#today_data .weight {
-    background-image: url('/static/media/scale.svg');
-}
-
-#today_data .heart {
-    background-image: url('/static/media/heartbeat.svg');
-}
-
-.weight_data .data {
+.weight-data .data {
     padding-right: 0;
     padding-left: 0;
-}
-
-#today_data .minus {
-    background-image: url('/static/media/minus.svg');
-    width: 25px;
-    margin-right: 5px;
-    margin-left: 5px;
-}
-
-#today_data .minus:hover {
-    opacity: 0.5;
-}
-
-#today_data .plus {
-    background-image: url('/static/media/plus2.svg');
-    width: 25px;
-    margin-left: 5px;
-}
-
-#today_data .plus:hover {
-    opacity: 0.5;
 }
 
 .status {
     height: 100%;
     width: 100%;
 }
-.image {
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-#meals .image.plus {
-    background-image: url('/static/media/plus.svg');
-    height: 40px;
-    width: 40px;
-}
-
-#meals .image.arrow-down {
-    background-image: url('/static/media/down-arrow.svg');
-    height: 40px;
-    width: 40px;
-}
-
-#meals .image.arrow-up {
-    background-image: url('/static/media/up-arrow.svg');
-    height: 40px;
-    width: 40px;   
-}
-
-#breakfast .image {
-    background-image: url('/static/media/breakfast.svg');
-}
-
-#lunch .image {
-    background-image: url('/static/media/meat.svg');
-}
-
-#dinner .image {
-    background-image: url('/static/media/sandwich.svg');
-}
-
-#other_meals .image {
-    background-image: url('/static/media/food.svg');
-}
-
-#water .image {
-    background-image: url('/static/media/water.svg');
-}
 
 #water .details {
     display: none;
     margin-top: 20px;
-}
-
-#water .empty-bottle {
-    background-image: url('/static/media/water-cup-empty.svg');
-    float: left;
-    height: 30px;
-    width: 30px;
-}
-
-#water .full-bottle {
-    background-image: url('/static/media/water-cup-full.svg');
-    float: left;
-    height: 30px;
-    width: 30px;
 }
 
 #menu {

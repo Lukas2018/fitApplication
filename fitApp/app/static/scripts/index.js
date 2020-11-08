@@ -17,7 +17,7 @@ window.onload = function () {
         fillBottle($(this));
         timerB = setTimeout(function () {
             let data = JSON.stringify({
-                'water': $('.water_data .data .current').text(),
+                'water': $('.water-data .data .current').text(),
             });
             sendData('/save_water/', data);
         }, timeToWait);
@@ -27,47 +27,47 @@ window.onload = function () {
         emptyBottle($(this));
         timerB = setTimeout(function () {
             let data = JSON.stringify({
-                'water': $('.water_data .data .current').text(),
+                'water': $('.water-data .data .current').text(),
             });
             sendData('/save_water/', data);
         }, timeToWait);
     });
-    $('.weight_data .minus').click(function() {
+    $('.weight-data .minus').click(function() {
         clearTimeout(timerW);
         decrement($(this), 0.1);
         timerW = setTimeout(function () {
             let data = JSON.stringify({
-                'weight': $('.weight_data .data').text(),
+                'weight': $('.weight-data .data').text(),
             });
             sendData('/save_weight/', data);
         }, timeToWait);
     }); 
-    $('.weight_data .plus').click(function() {
+    $('.weight-data .plus').click(function() {
         clearTimeout(timerW);
         increment($(this), 0.1);
         timerW = setTimeout(function () {
             let data = JSON.stringify({
-                'weight': $('.weight_data .data').text(),
+                'weight': $('.weight-data .data').text(),
             });
             sendData('/save_weight/', data);
         }, timeToWait);
     });
-    $('.heart_data .minus').click(function() {
+    $('.heart-data .minus').click(function() {
         clearTimeout(timerP);
         decrement($(this), 1);
         timerP = setTimeout(function () {
             let data = JSON.stringify({
-                'pulse': $('.heart_data .data').text(),
+                'pulse': $('.heart-data .data').text(),
             });
             sendData('/save_pulse/', data);
         }, timeToWait);
     }); 
-    $('.heart_data .plus').click(function() {
+    $('.heart-data .plus').click(function() {
         clearTimeout(timerP);
         increment($(this), 1);
         timerP = setTimeout(function () {
             let data = JSON.stringify({
-                'pulse': $('.heart_data .data').text(),
+                'pulse': $('.heart-data .data').text(),
             });
             sendData('/save_pulse/', data);
         }, timeToWait);
@@ -76,9 +76,9 @@ window.onload = function () {
 
 window.onbeforeunload = function() {
     var formData = new FormData();
-    formData.append('weight', $('.weight_data .data').text());
-    formData.append('pulse', $('.heart_data .data').text());
-    formData.append('water', $('.water_data .data .current').text());
+    formData.append('weight', $('.weight-data .data').text());
+    formData.append('pulse', $('.heart-data .data').text());
+    formData.append('water', $('.water-data .data .current').text());
     formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
     navigator.sendBeacon('/save_index_data/', formData);
 }
@@ -133,13 +133,13 @@ function emptyBottle(bottleElem) {
 
 function changeWaterData(numOfBottles) {
     let value = numOfBottles * 250;
-    let expectedValue = parseInt($('.water_data .data .expected').text());
-    $('.water_data .data .current').text(value);
+    let expectedValue = parseInt($('.water-data .data .expected').text());
+    $('.water-data .data .current').text(value);
     if(expectedValue > value) {
-        $('.water_data .status').removeClass('good').addClass('bad');
+        $('.water-data .status').removeClass('good').addClass('bad');
     }
     else {
-        $('.water_data .status').removeClass('bad').addClass('good');
+        $('.water-data .status').removeClass('bad').addClass('good');
     }
 }
 

@@ -10,6 +10,10 @@ body.overlay:before {
 	z-index: 100;
 }
 
+body {
+    height: 800px;
+}
+
 html {
 	background: #003567;
 	color: #fff;
@@ -29,30 +33,6 @@ a {
 	text-decoration: none;
 }
 
-section {
- 	position: fixed;
-	height: 80px;
-	width: 100%;
-	z-index: 50;
-	background: #003567;
-}
-
-section > .wrapper {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 0 20px;
-	color: #fff;
-	letter-spacing: 2px;
-	font-size: 13px;
-}
-
-section > .wrapper a {
-	color: #fff;
-	text-decoration: none;
-	margin-left: 10px;
-}
-
 .c-monthyear {
 	margin: 20px 0;
 }
@@ -70,22 +50,14 @@ section > .wrapper a {
     display: inline-block;
 }
 
-.o-btn {
-	display: inline-block;
-	padding: 0 10px;
-	line-height: 30px;
-	height: 30px;
-	background-color: #004b8f;
-	text-transform: uppercase;
-	letter-spacing: 2px;
+.prev p, .next p {
+    border-radius: 25px;
+    background-color: #004585;
 }
 
-.o-btn span {
-	margin-left: 10px;
-}
-
-.o-btn:hover {
-	background-color: #0055a4;
+.prev:hover p, .next:hover p {
+    background-color: #003b71;
+    cursor: pointer;
 }
 
 .c-calendar {
@@ -139,7 +111,6 @@ section > .wrapper a {
 	width: calc(100% / 7);
 	width: -webkit-calc(100% / 7);
 	text-align: center;
-	cursor: pointer;
 }
 
 .c-cal-cel p {
@@ -150,7 +121,8 @@ section > .wrapper a {
 	width: 40px;
 	height: 40px;
 	line-height: 40px;
-	background: #004585;
+    background: #004585;
+    cursor: pointer;
 }
 
 .c-cal-cel p {
@@ -168,7 +140,7 @@ section > .wrapper a {
 }
 
 .c-cal-cel:hover p {
-	background: #003b71 !important;
+	background-color: #003b71;
 }
 
 .c-cal-cel.isSelected {
@@ -191,29 +163,12 @@ section > .wrapper a {
 	color: fade(#fff, 20%);
 }
 
-.event:before {
-	position: absolute;
-	content: "";
-	display: block;
-	width: 10px;
-	height: 10px;
-	background-color: #f5f5f5;
-	z-index: 10;
-	padding: 0;
-	top: 50%;
-	left: 50%;
+.today {
+    background-color: #003b71!important;
 }
 
-.event--birthday:before {
-	background-color: #facc2e;
-}
-
-.event--festivity:before {
-	background-color: #10ddc2;
-}
-
-.event--important:before {
-	background-color: #f57170;
+.active {
+    color: #FFD700!important;
 }
 
 .c-aside {
@@ -228,66 +183,17 @@ section > .wrapper a {
     text-align: center;
 }
 
-.c-aside-event {
-	position: relative;
-	padding-left: 20px;
-	margin: 20px 0;
+#today-data {
+    font-size: large;
+    font-weight: 600;
+    color: white;
+    margin-top: 20px;
 }
 
-.c-aside-event:before {
-	position: absolute;
-	display: block;
-	content: "";
-	width: 16px;
-	height: 16px;
-	left: 0;
-	background-color: #f5f5f5;
+#today-data .data {
+    text-align: center;
 }
 
-.c-aside-event--birthday:before {
-	background-color: #facc2e;
-}
-
-.c-aside-event--festivity:before {
-	background-color: #10ddc2;
-}
-
-.c-aside-event--important:before {
-	background-color: #f57170;
-}
-
-.c-event-creator {
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	max-width: 500px;
-	max-height: 470px;
-	width: 100%;
-	height: 100%;
-	z-index: 100;
-	padding: 20px;
-	visibility: hidden;
-	opacity: 0;
-}
-
-.c-event-creator form {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	justify-content: space-between;
-}
-
-.c-event-creator.isVisible {
-	opacity: 1;
-	visibility: visible;
-}
-
-input, textarea, select {
-	margin: 10px 0;
-	padding: 10px;
-	width: 100%;
-}
-
-input {
-	height: 40px;
+#today-data div {
+    margin-bottom: 5px;
 }

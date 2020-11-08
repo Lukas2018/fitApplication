@@ -1,32 +1,31 @@
 {% extends "base.html" %}
 {% block imports %}
     <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/images.css">
     <script src="/static/scripts/index.js"></script>
 {% endblock %}
 {% block content %}
     <div class="row p-4">
         <div class="col-md-3">
-            <h1 class="text-center">PRZEGLĄD</h1>
+            <h1 class="text-center">SUMMARY</h1>
         </div>
         <div class="col-md-6">
-            <h1 class="text-center">POSIŁKI</h1>
+            <h1 class="text-center">MEALS</h1>
         </div>
         <div class="col-md-3">
-            <h1 class="text-center">TRENING</h1>
+            <h1 class="text-center">ACTIVITY</h1>
         </div>
     </div>
     <div class="row">
         <div class="col-md-3">
             <a href="/calendar/"><div class="image calendar"></div></a>
         </div>
-        <div class="col-md-9">
-
-        </div>
+        <div class="col-md-9"></div>
     </div>
     <div class="row h-100 p-4">
-        <div id="today_data" class="col-md-3">
-            <div class="row col-md-12">Kalorie</div>
-            <div class="row col-md-12 kcal_data">
+        <div id="today-data" class="col-md-3">
+            <div class="row col-md-12">Calories</div>
+            <div class="row col-md-12 kcal-data">
                 <div class="col-md-3 image eat"></div>
                 <div class="col-md-6 data"><span class="current">{{ day.summary_kcal }}</span>/<span class="expected">{{ user.userprofile.kcal }}</span></div>
                 <div class="col-md-3">
@@ -37,13 +36,13 @@
                 {% endif %}
                 </div>
             </div>
-            <div class="row col-md-12">
+            <div class="row col-md-12 kcal-lose">
                 <div class="col-md-3 image lose"></div>
-                <div class="col-md-6 data"> {{ day.summary_kcal }}</div>
+                <div class="col-md-6 data"> {{ day.lose_kcal }}</div>
                 <div class="col-md-3"></div>
             </div>
-            <div class="row col-md-12">Makroskładniki</div>
-            <div class="row col-md-12 protein_data">
+            <div class="row col-md-12">Macronutrients</div>
+            <div class="row col-md-12 protein-data">
                 <div class="col-md-3 image protein"></div>
                 <div class="col-md-6 data"><span class="current">{{ day.summary_protein }}</span>/<span class="expected">{{ user.userprofile.protein }}</span> [g]</div>
                 <div class="col-md-3">
@@ -54,7 +53,7 @@
                 {% endif %}
                 </div>
             </div>
-            <div class="row col-md-12 carbohydrates_data">
+            <div class="row col-md-12 carbohydrates-data">
                 <div class="col-md-3 image carbohydrates"></div>
                 <div class="col-md-6 data"><span class="current">{{ day.summary_carbohydrates }}</span>/<span class="expected">{{ user.userprofile.carbohydrates }}</span> [g]</div>
                 <div class="col-md-3">
@@ -65,7 +64,7 @@
                 {% endif %}
                 </div>
             </div>
-            <div class="row col-md-12 fats_data">
+            <div class="row col-md-12 fats-data">
                 <div class="col-md-3 image fats"></div>
                 <div class="col-md-6 data"><span class="current">{{ day.summary_fats }}</span>/<span class="expected">{{ user.userprofile.fats }}</span> [g]</div>
                 <div class="col-md-3">
@@ -76,8 +75,8 @@
                 {% endif %}
                 </div>
             </div>
-            <div class="row col-md-12">Aktywność fizyczna</div>
-            <div class="row col-md-12 steps_data">
+            <div class="row col-md-12">Physical Activity</div>
+            <div class="row col-md-12 steps-data">
                 <div class="col-md-3 image steps"></div>
                 <div class="col-md-6 data"><span class="current">{{ day.steps }}</span>/<span class="expected">{{ user.userprofile.steps }}</span></div>
                 <div class="col-md-3">
@@ -93,8 +92,8 @@
                 <div class="col-md-6 data">1:20:00</div>
                 <div class="col-md-3"></div>
             </div>
-            <div class="row col-md-12">Zdrowie</div>
-            <div class="row col-md-12 water_data">
+            <div class="row col-md-12">Health</div>
+            <div class="row col-md-12 water-data">
                 <div class="col-md-3 image water"></div>
                 <div class="col-md-6 data"><span class="current">{{ day.water }}</span>/<span class="expected">{{ user.userprofile.water }}</span></div>
                 <div class="col-md-3">
@@ -105,7 +104,7 @@
                 {% endif %}
                 </div>
             </div>
-            <div class="row col-md-12 weight_data">
+            <div class="row col-md-12 weight-data">
                 <div class="col-md-3 image weight"></div>
                 <div class="col-md-6 data">{{ day.weight }}</div>
                 <div class="row">
@@ -113,7 +112,7 @@
                     <div class="image plus"></div>
                 </div>
             </div>
-            <div class="row col-md-12 heart_data">
+            <div class="row col-md-12 heart-data">
                 <div class="col-md-3 image heart"></div>
                 <div class="col-md-6 data">{{ day.pulse }}</div>
                 <div class="row">
@@ -125,9 +124,9 @@
         <div id="meals" class="col-md-6">
             <div id="breakfast" class="text-center">
                 <div class="row text-center">
-                    <div class="col-md-4 image"></div>
+                    <div class="col-md-4 image breakfast"></div>
                     <div class="col-md-4 align-self-center">
-                        <h3>Śniadanie</h3>
+                        <h3>Breakfast</h3>
                     </div>
                     <div class="col-md-1"></div>
                     <div class="col-md-1"><div class="image plus"></div></div>
@@ -138,9 +137,9 @@
             <hr/>
             <div id="lunch" class="text-center">
                 <div class="row text-center">
-                    <div class="col-md-4 image"></div>
+                    <div class="col-md-4 image lunch"></div>
                     <div class="col-md-4 align-self-center">
-                        <h3>Obiad</h3>
+                        <h3>Lunch</h3>
                     </div>
                     <div class="col-md-1"></div>
                     <div class="col-md-1"><div class="image plus"></div></div>
@@ -151,9 +150,9 @@
             <hr/>
             <div id="dinner" class="text-center">
                 <div class="row text-center">
-                    <div class="col-md-4 image"></div>
+                    <div class="col-md-4 image dinner"></div>
                     <div class="col-md-4 align-self-center">
-                        <h3>Kolacja</h3>
+                        <h3>Dinner</h3>
                     </div>
                     <div class="col-md-1"></div>
                     <div class="col-md-1"><div class="image plus"></div></div>
@@ -162,11 +161,11 @@
                 </div>
             </div>
             <hr/>
-            <div id="other_meals" class="text-center">
+            <div id="other-meals" class="text-center">
                 <div class="row text-center">
-                    <div class="col-md-4 image"></div>
+                    <div class="col-md-4 image other-meals"></div>
                     <div class="col-md-4 align-self-center">
-                        <h3>Inne posiłki</h3>
+                        <h3>Other Meals</h3>
                     </div>
                     <div class="col-md-1"></div>
                     <div class="col-md-1"><div class="image plus"></div></div>
@@ -177,9 +176,9 @@
             <hr/>
             <div id="water" class="text-center">
                 <div class="row text-center">
-                    <div class="col-md-4 image"></div>
+                    <div class="col-md-4 image water"></div>
                     <div class="col-md-4 align-self-center">
-                        <h3>Woda</h3>
+                        <h3>Water</h3>
                     </div>
                     <div class="col-md-1"></div>
                     <div class="col-md-1"><div class="image plus"></div></div>
@@ -213,7 +212,8 @@
     <div class="row p-4">
         <div class="col-md-10"></div>
         <div id="menu" class="col-md-2">
-            <a href="/user_panel/"><img src="/static/media/person.svg"/></a>
+            <p><a href="/analyze/"><img src="/static/media/stats.svg"/></a></p>
+            <p><a href="/user_panel/"><img src="/static/media/person.svg"/></a></p>
             <form id="logout" method="POST" action="/logout/">
                 {% csrf_token %}
                 <img onclick="document.getElementById('logout').submit();" src="/static/media/logout.svg"/>
