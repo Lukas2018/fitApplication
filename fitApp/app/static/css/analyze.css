@@ -1,0 +1,72 @@
+.wrapper {
+	position: relative;
+	max-width: 1280px;
+	width: 100%;
+	height: 100%;
+    margin: 0 auto;
+    color: white;
+}
+
+.analyze {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+}
+
+.analyze-style {
+	background-color: #00407b;
+	margin: 20px;
+}
+
+.analyze-container {
+	position: relative;
+	width: calc(100% - 300px);
+	width: -webkit-calc(100% - 300px);
+	height: 0;
+	padding-bottom: 58%;
+    overflow: hidden;
+    padding-left: 15px;
+}
+
+.a-aside {
+	width: 300px;
+}
+
+.a-title {
+    font-size: x-large;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.menu {
+    font-size: large;
+    margin: 20px 0;
+    border-bottom: 1px solid white;
+    border-top: 1px solid white;
+    padding: 20px;
+}
+
+.menu div:last-child {
+    text-align: center;
+}
+
+.title {
+    font-size: x-large;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.options {
+    margin: 20px 0;
+}
+
+.options .a-float {
+    float: left;
+	width: 50%;
+	text-align: center;
+	font-size: large;
+}
+
+.statistics {
+    margin-left: 40px;
+}
