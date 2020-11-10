@@ -12,33 +12,84 @@
             <div class="a-title">
                 Analyze Menu
             </div>
-            <div class="row col-md-12 menu kcal-menu">
-                <div class="eat image col-md-3"></div>
-                <div class="col-md-9">Nutrition</div>
+            <div class="row col-md-12 menu nutrition-menu">
+                <div class="other-meals image col-md-3"></div>
+                <div class="col-md-7">Nutrition</div>
+                <div class="col-md-1 image down-arrow"></div>
+                <div class="sub-menu">
+                    <div class="row kcal-menu">
+                        <div class="col-md-2"></div>
+                        <div class="eat image col-md-2"></div>
+                        <div class="col-md-8">Kcal</div>
+                    </div>
+                    <div class="row protein-menu">
+                        <div class="col-md-2"></div>
+                        <div class="protein image col-md-2"></div>
+                        <div class="col-md-8">Protein</div>
+                    </div>
+                    <div class="row carbohydrates-menu">
+                        <div class="col-md-2"></div>
+                        <div class="carbohydrates image col-md-2"></div>
+                        <div class="col-md-8">Carbohydrates</div>
+                    </div>
+                    <div class="row fats-menu">
+                        <div class="col-md-2"></div>
+                        <div class="fats image col-md-2"></div>
+                        <div class="col-md-8">Fats</div>
+                    </div>
+                </div>
             </div>
-            <div class="row col-md-12 menu water-menu">
+            <div class="row col-md-12 menu activity-menu">
                 <div class="water image col-md-3"></div>
-                <div class="col-md-9">Water</div>
+                <div class="col-md-7">Activity</div>
+                <div class="col-md-1 image down-arrow"></div>
+                <div class="sub-menu">
+                    <div class="row steps-menu">
+                        <div class="col-md-2"></div>
+                        <div class="steps image col-md-2"></div>
+                        <div class="col-md-8">Steps</div>
+                    </div>
+                    <div class="row workout-menu">
+                        <div class="col-md-2"></div>
+                        <div class="workout image col-md-2"></div>
+                        <div class="col-md-8">Workout</div>
+                    </div>
+                </div>
             </div>
-            <div class="row col-md-12 menu steps-menu">
-                <div class="steps image col-md-3"></div>
-                <div class="col-md-9">Steps</div>
-            </div>
-            <div class="row col-md-12 menu weight-menu">
+            <div class="row col-md-12 menu health-menu">
                 <div class="weight image col-md-3"></div>
-                <div class="col-md-9">Weight</div>
-            </div>
-            <div class="row col-md-12 menu pulse-menu">
-                <div class="heart image col-md-3"></div>
-                <div class="col-md-9">Pulse</div>
+                <div class="col-md-7">Health</div>
+                <div class="col-md-1 image down-arrow"></div>
+                <div class="sub-menu">
+                    <div class="row water-menu">
+                        <div class="col-md-2"></div>
+                        <div class="water image col-md-2"></div>
+                        <div class="col-md-8">Water</div>
+                    </div>
+                    <div class="row weight-menu">
+                        <div class="col-md-2"></div>
+                        <div class="weight image col-md-2"></div>
+                        <div class="col-md-8">Weight</div>
+                    </div>
+                    <div class="row pulse-menu">
+                        <div class="col-md-2"></div>
+                        <div class="heart image col-md-2"></div>
+                        <div class="col-md-8">Pulse</div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="analyze-container analyze-style">
             <div class="title"><span class="name"></span> data</div>
             <div class="options">
-                <div class="c-month a-float">1</div>
-                <div class="c-year a-float">2</div>
-                <div style="clear:both;"></div>
+                <select id="select-period" class="browser-default custom-select">
+                    <option value="0" selected>This week</option>
+                    <option value="1">Previous week</option>
+                    <option value="2">This month</option>
+                    <option value="3">Previous month</option>
+                    <option value="4">This year</option>
+                    <option value="5">Previous year</option>
+                  </select>
             </div>
             <div class="statistics">
                 <p class="max">Max value: <span class="value"></span></p>

@@ -116,6 +116,20 @@
     width: 40px;   
 }
 
+.down-arrow {
+    background-image: url('/static/media/arrow-down.svg');
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+}
+
+.up-arrow {
+    background-image: url('/static/media/arrow-up.svg');
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+}
+
 .empty-bottle {
     background-image: url('/static/media/water-cup-empty.svg');
     float: left;
