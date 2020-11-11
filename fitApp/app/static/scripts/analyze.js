@@ -1,40 +1,44 @@
-let currentView = 0;
+let currentView = -1;
 
 window.onload = function() {
     $('.down-arrow').click(function() {
         switchSubMenu($(this));
     });
     $('.kcal-menu').click(function() {
+        currentView = 0;
         renderKcalData();
     });
     $('.protein-menu').click(function() {
+        currentView = 1;
         renderProteinData();
     });
     $('.carbohydrates-menu').click(function() {
+        currentView = 2;
         renderCarbohydratesData();
     });
     $('.fats-menu').click(function() {
+        currentView = 3;
         renderFatsData();
     });
     $('.steps-menu').click(function() {
+        currentView = 4;
         renderStepsData();
     });
     $('.water-menu').click(function() {
-       renderWaterData(); 
+        currentView = 5;
+        let data = prepareData('water');
+        getData('/get_day_specific_data/', data);
     });
     $('.weight-menu').click(function() {
-        renderWeightData();
+        currentView = 6;
+        let data = prepareData('weight');
+        getData('/get_day_specific_data/', data)
     });
     $('.pulse-menu').click(function() {
-        renderPulseData();
+        currentView = 7;
+        let data = prepareData('pulse');
+        getData('/get_day_specific_data/', data);
     });
-    prepareData();
-    renderWaterData();
-    let type = 'bar';
-    let labels = ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'];
-    let label = "mililitres of water";
-    let data = [12, 19, 3, 5, 2, 3];
-    renderChart(type, labels, label, data);
 }
 
 function switchSubMenu(element) {
@@ -50,49 +54,106 @@ function switchSubMenu(element) {
     }
 }
 
-function renderKcalData() {
+function renderData(data) {
+    if(currentView == 0) {
+        renderKcalData(data);
+    }
+    else if(currentView == 1) {
+        renderProteinData(data);
+    }
+    else if(currentView == 2) {
+        renderCarbohydratesData(data);
+    }
+    else if(currentView == 3) {
+        renderFatsData(data);
+    }
+    else if(currentView == 4) {
+        renderStepsData(data);
+    }
+    else if(currentView == 5) {
+        renderWaterData(data);
+    }
+    else if(currentView == 6) {
+        renderWeightData(data);
+    }
+    else if(currentView == 7) {
+        renderPulseData(data);
+    }
+}
+
+function renderKcalData(data) {
     let label = 'kcal';
+    let values = $.map(data, function(value, key) { return value });
+    let labels = prepareLabels(data);
+    fillStats(values);
     $('.title .name').text('Kcal');
+    renderChart('bar', labels, label, values);
 }
 
-function renderProteinData() {
+function renderProteinData(data) {
     let label = 'proteins';
+    let values = $.map(data, function(value, key) { return value });
+    let labels = prepareLabels(data);
+    fillStats(values);
     $('.title .name').text('Proteins');
+    renderChart('bar', labels, label, values);
 }
 
-function renderCarbohydratesData() {
+function renderCarbohydratesData(data) {
     let label = 'carbohydrates';
+    let values = $.map(data, function(value, key) { return value });
+    let labels = prepareLabels(data);
+    fillStats(values);
     $('.title .name').text('Carbohydrates');
+    renderChart('bar', labels, label, values);
 }
 
-function renderFatsData() {
+function renderFatsData(data) {
     let label = 'fats';
+    let values = $.map(data, function(value, key) { return value });
+    let labels = prepareLabels(data);
+    fillStats(values);
     $('.title .name').text('Fats');
+    renderChart('bar', labels, label, values);
 }
 
-function renderStepsData() {
+function renderStepsData(data) {
     let label = 'steps';
+    let values = $.map(data, function(value, key) { return value });
+    let labels = prepareLabels(data);
+    fillStats(values);
     $('.title .name').text('Steps');
+    renderChart('bar', labels, label, values);
 }
 
-function renderWaterData() {
+function renderWaterData(data) {
     let label = 'ml';
+    let values = $.map(data, function(value, key) { return value });
+    let labels = prepareLabels(data);
+    fillStats(values);
     $('.title .name').text('Water');
+    renderChart('line', labels, label, values);
 }
 
-function renderWeightData() {
+function renderWeightData(data) {
     let label = 'kg';
+    let values = $.map(data, function(value, key) { return value });
+    let labels = prepareLabels(data);
+    fillStats(values);
     $('.title .name').text('Weight');
+    renderChart('line', labels, label, values);
 }
 
-function renderPulseData() {
+function renderPulseData(data) {
     let label = 'pulse';
-    let data = prepareData();
-    prepareLabels();
+    let values = $.map(data, function(value, key) { return value });
+    let labels = prepareLabels(data);
+    fillStats(values);
     $('.title .name').text('Pulse');
+    renderChart('bar', labels, label, values);
 }
 
-function prepareData() {
+function prepareData(type) {
     let periodValue = $('#select-period').val();
     let data;
     if(periodValue == 0) {
@@ -114,24 +175,25 @@ function prepareData() {
         data = getLastYearDates();
     }
     let dataToSend = JSON.stringify({
-        'LeftDay': data[0],
-        'LeftMonth': data[1],
-        'LeftYear': data[2],
-        'RightDay': data[3],
-        'RightMonth': data[4],
-        'RightYear': data[5]
+        'leftDay': data[0],
+        'leftMonth': data[1],
+        'leftYear': data[2],
+        'rightDay': data[3],
+        'rightMonth': data[4],
+        'rightYear': data[5],
+        'type': type
     });
-    return getData('/', dataToSend);
+    return dataToSend;
 }
 
-function prepareLabels() {
+function prepareLabels(data) {
     let periodValue = $('#select-period').val();
     let labels;
     if((periodValue == 0) || (periodValue == 1)) {
         labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     }
     else if((periodValue == 2) || (periodValue == 3)) {
-
+        labels = Object.keys(data);
     }
     else {
         labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -143,9 +205,11 @@ function fillStats(data) {
     let max = maxValue(data);
     let min = minValue(data);
     let mean = meanValue(data);
+    let sum = sumValue(data);
     $('.max .value').text(max);
     $('.min .value').text(min);
     $('.mean .value').text(mean);
+    $('.sum .value').text(sum);
 }
 
 function maxValue(data) {
@@ -169,13 +233,17 @@ function minValue(data) {
 }
 
 function meanValue(data) {
+    let sum = sumValue(data);
+    return (sum / data.length).toFixed(2);
+}
+
+function sumValue(data) {
     let sum = 0;
     for(let i = 0; i < data.length; i++) {
         sum = sum + data[i];
     }
-    return (sum / data.length).toFixed(2);
+    return sum;
 }
-
 function getThisWeekDates() {
 
 }
@@ -251,7 +319,7 @@ function getData(endpoint, data) {
         dataType: 'json',
         statusCode: {
             200: function(data) {
-                console.log(data);
+                renderData(data);
             },
             204: function() {
                 console.log('No data on this day');
@@ -269,22 +337,8 @@ function renderChart(type, labels, label, data) {
             datasets: [{
                 label: label,
                 data: data,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1,
             }]
         },

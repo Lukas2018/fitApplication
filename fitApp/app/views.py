@@ -205,3 +205,48 @@ def get_day_data(request):
             }
             data = json.dumps(data)
             return HttpResponse(data, content_type='application/json', status=200)
+
+def get_day_specific_data(request):
+    if request.is_ajax():
+        if request.method == 'GET':
+            user = request.user
+            data = json.loads(list(request.GET.dict().keys())[0])
+            left_day = int(data['leftDay'])
+            left_month = int(data['leftMonth'])
+            left_year = int(data['leftYear'])
+            right_day = int(data['rightDay'])
+            right_month = int(data['rightMonth'])
+            right_year = int(data['rightYear'])
+            data_type = data['type']
+            data = {}
+            i = left_year
+            j = left_month
+            k = left_day
+            last_non_zero_value = 0
+            while i <= right_year:
+                j = left_month
+                while j <= right_month:
+                    k = left_day
+                    while k <= right_day:
+                        date = datetime(i, j, k)
+                        day = user.day_set.filter(date=date).first()
+                        date = date.strftime("%Y-%m-%d")
+                        if day is None:
+                            if data_type == 'weight' or data_type == 'pulse':
+                                data[date] = last_non_zero_value
+                            else:
+                                data[date] = 0
+                        else:
+                            if data_type == 'water':
+                                data[date] = day.water
+                            elif data_type == 'weight':
+                                data[date] = day.weight
+                                last_non_zero_value = day.weight
+                            elif data_type == 'pulse':
+                                data[date] = day.pulse
+                                last_non_zero_value = day.pulse
+                        k = k + 1
+                    j = j + 1
+                i = i + 1
+            data = json.dumps(data)
+            return HttpResponse(data, content_type='application/json', status=200)

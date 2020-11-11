@@ -35,5 +35,6 @@ urlpatterns = [
     path('save_weight/', views.save_weight, name='save_weight'),
     path('save_pulse/', views.save_pulse, name='save_pulse'),
     path('save_water/', views.save_water, name='save_water'),
-    path('get_day_data/', views.get_day_data, name='get_day_data')
+    path('get_day_data/', views.get_day_data, name='get_day_data'),
+    path('get_day_specific_data/', views.get_day_specific_data, name='get_day_specific_data')
 ]
