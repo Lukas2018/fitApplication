@@ -7,16 +7,16 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.http import HttpResponse
-from datetime import datetime
+import datetime
 import json
 import math
 
 @login_required
 def index(request):
     user = request.user
-    day = user.day_set.filter(date=datetime.now()).first()
+    day = user.day_set.filter(date=datetime.datetime.now()).first()
     if day is None:
-        day = Day(date=datetime.now(), weight=user.userprofile.weight, pulse=user.userprofile.pulse, user=user)
+        day = Day(date=datetime.datetime.now(), weight=user.userprofile.weight, pulse=user.userprofile.pulse, user=user)
         day.save()
     empty_bottles = math.ceil((user.userprofile.water - day.water)/250)
     full_bottles = math.ceil(user.userprofile.water / 250) - empty_bottles
@@ -38,8 +38,8 @@ def login(request):
                 auth_login(request, user)
                 if user.userprofile.first_login == 1:
                     return redirect('/user_data')
-                if user.day_set.filter(date=datetime.now()) is None:
-                    day = Day(date=datetime.now(), weight=user.userprofile.weight, pulse=user.userprofile.pulse, user=user)
+                if user.day_set.filter(date=datetime.datetime.now()) is None:
+                    day = Day(date=datetime.datetime.now(), weight=user.userprofile.weight, pulse=user.userprofile.pulse, user=user)
                     day.save()
                 return redirect('/index')
     context = {
@@ -80,8 +80,9 @@ def user_data(request):
             user.userprofile.water = form.cleaned_data['water']
             user.userprofile.steps = form.cleaned_data['steps']
             user.userprofile.first_login = 0
+            user.userprofile.pulse = 60
             user.save()
-            day = Day(date=datetime.now(), weight=user.userprofile.weight, pulse=user.userprogile.pulse, user=user)
+            day = Day(date=datetime.datetime.now(), weight=user.userprofile.weight, pulse=user.userprofile.pulse, user=user)
             day.save()
             return redirect('/index')
     context = {
@@ -132,7 +133,7 @@ def product(request):
 def save_index_data(request):
     if request.method == 'POST':
         user = request.user
-        day = user.day_set.filter(date=datetime.now()).first() #to do pass date in json 
+        day = user.day_set.filter(date=datetime.datetime.now()).first() #to do pass date in json 
         data = request._post
         user.userprofile.weight = float(data['weight'])
         user.userprofile.pulse = int(data['pulse'])
@@ -148,7 +149,7 @@ def save_weight(request):
     if request.is_ajax():
         if request.method == 'POST':
             user = request.user
-            day = user.day_set.filter(date=datetime.now()).first() #to do pass date in json 
+            day = user.day_set.filter(date=datetime.datetime.now()).first() #to do pass date in json 
             data = json.loads(request.body)
             user.userprofile.weight = float(data['weight'])
             day.weight = float(data['weight'])
@@ -160,7 +161,7 @@ def save_pulse(request):
     if request.is_ajax():
         if request.method == 'POST':
             user = request.user
-            day = user.day_set.filter(date=datetime.now()).first() #to do pass date in json 
+            day = user.day_set.filter(date=datetime.datetime.now()).first() #to do pass date in json 
             data = json.loads(request.body)
             user.userprofile.pulse = int(data['pulse'])
             day.pulse = int(data['pulse'])
@@ -172,7 +173,7 @@ def save_water(request):
     if request.is_ajax():
         if request.method == 'POST':
             user = request.user
-            day = user.day_set.filter(date=datetime.now()).first() #to do pass date in json 
+            day = user.day_set.filter(date=datetime.datetime.now()).first() #to do pass date in json 
             data = json.loads(request.body)
             day.water = int(data['water'])
             user.save()
@@ -187,8 +188,7 @@ def get_day_data(request):
             day = int(data['day'])
             month = int(data['month'])
             year = int(data['year'])
-            date = datetime(year, month, day)
-            day = user.day_set.filter(date=date).first()
+            day = user.day_set.filter(date=datetime.datetime(year, month, day)).first()
             if day is None:
                 return HttpResponse(status=204)
             data = {
@@ -219,34 +219,41 @@ def get_day_specific_data(request):
             right_year = int(data['rightYear'])
             data_type = data['type']
             data = {}
-            i = left_year
-            j = left_month
-            k = left_day
-            last_non_zero_value = 0
-            while i <= right_year:
-                j = left_month
-                while j <= right_month:
-                    k = left_day
-                    while k <= right_day:
-                        date = datetime(i, j, k)
-                        day = user.day_set.filter(date=date).first()
-                        date = date.strftime("%Y-%m-%d")
-                        if day is None:
-                            if data_type == 'weight' or data_type == 'pulse':
-                                data[date] = last_non_zero_value
-                            else:
-                                data[date] = 0
-                        else:
-                            if data_type == 'water':
-                                data[date] = day.water
-                            elif data_type == 'weight':
-                                data[date] = day.weight
-                                last_non_zero_value = day.weight
-                            elif data_type == 'pulse':
-                                data[date] = day.pulse
-                                last_non_zero_value = day.pulse
-                        k = k + 1
-                    j = j + 1
-                i = i + 1
+            last_non_null_value = user.day_set.filter(date__lte=datetime.date(left_year, left_month, left_day)).order_by('-date').first()
+            start_date = datetime.date(left_year, left_month, left_day)
+            end_date = datetime.date(right_year, right_month, right_day)
+            delta = datetime.timedelta(days=1)
+            while start_date <= end_date:
+                day = user.day_set.filter(date=start_date).first()
+                date = start_date.strftime("%Y-%m-%d")
+                if day is None:
+                    if data_type == 'weight':
+                        if last_non_null_value is not None:
+                            data[date] = last_non_null_value.weight
+                    elif data_type == 'pulse':
+                        if last_non_null_value is not None:
+                            data[date] = last_non_null_value.pulse
+                    else:
+                        data[date] = 0
+                else:
+                    if data_type == 'kcal':
+                        data[date] = day.summary_kcal
+                    elif data_type == 'protein':
+                        data[date] = day.summary_protein
+                    elif data_type == 'carbohydrates':
+                        data[date] = day.summary_carbohydrates
+                    elif data_type == 'fats':
+                        data[date] = day.summary_fats
+                    elif data_type == 'steps':
+                        data[date] = day.steps
+                    elif data_type == 'water':
+                        data[date] = day.water
+                    elif data_type == 'weight':
+                        data[date] = day.weight
+                        last_non_null_value = day
+                    elif data_type == 'pulse':
+                        data[date] = day.pulse
+                        last_non_null_value = day
+                start_date += delta
             data = json.dumps(data)
             return HttpResponse(data, content_type='application/json', status=200)

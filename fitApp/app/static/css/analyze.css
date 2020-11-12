@@ -28,6 +28,16 @@
     padding-left: 15px;
 }
 
+.content {
+    display: none;
+    height: 1000px;
+}
+
+.content-image {
+    text-align: center;
+    margin-top: 50px;
+}
+
 .a-aside {
 	width: 300px;
 }
@@ -68,6 +78,12 @@
 
 .sub-menu .row:hover {
     background-color: steelblue;
+    color: white;
+}
+
+.active {
+    background-color: whitesmoke;
+    color: black;
 }
 
 .title {
@@ -76,7 +92,7 @@
     text-align: center;
 }
 
-.options {
+.options, .chart-type {
     margin: 20px 25%;
 }
 

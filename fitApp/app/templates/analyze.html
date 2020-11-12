@@ -40,7 +40,7 @@
                 </div>
             </div>
             <div class="row col-md-12 menu activity-menu">
-                <div class="water image col-md-3"></div>
+                <div class="lose image col-md-3"></div>
                 <div class="col-md-7">Activity</div>
                 <div class="col-md-1 image down-arrow"></div>
                 <div class="sub-menu">
@@ -80,25 +80,36 @@
             </div>
         </div>
         <div class="analyze-container analyze-style">
-            <div class="title"><span class="name"></span> data</div>
-            <div class="options">
-                <select id="select-period" class="browser-default custom-select">
-                    <option value="0">This week</option>
-                    <option value="1">Previous week</option>
-                    <option value="2" selected>This month</option>
-                    <option value="3">Previous month</option>
-                    <option value="4">This year</option>
-                    <option value="5">Previous year</option>
-                  </select>
+            <div class="content">
+                <div class="title"><span class="name"></span> data</div>
+                <div class="options">
+                    <select id="select-period" class="browser-default custom-select">
+                        <option value="0" selected>This week</option>
+                        <option value="1">Previous week</option>
+                        <option value="2">This month</option>
+                        <option value="3">Previous month</option>
+                        <option value="4">This year</option>
+                        <option value="5">Previous year</option>
+                    </select>
+                </div>
+                <div class="statistics">
+                    <p class="max">Max value: <span class="value"></span> <span class="additional-info"></span></p>
+                    <p class="min">Min value: <span class="value"></span> <span class="additional-info"></span></p>
+                    <p class="mean">Mean value: <span class="value"></span> <span class="additional-info"></span></p>
+                    <p class="sum">Sum value: <span class="value"></span> <span class="additional-info"></span></p>
+                </div>
+                <div class="chart-type">
+                    <select id="select-chart-type" class="browser-default custom-select">
+                        <option value="0" selected>Line chart</option>
+                        <option value="1">Bar chart</option>
+                    </select>
+                </div>
+                <div class="chart-container">
+                    <canvas id="my-chart" width="200" height="600"></canvas>
+                </div>
             </div>
-            <div class="statistics">
-                <p class="max">Max value: <span class="value"></span></p>
-                <p class="min">Min value: <span class="value"></span></p>
-                <p class="mean">Mean value: <span class="value"></span></p>
-                <p class="sum">Sum value: <span class="value"></span></p>
-            </div>
-            <div class="chart-container">
-                <canvas id="myChart" width="200" height="600"></canvas>
+            <div class="content-image">
+                <img src="/static/media/fluctuation.svg"/>
             </div>
         </div>
     </div>
