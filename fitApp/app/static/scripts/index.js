@@ -1,3 +1,5 @@
+let somethingChanged = 0;
+
 window.onload = function () {
     let timerW;
     let timerP;
@@ -17,7 +19,8 @@ window.onload = function () {
         fillBottle($(this));
         timerB = setTimeout(function () {
             let data = JSON.stringify({
-                'water': $('.water-data .data .current').text(),
+                'date': getDateFromUrl(),
+                'water': $('.water-data .data .current').text()
             });
             sendData('/save_water/', data);
         }, timeToWait);
@@ -27,7 +30,8 @@ window.onload = function () {
         emptyBottle($(this));
         timerB = setTimeout(function () {
             let data = JSON.stringify({
-                'water': $('.water-data .data .current').text(),
+                'date': getDateFromUrl(),
+                'water': $('.water-data .data .current').text()
             });
             sendData('/save_water/', data);
         }, timeToWait);
@@ -37,7 +41,8 @@ window.onload = function () {
         decrement($(this), 0.1);
         timerW = setTimeout(function () {
             let data = JSON.stringify({
-                'weight': $('.weight-data .data').text(),
+                'date': getDateFromUrl(),
+                'weight': $('.weight-data .data').text()
             });
             sendData('/save_weight/', data);
         }, timeToWait);
@@ -47,7 +52,8 @@ window.onload = function () {
         increment($(this), 0.1);
         timerW = setTimeout(function () {
             let data = JSON.stringify({
-                'weight': $('.weight-data .data').text(),
+                'date': getDateFromUrl(),
+                'weight': $('.weight-data .data').text()
             });
             sendData('/save_weight/', data);
         }, timeToWait);
@@ -57,7 +63,8 @@ window.onload = function () {
         decrement($(this), 1);
         timerP = setTimeout(function () {
             let data = JSON.stringify({
-                'pulse': $('.heart-data .data').text(),
+                'date': getDateFromUrl(),
+                'pulse': $('.heart-data .data').text()
             });
             sendData('/save_pulse/', data);
         }, timeToWait);
@@ -67,20 +74,25 @@ window.onload = function () {
         increment($(this), 1);
         timerP = setTimeout(function () {
             let data = JSON.stringify({
-                'pulse': $('.heart-data .data').text(),
+                'date': getDateFromUrl(),
+                'pulse': $('.heart-data .data').text()
             });
             sendData('/save_pulse/', data);
         }, timeToWait);
     });
+    getDateFromUrl();
 }
 
 window.onbeforeunload = function() {
-    var formData = new FormData();
-    formData.append('weight', $('.weight-data .data').text());
-    formData.append('pulse', $('.heart-data .data').text());
-    formData.append('water', $('.water-data .data .current').text());
-    formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
-    navigator.sendBeacon('/save_index_data/', formData);
+    if(somethingChanged == 1) {
+        var formData = new FormData();
+        formData.append('date', getDateFromUrl());
+        formData.append('weight', $('.weight-data .data').text());
+        formData.append('pulse', $('.heart-data .data').text());
+        formData.append('water', $('.water-data .data .current').text());
+        formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+        navigator.sendBeacon('/save_index_data/', formData);
+    }
 }
 
 function showDetails(arrowElem) {
@@ -132,6 +144,7 @@ function emptyBottle(bottleElem) {
 }
 
 function changeWaterData(numOfBottles) {
+    somethingChanged = 1;
     let value = numOfBottles * 250;
     let expectedValue = parseInt($('.water-data .data .expected').text());
     $('.water-data .data .current').text(value);
@@ -144,11 +157,13 @@ function changeWaterData(numOfBottles) {
 }
 
 function decrement(elem, value) {
+    somethingChanged = 1;
     elem = elem.parent().parent().find('.data');
     elem.text(Math.round((parseFloat(elem.text()) - value) * 10) / 10);
 }
 
 function increment(elem, value) {
+    somethingChanged = 1;
     elem = elem.parent().parent().find('.data');
     elem.text(Math.round((parseFloat(elem.text()) + value) * 10) / 10);
 }
@@ -190,4 +205,16 @@ function getCookie(name) {
 
 function csrfSafeMethod(method) {
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+function getDateFromUrl() {
+    let queryString = window.location.search;
+    let urlParams = new URLSearchParams(queryString);
+    let date = urlParams.get('date');
+    if(date == null) {
+        let today = new Date();
+        date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    }
+    console.log(date);
+    return date;
 }

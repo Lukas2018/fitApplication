@@ -22,24 +22,26 @@ window.onload = function () {
     fillHeader(month, year);
     fillBarHeader(day, month, year);
     $('.' + year + '-' + (month + 1) + '-' + day + ' p').addClass('active');
-    let data = JSON.stringify({
-        'year': year,
-        'month': month + 1,
-        'day': day
-    });
-    getData('/get_day_data/', data);
     $('.prev-month').click(function() {
         prevMonth();
-    })
+    });
     $('.next-month').click(function() {
         nextMonth();
-    })
+    });
     $('.prev-year').click(function() {
         prevYear();
-    })
+    });
     $('.next-year').click(function() {
         nextYear();
-    })
+    });
+    $('.edit-button').click(function() {
+        redirectToEdit();
+    });
+    let date = year + '-' + (month + 1) + '-' + day;
+    let data = JSON.stringify({
+        'date': date
+    });
+    getData('/get_day_data/', data);
 }
 
 function fillTable(month, year) {
@@ -104,6 +106,9 @@ function fillBarHeader(day, month, year) {
 }
 
 function fillBarData(data) {
+    $('#today-data').css('display', 'block');
+    $('#empty-data').css('display', 'none');
+    $('#future-data').css('display', 'none');
     $('.kcal-data .data .current').text(data['kcal']);
     $('.kcal-lose .data').text(data['lose_kcal']);
     $('.protein-data .data .current').text(data['protein']);
@@ -115,6 +120,18 @@ function fillBarData(data) {
     $('.heart-data .data').text(data['pulse']);
 }
 
+function emptyData() {
+    $('#today-data').css('display', 'none');
+    $('#empty-data').css('display', 'block');
+    $('#future-data').css('display', 'none');
+}
+
+function futureData() {
+    $('#today-data').css('display', 'none');
+    $('#empty-data').css('display', 'none');
+    $('#future-data').css('display', 'block');
+}
+
 function clearTable() {
     $('.c-cal-container').find('.c-days').remove();
 }
@@ -123,17 +140,21 @@ function addClickOnCells(element) {
     let classList = $(element).parent().attr('class').split(" ");
         for(let i = 0; i < classList.length; i++) {
             if(classList[i] != 'c-cal-cel') {
-                let date = classList[i].split("-");
-                let year = date[0];
-                let month = date[1];
-                let day = date[2];
-                let data = JSON.stringify({
-                    'year': year,
-                    'month': month,
-                    'day': day
-                });
+                let today = new Date();
+                let date = classList[i];
+                let year = date.split('-')[0];
+                let month = date.split('-')[1];
+                let day = date.split('-')[2];
                 fillBarHeader(day, month - 1, year);
-                getData('/get_day_data/', data);
+                if(today - new Date(year, month - 1, day) >= 0) {
+                    let data = JSON.stringify({
+                        'date': date
+                    });
+                    getData('/get_day_data/', data);
+                }
+                else {
+                    futureData();
+                }
                 $('.c-cal-container').find('.active').removeClass('active');
                 $(element).addClass('active');
             }
@@ -208,8 +229,16 @@ function getData(endpoint, data) {
                 fillBarData(data);
             },
             204: function() {
-                console.log('No data on this day');
+                emptyData();
             }
         }
     });
+}
+
+function redirectToEdit() {
+    let year = parseInt($('.c-aside-year').text());
+    let month = monthNumber($('.c-aside-month').text()) + 1;
+    let day = parseInt($('.c-aside-num').text());
+    let date = year + '-' + month + '-' + day;
+    window.location = '/index?date=' + date;
 }

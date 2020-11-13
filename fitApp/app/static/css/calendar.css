@@ -150,12 +150,12 @@ body {
 
 .c-aside {
 	width: 300px;
-	padding: 20px;
+    padding: 20px;
+    color: white;
 }
 
 .c-aside-day {
     font-size: x-large;
-    color: white;
     margin: 10px 0;
     text-align: center;
 }
@@ -163,7 +163,6 @@ body {
 #today-data {
     font-size: large;
     font-weight: 600;
-    color: white;
     margin-top: 20px;
 }
 
@@ -173,4 +172,11 @@ body {
 
 #today-data div {
     margin-bottom: 5px;
+}
+
+#empty-data, #future-data{
+    margin-top: 80px;
+    display: none;
+    font-size: large;
+    text-align: center;
 }

@@ -14,9 +14,23 @@ import math
 @login_required
 def index(request):
     user = request.user
-    day = user.day_set.filter(date=datetime.datetime.now()).first()
+    date = datetime.datetime.now()
+    if request.GET.dict():
+        day_param = request.GET.dict()['date']
+        year = int(day_param.split('-')[0])
+        month = int(day_param.split('-')[1])
+        day = int(day_param.split('-')[2])
+        date = datetime.date(year, month, day)
+    day = user.day_set.filter(date=date).first()
     if day is None:
-        day = Day(date=datetime.datetime.now(), weight=user.userprofile.weight, pulse=user.userprofile.pulse, user=user)
+        previous_day = user.day_set.filter(date__lte=date).order_by('-date').first()
+        next_day = user.day_set.filter(date__gte=date).order_by('date').first()
+        if previous_day is not None:
+            day = Day(date=date, weight=previous_day.weight, pulse=previous_day.pulse, user=user)
+        elif next_day is not None:
+            day = Day(date=date, weight=next_day.weight, pulse=next_day.pulse, user=user)
+        else:
+            day = Day(date=date, weight=user.userprofile.weight, pulse=user.userprofile.pulse, user=user)
         day.save()
     empty_bottles = math.ceil((user.userprofile.water - day.water)/250)
     full_bottles = math.ceil(user.userprofile.water / 250) - empty_bottles
@@ -133,8 +147,12 @@ def product(request):
 def save_index_data(request):
     if request.method == 'POST':
         user = request.user
-        day = user.day_set.filter(date=datetime.datetime.now()).first() #to do pass date in json 
         data = request._post
+        year = int(data['date'].split('-')[0])
+        month = int(data['date'].split('-')[1])
+        day = int(data['date'].split('-')[2])
+        date = datetime.date(year, month, day)
+        day = user.day_set.filter(date=date).first()
         user.userprofile.weight = float(data['weight'])
         user.userprofile.pulse = int(data['pulse'])
         day.weight = float(data['weight'])
@@ -149,8 +167,12 @@ def save_weight(request):
     if request.is_ajax():
         if request.method == 'POST':
             user = request.user
-            day = user.day_set.filter(date=datetime.datetime.now()).first() #to do pass date in json 
             data = json.loads(request.body)
+            year = int(data['date'].split('-')[0])
+            month = int(data['date'].split('-')[1])
+            day = int(data['date'].split('-')[2])
+            date = datetime.date(year, month, day)
+            day = user.day_set.filter(date=date).first()
             user.userprofile.weight = float(data['weight'])
             day.weight = float(data['weight'])
             user.save()
@@ -161,8 +183,12 @@ def save_pulse(request):
     if request.is_ajax():
         if request.method == 'POST':
             user = request.user
-            day = user.day_set.filter(date=datetime.datetime.now()).first() #to do pass date in json 
             data = json.loads(request.body)
+            year = int(data['date'].split('-')[0])
+            month = int(data['date'].split('-')[1])
+            day = int(data['date'].split('-')[2])
+            date = datetime.date(year, month, day)
+            day = user.day_set.filter(date=date).first()
             user.userprofile.pulse = int(data['pulse'])
             day.pulse = int(data['pulse'])
             user.save()
@@ -173,8 +199,12 @@ def save_water(request):
     if request.is_ajax():
         if request.method == 'POST':
             user = request.user
-            day = user.day_set.filter(date=datetime.datetime.now()).first() #to do pass date in json 
             data = json.loads(request.body)
+            year = int(data['date'].split('-')[0])
+            month = int(data['date'].split('-')[1])
+            day = int(data['date'].split('-')[2])
+            date = datetime.date(year, month, day)
+            day = user.day_set.filter(date=date).first()
             day.water = int(data['water'])
             user.save()
             day.save()
@@ -184,10 +214,10 @@ def get_day_data(request):
     if request.is_ajax():
         if request.method == 'GET':
             user = request.user
-            data = json.loads(list(request.GET.dict().keys())[0])
-            day = int(data['day'])
-            month = int(data['month'])
-            year = int(data['year'])
+            date = json.loads(list(request.GET.dict().keys())[0])['date']
+            year = int(date.split('-')[0])
+            month = int(date.split('-')[1])
+            day = int(date.split('-')[2])
             day = user.day_set.filter(date=datetime.datetime(year, month, day)).first()
             if day is None:
                 return HttpResponse(status=204)
