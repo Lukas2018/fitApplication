@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from app.forms import LoginForm, RegisterForm, UserDataForm, PasswordChangeForm, ProductForm
 from app.models import Product, Day
+from app.basic_functions import convert_seconds_to_time_string
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
@@ -26,18 +27,28 @@ def index(request):
         previous_day = user.day_set.filter(date__lte=date).order_by('-date').first()
         next_day = user.day_set.filter(date__gte=date).order_by('date').first()
         if previous_day is not None:
-            day = Day(date=date, weight=previous_day.weight, pulse=previous_day.pulse, user=user)
+            day = Day(date=date, weight=previous_day.weight, pulse=previous_day.pulse, 
+                        expected_kcal=previous_day.expected_kcal, expected_protein = previous_day.expected_protein, 
+                        expected_carbohydrates = previous_day.expected_carbohydrates, expected_fats = previous_day.expected_fats,
+                        expected_water = previous_day.expected_water, expected_steps = previous_day.expected_steps, user=user)
         elif next_day is not None:
-            day = Day(date=date, weight=next_day.weight, pulse=next_day.pulse, user=user)
+            day = Day(date=date, weight=next_day.weight, pulse=next_day.pulse, 
+                        expected_kcal=next_day.expected_kcal, expected_protein = next_day.expected_protein, 
+                        expected_carbohydrates = next_day.expected_carbohydrates, expected_fats = next_day.expected_fats,
+                        expected_water = next_day.expected_water, expected_steps = next_day.expected_steps, user=user)
         else:
-            day = Day(date=date, weight=user.userprofile.weight, pulse=user.userprofile.pulse, user=user)
+            day = Day(date=date, weight=user.userprofile.weight, pulse=user.userprofile.pulse, 
+                        expected_kcal=user.userprofile.kcal, expected_protein = user.userprofile.protein, 
+                        expected_carbohydrates = user.userprofile.carbohydrates, expected_fats = user.userprofile.fats,
+                        expected_water = user.userprofile.water, expected_steps = user.userprofile.steps, user=user)
         day.save()
-    empty_bottles = math.ceil((user.userprofile.water - day.water)/250)
-    full_bottles = math.ceil(user.userprofile.water / 250) - empty_bottles
+    empty_bottles = math.ceil((day.expected_water - day.water)/250)
+    full_bottles = math.ceil(day.expected_water / 250) - empty_bottles
     context = {
         'empty_loop_times': range(1, empty_bottles + 1),
         'full_loop_times': range(1, full_bottles + 1),
-        'day': day
+        'day': day,
+        'workout_time': convert_seconds_to_time_string(day.activity_time)
     }
     return render(request, 'index.html', context)
 
@@ -52,9 +63,6 @@ def login(request):
                 auth_login(request, user)
                 if user.userprofile.first_login == 1:
                     return redirect('/user_data')
-                if user.day_set.filter(date=datetime.datetime.now()) is None:
-                    day = Day(date=datetime.datetime.now(), weight=user.userprofile.weight, pulse=user.userprofile.pulse, user=user)
-                    day.save()
                 return redirect('/index')
     context = {
         'form': form,
@@ -96,7 +104,10 @@ def user_data(request):
             user.userprofile.first_login = 0
             user.userprofile.pulse = 60
             user.save()
-            day = Day(date=datetime.datetime.now(), weight=user.userprofile.weight, pulse=user.userprofile.pulse, user=user)
+            day = Day(date=datetime.datetime.now(), weight=user.userprofile.weight, pulse=user.userprofile.pulse, 
+                        expected_kcal=user.userprofile.kcal, expected_protein = user.userprofile.protein, 
+                        expected_carbohydates = user.userprofile.carbohydrates, expected_fats = user.userprofile.fats,
+                        expected_water = user.userprofile.water, expected_steps = user.userprofile.steps, user=user)
             day.save()
             return redirect('/index')
     context = {
@@ -223,13 +234,19 @@ def get_day_data(request):
                 return HttpResponse(status=204)
             data = {
                 'kcal': day.summary_kcal,
+                'expected_kcal': day.expected_kcal,
                 'lose_kcal': day.lose_kcal,
                 'protein': day.summary_protein,
+                'expected_protein': day.expected_protein,
                 'carbohydrates': day.summary_carbohydrates,
+                'expected_carbohydrates': day.expected_carbohydrates,
                 'fats': day.summary_fats,
+                'expected_fats': day.expected_fats,
                 'water': day.water,
+                'expected_water': day.expected_water,
                 'steps': day.steps,
-                'activity_time': day.activity_time,
+                'expected_steps': day.expected_steps,
+                'workout': convert_seconds_to_time_string(day.activity_time),
                 'weight': day.weight,
                 'pulse': day.pulse,
             }
@@ -241,12 +258,14 @@ def get_day_specific_data(request):
         if request.method == 'GET':
             user = request.user
             data = json.loads(list(request.GET.dict().keys())[0])
-            left_day = int(data['leftDay'])
-            left_month = int(data['leftMonth'])
-            left_year = int(data['leftYear'])
-            right_day = int(data['rightDay'])
-            right_month = int(data['rightMonth'])
-            right_year = int(data['rightYear'])
+            left_date = data['leftDate']
+            right_date = data['rightDate']
+            left_year = int(left_date.split('-')[0])
+            left_month = int(left_date.split('-')[1])
+            left_day = int(left_date.split('-')[2])
+            right_year = int(right_date.split('-')[0])
+            right_month = int(right_date.split('-')[1])
+            right_day = int(right_date.split('-')[2])
             data_type = data['type']
             data = {}
             last_non_null_value = user.day_set.filter(date__lte=datetime.date(left_year, left_month, left_day)).order_by('-date').first()
@@ -259,30 +278,62 @@ def get_day_specific_data(request):
                 if day is None:
                     if data_type == 'weight':
                         if last_non_null_value is not None:
-                            data[date] = last_non_null_value.weight
+                            data[date] = {
+                                'summary': last_non_null_value.weight
+                            }
                     elif data_type == 'pulse':
                         if last_non_null_value is not None:
-                            data[date] = last_non_null_value.pulse
+                            data[date] = {
+                                'summary': last_non_null_value.pulse
+                            }
                     else:
-                        data[date] = 0
+                        data[date] = {
+                            'summary': 0
+                        }
                 else:
                     if data_type == 'kcal':
-                        data[date] = day.summary_kcal
+                        data[date] = {
+                            'summary': day.summary_kcal,
+                            'expected': day.expected_kcal
+                        }
                     elif data_type == 'protein':
-                        data[date] = day.summary_protein
+                        data[date] = {
+                            'summary': day.summary_protein,
+                            'expected': day.expected_protein
+                        }
                     elif data_type == 'carbohydrates':
-                        data[date] = day.summary_carbohydrates
+                        data[date] = {
+                            'summary': day.summary_carbohydrates,
+                            'expected': day.expected_carbohydrates
+                        }
                     elif data_type == 'fats':
-                        data[date] = day.summary_fats
+                        data[date] = {
+                            'summary': day.summary_fats,
+                            'expected': day.expected_fats
+                        }
                     elif data_type == 'steps':
-                        data[date] = day.steps
+                        data[date] = {
+                            'summary': day.steps,
+                            'expected': day.expected_steps
+                        }
+                    elif data_type == 'workout':
+                        data[date] = {
+                            'summary': day.activity_time
+                        }
                     elif data_type == 'water':
-                        data[date] = day.water
+                        data[date] = {
+                            'summary': day.water,
+                            'expected': day.expected_water
+                        }
                     elif data_type == 'weight':
-                        data[date] = day.weight
+                        data[date] = {
+                            'summary': day.weight
+                        }
                         last_non_null_value = day
                     elif data_type == 'pulse':
-                        data[date] = day.pulse
+                        data[date] = {
+                            'summary': day.pulse
+                        }
                         last_non_null_value = day
                 start_date += delta
             data = json.dumps(data)

@@ -25,14 +25,17 @@ window.onload = function() {
     $('.steps-menu').click(function() {
         subMenuClick(this, 'steps', 4);
     });
+    $('.workout-menu').click(function() {
+        subMenuClick(this, 'workout', 5);
+    });
     $('.water-menu').click(function() {
-        subMenuClick(this, 'water', 5);
+        subMenuClick(this, 'water', 6);
     });
     $('.weight-menu').click(function() {
-        subMenuClick(this, 'weight', 6);
+        subMenuClick(this, 'weight', 7);
     });
     $('.pulse-menu').click(function() {
-        subMenuClick(this, 'pulse', 7);
+        subMenuClick(this, 'pulse', 8);
     });
 }
 
@@ -56,6 +59,9 @@ function subMenuClick(element, dataType, viewValue) {
         $('.content').css('display', 'block');
         $('.content-image').css('display', 'none');
         resetSelects();
+        if(viewValue == 7 || viewValue == 8) {
+            disableSelectOptions();
+        }
         currentView = viewValue;
         let data = prepareData(dataType);
         getData('/get_day_specific_data/', data);
@@ -63,43 +69,51 @@ function subMenuClick(element, dataType, viewValue) {
 }
 
 function switchSelect() {
+    let data;
     if(currentView == 0) {
-        let data = prepareData('kcal');
-        getData('/get_day_specific_data/', data);
+        data = prepareData('kcal');
     }
     else if(currentView == 1) {
-        let data = prepareData('protein');
-        getData('/get_day_specific_data/', data);
+        data = prepareData('protein');
     }
     else if(currentView == 2) {
-        let data = prepareData('carbohydrates');
-        getData('/get_day_specific_data/', data);
+        data = prepareData('carbohydrates');
     }
     else if(currentView == 3) {
-        let data = prepareData('fats');
-        getData('/get_day_specific_data/', data);
+        data = prepareData('fats');
     }
     else if(currentView == 4) {
-        let data = prepareData('steps');
-        getData('/get_day_specific_data/', data);
+        data = prepareData('steps');
     }
     else if(currentView == 5) {
-        let data = prepareData('water');
-        getData('/get_day_specific_data/', data);
+        data = prepareData('workout');
     }
     else if(currentView == 6) {
-        let data = prepareData('weight');
-        getData('/get_day_specific_data/', data);
+        data = prepareData('water');
     }
     else if(currentView == 7) {
-        let data = prepareData('pulse');
-        getData('/get_day_specific_data/', data);
+        data = prepareData('weight');
     }
+    else if(currentView == 8) {
+        data = prepareData('pulse');
+    }
+    getData('/get_day_specific_data/', data);
 }
 
 function resetSelects() {
+    if($('#select-period option[value="4"]').length == 0) {
+        $('#select-period').append('<option value="4">This year</option>');
+    }
+    if($('#select-period option[value="5"]').length == 0) {
+        $('#select-period').append('<option value="5">Previous year</option>');
+    }
     $('#select-period').val(0);
     $('#select-chart-type').val(0);
+}
+
+function disableSelectOptions() {
+    $('#select-period option[value="4"]').remove();
+    $('#select-period option[value="5"]').remove();
 }
 
 function renderData(data) {
@@ -107,6 +121,7 @@ function renderData(data) {
     let info;
     let isSum = true;
     let beginValue = 0;
+    let isTime = false;
     if(currentView == 0) {
         label = 'Kcal';
         info = 'calories';
@@ -128,16 +143,21 @@ function renderData(data) {
         info = 'steps';
     }
     else if(currentView == 5) {
+        label = 'Workout time';
+        info = 'exercise time';
+        isTime = true;
+    }
+    else if(currentView == 6) {
         label = 'Water';
         info = 'mililitres of water';
     }
-    else if(currentView == 6) {
+    else if(currentView == 7) {
         label = 'Weight';
         info = 'kilograms';
         isSum = false;
         beginValue = 50;
     }
-    else if(currentView == 7) {
+    else if(currentView == 8) {
         label = 'Pulse';
         info = 'beats per minute';
         isSum = false;
@@ -147,14 +167,14 @@ function renderData(data) {
         data = stackDataIntoMonths(data);
     }
     let values = $.map(data, function(value, key) { return value });
-    console.log(values);
+    let dataSummary = getDataType(values, 'summary');
+    let dataExpected = getDataType(values, 'expected');
     let labels = Object.keys(data);
-    console.log(labels);
     let chartType = getChartType();
-    fillStats(values, isSum, info);
+    fillStats(dataSummary, info, isSum, isTime);
     $('.title .name').text(label);
     clearCanvas();
-    renderChart(chartType, labels, label, values, beginValue);
+    renderChart(chartType, labels, label, dataSummary, dataExpected, beginValue, isTime);
 }
 
 function prepareData(type) {
@@ -179,12 +199,8 @@ function prepareData(type) {
         data = getLastYearDates();
     }
     let dataToSend = JSON.stringify({
-        'leftDay': data[0],
-        'leftMonth': data[1],
-        'leftYear': data[2],
-        'rightDay': data[3],
-        'rightMonth': data[4],
-        'rightYear': data[5],
+        'leftDate': data[0],
+        'rightDate': data[1],
         'type': type
     });
     return dataToSend;
@@ -219,6 +235,17 @@ function stackDataIntoMonths(data) {
     return outputData;
 }
 
+function getDataType(data, type) {
+    let resultsData = new Array(data.length);
+    if(data[0][type] === undefined) {
+        return null;
+    }
+    for(let i = 0; i < data.length; i++) {
+        resultsData[i] = data[i][type];
+    }
+    return resultsData;
+}
+
 function getChartType() {
     let chartTypeVal = $('#select-chart-type').val();
     if(chartTypeVal == 0) {
@@ -229,14 +256,24 @@ function getChartType() {
     }
 }
 
-function fillStats(data, isSum, info) {
+function fillStats(data, info, isSum, isTime) {
     $('.additional-info').text(info);
-    $('.max .value').text(maxValue(data));
-    $('.min .value').text(minValue(data));
-    $('.mean .value').text(meanValue(data));
+    let max = maxValue(data);
+    let min = minValue(data);
+    let mean = meanValue(data);
+    let sum = sumValue(data);
+    if(isTime) {
+        max = convertSecondsToTimeString(max);
+        min = convertSecondsToTimeString(min);
+        mean = convertSecondsToTimeString(mean);
+        sum = convertSecondsToTimeString(sum);
+    }
+    $('.max .value').text(max);
+    $('.min .value').text(min);
+    $('.mean .value').text(mean);
     if(isSum) {
         $('.sum').css('display', 'block');
-        $('.sum .value').text(sumValue(data));
+        $('.sum .value').text(sum);
     }
     else {
         $('.sum').css('display', 'none');
@@ -280,7 +317,11 @@ function sumValue(data) {
 
 function getThisWeekDates() {
     let today = new Date();
-    let first = today.getDate() - today.getDay() + 1;
+    let minusDay = today.getDay();
+    if(minusDay == 0) {
+        minusDay = 7;
+    }
+    let first = today.getDate() - minusDay + 1;
     let leftDate = new Date(today.setDate(first));
     let rightDate = new Date();
     return generateDateArray(leftDate, rightDate);
@@ -288,7 +329,11 @@ function getThisWeekDates() {
 
 function getLastWeekDates() {
     let today = new Date();
-    let first = today.getDate() - today.getDay() + 1 - 7;
+    let minusDay = today.getDay();
+    if(minusDay == 0) {
+        minusDay = 7;
+    }
+    let first = today.getDate() - minusDay - 6;
     let last = first + 6;
     let leftDate = new Date(today.setDate(first));
     let rightDate = new Date(today.setDate(last));
@@ -330,13 +375,11 @@ function getLastYearDates() {
 }
 
 function generateDateArray(leftDate, rightDate) {
-    let data = new Array(6);
-    data[0] = leftDate.getDate();
-    data[1] = leftDate.getMonth() + 1;
-    data[2] = leftDate.getFullYear();
-    data[3] = rightDate.getDate();
-    data[4] = rightDate.getMonth() + 1;
-    data[5] = rightDate.getFullYear();
+    let data = new Array(2);
+    leftDate = leftDate.getFullYear() + '-' + (leftDate.getMonth() + 1) + '-' + leftDate.getDate();
+    rightDate = rightDate.getFullYear() + '-' + (rightDate.getMonth() + 1) + '-' + rightDate.getDate();
+    data[0] = leftDate;
+    data[1] = rightDate;
     return data;
 }
 
@@ -355,9 +398,6 @@ function getData(endpoint, data) {
             200: function(data) {
                 renderData(data);
             },
-            204: function() {
-                console.log('No data on this day');
-            }
         }
     });
 }
@@ -367,19 +407,30 @@ function clearCanvas() {
     $('.chart-container').append('<canvas id="my-chart" width="200" height="600"></canvas>');
 }
 
-function renderChart(type, labels, label, data, begin) {
+function renderChart(type, labels, label, dataSummary, dataExpected, begin, isTime) {
+    let datasets = [{
+        label: label,
+        data: dataSummary,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1,
+    }];
+
+    if(dataExpected != null) {
+        datasets[1] = {
+            label: 'Expected value',
+            data: dataExpected,
+            type: 'line',
+            borderColor: 'red',
+            fill: false
+        }
+    }
     var ctx = document.getElementById('my-chart');
     var myChart = new Chart(ctx, {
         type: type,
         data: {
             labels: labels,
-            datasets: [{
-                label: label,
-                data: data,
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1,
-            }]
+            datasets: datasets
         },
         options: {
             responsive: true,
@@ -389,6 +440,12 @@ function renderChart(type, labels, label, data, begin) {
                     ticks: {
                         fontColor: 'white',
                         suggestedMin: begin,
+                        callback: function(label, index, labels) {
+                            if(isTime) {
+                                return convertSecondsToTimeString(label);
+                            }
+                            return label;
+                        }
                     }
                 }],
                 xAxes: [{
@@ -404,4 +461,19 @@ function renderChart(type, labels, label, data, begin) {
             }
         }
     });
+}
+
+function convertSecondsToTimeString(seconds) {
+    let hours = Math.floor(seconds / 3600);
+    let minutes = Math.floor((seconds % 3600) / 60);
+    seconds = Math.floor(seconds - hours * 3600 - minutes * 60);
+    let result = addZeroIfNeeded(hours) + ':' + addZeroIfNeeded(minutes) + ':' + addZeroIfNeeded(seconds);
+    return result;
+}
+
+function addZeroIfNeeded(time) {
+    if(time < 10) {
+        return '0' + time
+    }
+    return time
 }

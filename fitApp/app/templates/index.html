@@ -27,9 +27,9 @@
             <div class="row col-md-12">Calories</div>
             <div class="row col-md-12 kcal-data">
                 <div class="col-md-3 image eat"></div>
-                <div class="col-md-6 data"><span class="current">{{ day.summary_kcal }}</span>/<span class="expected">{{ user.userprofile.kcal }}</span></div>
+                <div class="col-md-6 data"><span class="current">{{ day.summary_kcal }}</span>/<span class="expected">{{ day.expected_kcal }}</span></div>
                 <div class="col-md-3">
-                {% if user.userprofile.kcal > day.summary_kcal %}
+                {% if day.expected_kcal > day.summary_kcal %}
                     <div class="status bad image"></div>
                 {% else %}
                     <div class="status good image"></div>
@@ -44,9 +44,9 @@
             <div class="row col-md-12">Macronutrients</div>
             <div class="row col-md-12 protein-data">
                 <div class="col-md-3 image protein"></div>
-                <div class="col-md-6 data"><span class="current">{{ day.summary_protein }}</span>/<span class="expected">{{ user.userprofile.protein }}</span> [g]</div>
+                <div class="col-md-6 data"><span class="current">{{ day.summary_protein }}</span>/<span class="expected">{{ day.expected_protein }}</span> [g]</div>
                 <div class="col-md-3">
-                {% if user.userprofile.protein > day.summary_protein %}
+                {% if day.expected_protein > day.summary_protein %}
                     <div class="status bad image"></div>
                 {% else %}
                     <div class="status good image"></div>
@@ -55,9 +55,9 @@
             </div>
             <div class="row col-md-12 carbohydrates-data">
                 <div class="col-md-3 image carbohydrates"></div>
-                <div class="col-md-6 data"><span class="current">{{ day.summary_carbohydrates }}</span>/<span class="expected">{{ user.userprofile.carbohydrates }}</span> [g]</div>
+                <div class="col-md-6 data"><span class="current">{{ day.summary_carbohydrates }}</span>/<span class="expected">{{ day.expected_carbohydrates }}</span> [g]</div>
                 <div class="col-md-3">
-                {% if user.userprofile.carbohydrates > day.summary_carbohydrates %}
+                {% if day.expected_carbohydrates > day.summary_carbohydrates %}
                     <div class="status bad image"></div>
                 {% else %}
                     <div class="status good image"></div>
@@ -66,9 +66,9 @@
             </div>
             <div class="row col-md-12 fats-data">
                 <div class="col-md-3 image fats"></div>
-                <div class="col-md-6 data"><span class="current">{{ day.summary_fats }}</span>/<span class="expected">{{ user.userprofile.fats }}</span> [g]</div>
+                <div class="col-md-6 data"><span class="current">{{ day.summary_fats }}</span>/<span class="expected">{{ day.expected_fats }}</span> [g]</div>
                 <div class="col-md-3">
-                {% if user.userprofile.fats > day.summary_fats %}
+                {% if day.expected_fats > day.summary_fats %}
                     <div class="status bad image"></div>
                 {% else %}
                     <div class="status good image"></div>
@@ -78,9 +78,9 @@
             <div class="row col-md-12">Physical Activity</div>
             <div class="row col-md-12 steps-data">
                 <div class="col-md-3 image steps"></div>
-                <div class="col-md-6 data"><span class="current">{{ day.steps }}</span>/<span class="expected">{{ user.userprofile.steps }}</span></div>
+                <div class="col-md-6 data"><span class="current">{{ day.steps }}</span>/<span class="expected">{{ day.expected_steps }}</span></div>
                 <div class="col-md-3">
-                {% if user.userprofile.steps > day.steps %}
+                {% if day.expected_steps > day.steps %}
                     <div class="status bad image"></div>
                 {% else %}
                     <div class="status good image"></div>
@@ -89,15 +89,15 @@
             </div>
             <div class="row col-md-12">
                 <div class="col-md-3 image workout"></div>
-                <div class="col-md-6 data">1:20:00</div>
+                <div class="col-md-6 data">{{ workout_time }}</div>
                 <div class="col-md-3"></div>
             </div>
             <div class="row col-md-12">Health</div>
             <div class="row col-md-12 water-data">
                 <div class="col-md-3 image water"></div>
-                <div class="col-md-6 data"><span class="current">{{ day.water }}</span>/<span class="expected">{{ user.userprofile.water }}</span></div>
+                <div class="col-md-6 data"><span class="current">{{ day.water }}</span>/<span class="expected">{{ day.expected_water }}</span></div>
                 <div class="col-md-3">
-                {% if user.userprofile.water > day.water %}
+                {% if day.expected_water > day.water %}
                     <div class="status bad image"></div>
                 {% else %}
                     <div class="status good image"></div>

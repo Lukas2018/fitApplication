@@ -110,12 +110,19 @@ function fillBarData(data) {
     $('#empty-data').css('display', 'none');
     $('#future-data').css('display', 'none');
     $('.kcal-data .data .current').text(data['kcal']);
+    $('.kcal-data .data .expected').text(data['expected_kcal']);
     $('.kcal-lose .data').text(data['lose_kcal']);
     $('.protein-data .data .current').text(data['protein']);
+    $('.protein-data .data .expected').text(data['expected_protein']);
     $('.carbohydrates-data .data .current').text(data['carbohydrates']);
+    $('.carbohydrates-data .data .expected').text(data['expected_carbohydrates']);
     $('.fats-data .data .current').text(data['fats']);
+    $('.fats-data .data .expected').text(data['expected_fats']);
     $('.steps-data .data .current').text(data['steps']);
+    $('.steps-data .data .expected').text(data['expected_steps']);
     $('.water-data .data .current').text(data['water']);
+    $('.water-data .data .expected').text(data['expected_water']);
+    $('.workout-data .data').text(data['workout']);
     $('.weight-data .data').text(data['weight']);
     $('.heart-data .data').text(data['pulse']);
 }
