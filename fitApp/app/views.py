@@ -272,69 +272,73 @@ def get_day_specific_data(request):
             start_date = datetime.date(left_year, left_month, left_day)
             end_date = datetime.date(right_year, right_month, right_day)
             delta = datetime.timedelta(days=1)
+            summary = None
+            expected = None
             while start_date <= end_date:
                 day = user.day_set.filter(date=start_date).first()
                 date = start_date.strftime("%Y-%m-%d")
-                if day is None:
-                    if data_type == 'weight':
-                        if last_non_null_value is not None:
-                            data[date] = {
-                                'summary': last_non_null_value.weight
-                            }
-                    elif data_type == 'pulse':
-                        if last_non_null_value is not None:
-                            data[date] = {
-                                'summary': last_non_null_value.pulse
-                            }
-                    else:
-                        data[date] = {
-                            'summary': 0
-                        }
-                else:
+                if day is not None:
                     if data_type == 'kcal':
-                        data[date] = {
-                            'summary': day.summary_kcal,
-                            'expected': day.expected_kcal
-                        }
+                        summary = day.summary_kcal
+                        expected = day.expected_kcal
                     elif data_type == 'protein':
-                        data[date] = {
-                            'summary': day.summary_protein,
-                            'expected': day.expected_protein
-                        }
+                        summary = day.summary_protein
+                        expected = day.expected_protein
                     elif data_type == 'carbohydrates':
-                        data[date] = {
-                            'summary': day.summary_carbohydrates,
-                            'expected': day.expected_carbohydrates
-                        }
+                        summary = day.summary_carbohydrates,
+                        expected = day.expected_carbohydrates
                     elif data_type == 'fats':
-                        data[date] = {
-                            'summary': day.summary_fats,
-                            'expected': day.expected_fats
-                        }
+                        summary = day.summary_fats,
+                        expected = day.expected_fats
                     elif data_type == 'steps':
-                        data[date] = {
-                            'summary': day.steps,
-                            'expected': day.expected_steps
-                        }
+                        summary = day.steps,
+                        expected = day.expected_steps
                     elif data_type == 'workout':
-                        data[date] = {
-                            'summary': day.activity_time
-                        }
+                        summary = day.activity_time
                     elif data_type == 'water':
-                        data[date] = {
-                            'summary': day.water,
-                            'expected': day.expected_water
-                        }
+                        summary = day.water,
+                        expected = day.expected_water
                     elif data_type == 'weight':
-                        data[date] = {
-                            'summary': day.weight
-                        }
-                        last_non_null_value = day
+                        summary = day.weight
                     elif data_type == 'pulse':
-                        data[date] = {
-                            'summary': day.pulse
-                        }
-                        last_non_null_value = day
+                        summary = day.pulse
+                    last_non_null_value = day
+                else:
+                    if last_non_null_value is not None:
+                        if data_type == 'weight':
+                            summary = last_non_null_value.weight
+                        elif data_type == 'pulse':
+                            summary = last_non_null_value.pulse
+                        elif data_type == 'kcal':
+                            summary = 0
+                            expected = last_non_null_value.expected_kcal
+                        elif data_type == 'protein':
+                            summary = 0
+                            expected = last_non_null_value.expected_protein
+                        elif data_type == 'carbohydrates':
+                            summary = 0
+                            expected = last_non_null_value.expected_carbohydrates
+                        elif data_type == 'fats':
+                            summary = 0
+                            expected = last_non_null_value.expected_fats
+                        elif data_type == 'steps':
+                            summary = 0
+                            expected = last_non_null_value.expected_steps
+                        elif data_type == 'water':
+                            summary = 0
+                            expected = last_non_null_value.expected_water
+                    else:
+                        if data_type != 'weight' and data_type != 'pulse':
+                            summary = 0
+                if summary is not None and expected is not None:
+                    data[date] = {
+                        'summary': summary,
+                        'expected': expected
+                    }
+                elif summary is not None:
+                    data[date] = {
+                        'summary': summary
+                    }
                 start_date += delta
             data = json.dumps(data)
             return HttpResponse(data, content_type='application/json', status=200)

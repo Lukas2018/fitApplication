@@ -237,7 +237,7 @@ function stackDataIntoMonths(data) {
 
 function getDataType(data, type) {
     let resultsData = new Array(data.length);
-    if(data[0][type] === undefined) {
+    if(data[data.length - 1][type] === undefined) {
         return null;
     }
     for(let i = 0; i < data.length; i++) {
