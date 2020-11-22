@@ -163,13 +163,17 @@ function renderData(data) {
         isSum = false;
         beginValue = 60;
     }
-    if(($('#select-period').val() == 4) || ($('#select-period').val() == 5)) {
-        data = stackDataIntoMonths(data);
-    }
     let values = $.map(data, function(value, key) { return value });
     let dataSummary = getDataType(values, 'summary');
     let dataExpected = getDataType(values, 'expected');
     let labels = Object.keys(data);
+    if(($('#select-period').val() == 4) || ($('#select-period').val() == 5)) {
+        data = stackDataIntoMonths(dataSummary, labels);
+        dataExpected = null;
+        labels = Object.keys(data);
+        dataSummary = $.map(data, function(value, key) { return value });
+        label = label + " mean";
+    }
     let chartType = getChartType();
     fillStats(dataSummary, info, isSum, isTime);
     $('.title .name').text(label);
@@ -206,8 +210,7 @@ function prepareData(type) {
     return dataToSend;
 }
 
-function stackDataIntoMonths(data) {
-    let keys = Object.keys(data);
+function stackDataIntoMonths(data, keys) {
     let year = parseInt(keys[0].split('-')[0]);
     let monthNum = parseInt(keys[keys.length - 1].split('-')[1]);
     let lastDay = parseInt(keys[keys.length - 1].split('-')[2]);
@@ -219,14 +222,14 @@ function stackDataIntoMonths(data) {
         if(i != monthNum - 1) {
             tempData = new Array(daysInMonth(i, year));
             for(let j = 1; j <= daysInMonth(i, year); j++) {
-                tempData[j - 1] = data[keys[k]];
+                tempData[j - 1] = data[k];
                 k++;
             }
         }
         else {
             tempData = new Array(lastDay);
             for(let j = 1; j <= lastDay; j++) {
-                tempData[j - 1] = data[keys[k]];
+                tempData[j - 1] = data[k];
                 k++;
             }
         }
@@ -408,6 +411,9 @@ function clearCanvas() {
 }
 
 function renderChart(type, labels, label, dataSummary, dataExpected, begin, isTime) {
+    console.log(dataSummary);
+    console.log(dataExpected);
+    console.log(labels);
     let datasets = [{
         label: label,
         data: dataSummary,

@@ -86,7 +86,7 @@ class PasswordChangeForm(forms.Form):
 
 class ProductForm(forms.Form):
     name = forms.CharField()
-    manufacturer = forms.CharField()
+    manufacturer = forms.CharField(required=False)
     portion = forms.FloatField()
     kcal = forms.FloatField()
     protein = forms.FloatField()

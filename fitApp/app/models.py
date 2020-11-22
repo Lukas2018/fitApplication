@@ -36,19 +36,22 @@ class Dish(models.Model):
     summary_fats = models.FloatField()
     summary_water = models.IntegerField()
     products = models.ManyToManyField('Product')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Product(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=60)
-    type = models.CharField(max_length=60, blank=True, null=True)
     manufacturer = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    
+class Nutrientes(models.Model):
     kcal = models.FloatField()
     protein = models.FloatField()
     carbohydrates = models.FloatField()
     fats = models.FloatField()
     portion = models.FloatField()
-
+    is_portion = models.BooleanField(default=False)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
 
 class Day(models.Model):
     date = models.DateField()
@@ -71,7 +74,6 @@ class Day(models.Model):
     meals = models.ForeignKey('Meal', on_delete=models.CASCADE, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
-
 class Meal(models.Model):
     type = models.CharField(max_length=60)
     summary_kcal = models.FloatField()
@@ -81,11 +83,9 @@ class Meal(models.Model):
     products = models.ManyToManyField('Product')
     dishes = models.ManyToManyField('Dish')
 
-
 class Training(models.Model):
     name = models.CharField(max_length=60)
     physical_activities = models.ManyToManyField('PhysicalActivity')
-
 
 class PhysicalActivity(models.Model):
     name = models.CharField(max_length=60)

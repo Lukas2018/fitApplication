@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from app.forms import LoginForm, RegisterForm, UserDataForm, PasswordChangeForm, ProductForm
-from app.models import Product, Day
+from app.models import Product, Day, Nutrientes
 from app.basic_functions import convert_seconds_to_time_string
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -143,12 +143,18 @@ def product(request):
     if request.method == 'POST':
         if form.is_valid():
             product = Product()
+            nutrientes = Nutrientes()
             product.name = form.cleaned_data['name']
             product.manufacturer = form.cleaned_data['manufacturer']
-            product.kcal = form.cleaned_data['kcal']
-            product.protein = form.cleaned_data['protein']
-            product.carbohydrates = form.cleaned_data['carbohydrates']
-            product.fats = form.cleaned_data['fats']
+            product.user = request.user
+            product.save()
+            nutrientes.kcal = form.cleaned_data['kcal']
+            nutrientes.portion = form.cleaned_data['portion']
+            nutrientes.protein = form.cleaned_data['protein']
+            nutrientes.carbohydrates = form.cleaned_data['carbohydrates']
+            nutrientes.fats = form.cleaned_data['fats']
+            nutrientes.product = product
+            nutrientes.save()
             return redirect('/index')
     context = {
         'form': form
@@ -173,7 +179,6 @@ def save_index_data(request):
         day.save()
     return HttpResponse('OK', status=200)
         
-
 def save_weight(request):
     if request.is_ajax():
         if request.method == 'POST':
@@ -342,3 +347,37 @@ def get_day_specific_data(request):
                 start_date += delta
             data = json.dumps(data)
             return HttpResponse(data, content_type='application/json', status=200)
+
+def get_user_products(request):
+    if request.is_ajax():
+        if request.method == 'GET':
+            user = request.user
+            data = {}
+            products = Product.objects.filter(user=user)
+            if products.count() == 0:
+                return HttpResponse(status=204)
+            for product in products:
+                data[product.id] = {
+                    'name': product.name,
+                    'manufacturer': product.manufacturer,
+                    'nutrientes': {}
+                }
+                nutrientes = product.nutrientes_set.all()
+                i = 0
+                for nutrient in nutrientes:
+                    data[product.id]['nutrientes'][i] = {
+                        'kcal': nutrient.kcal,
+                        'protein': nutrient.protein,
+                        'carbohydrates': nutrient.carbohydrates,
+                        'fats': nutrient.fats,
+                        'portion': nutrient.portion,
+                        'is_portion': nutrient.is_portion
+                    }
+                    i = i + 1
+            data = json.dumps(data)
+            return HttpResponse(data, content_type='application/json', status=200)
+
+def get_user_meals(request):
+    if request.is_ajax():
+        if request.method == 'GET':
+            return HttpResponse(status=204)

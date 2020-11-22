@@ -36,5 +36,7 @@ urlpatterns = [
     path('save_pulse/', views.save_pulse, name='save_pulse'),
     path('save_water/', views.save_water, name='save_water'),
     path('get_day_data/', views.get_day_data, name='get_day_data'),
-    path('get_day_specific_data/', views.get_day_specific_data, name='get_day_specific_data')
+    path('get_day_specific_data/', views.get_day_specific_data, name='get_day_specific_data'),
+    path('get_user_products/', views.get_user_products, name='get_user_products'),
+    path('get_user_meals/', views.get_user_meals, name='get_user_meals')
 ]
