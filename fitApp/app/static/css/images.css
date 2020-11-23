@@ -98,6 +98,18 @@
     background-image: url('/static/media/water.svg');
 }
 
+.edit {
+    background-image: url('/static/media/edit.svg');
+    width: 25px;
+    height: 25px;
+}
+
+.trash {
+    background-image: url('/static/media/trash.svg');
+    width: 25px;
+    height: 25px;
+}
+
 #meals .image.plus {
     background-image: url('/static/media/plus.svg');
     height: 40px;

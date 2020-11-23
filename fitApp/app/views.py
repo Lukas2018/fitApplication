@@ -138,7 +138,7 @@ def password_change(request):
     }
     return render(request, 'password_change.html', context)
 
-def product(request):
+def product_creation(request):
     form = ProductForm(request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
@@ -158,6 +158,24 @@ def product(request):
             return redirect('/index')
     context = {
         'form': form
+    }
+    return render(request, 'product_create.html', context)
+
+@login_required
+def product_operation(request, id):
+    form = ProductForm(request.POST or None)
+    if request.method == 'POST':
+        print('dupa')
+    if request.method == 'DELETE':
+        if request.is_ajax():
+            return HttpResponse(status=500)
+    product = Product.objects.filter(id=id).first()
+    print(product)
+    if product is None:
+        return HttpResponse(status=404)
+    context = {
+        'form': form,
+        'product': product
     }
     return render(request, 'product_create.html', context)
 

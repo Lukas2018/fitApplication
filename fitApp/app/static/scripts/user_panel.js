@@ -11,17 +11,15 @@ window.onload = function() {
 }
 
 function showAccountData() {
-    document.getElementById('user-products').style.display = 'none';
-    document.getElementById('user-meals').style.display = 'none';
-    document.getElementById('account-data').style.display = 'block';
+    $('#user-products').css('display', 'none');
+    $('#user-meals').css('display', 'none');
+    $('#account-data').css('display', 'block');
 }
 
 function showProducts() {
-    productDiv = document.getElementById('user-products-list');
-
-    document.getElementById('account-data').style.display = 'none';
-    document.getElementById('user-meals').style.display = 'none';
-    document.getElementById('user-products').style.display = 'block';
+    $('#account-data').css('display', 'none');
+    $('#user-meals').css('display', 'none');
+    $('#user-products').css('display', 'block');
     clearList('.products-list');
     clearParagraph('#user-products-list p');
     clearSearch('#user-products .search-input');
@@ -29,11 +27,9 @@ function showProducts() {
 }
 
 function showMeals() {
-    mealDiv = document.getElementById('user-meals-list');
-
-    document.getElementById('account-data').style.display = 'none';
-    document.getElementById('user-products').style.display = 'none';
-    document.getElementById('user-meals').style.display = 'block';
+    $('#account-data').css('display', 'none');
+    $('#user-products').css('display', 'none');
+    $('#user-meals').css('display', 'block');
     clearList('.meals-list');
     clearParagraph('#user-meals-list p');
     clearSearch('#user-meals .search-input');
@@ -77,6 +73,8 @@ function loadProducts(data) {
         let product = products[i];
         let nutrient = product['nutrientes'][0];
         let element = $('<li class="product item"></li>');
+        let productDetails = $('<div class="product-details"></div>');
+        let productOptions = $('<div class="product-options"></div>');
         let productName = $('<span class="product-name product-data item-name">' + product['name'] + '</span>');
         let manufacturer = $('<span class="product-manufacturer product-data">Manufacturer: ' + product['manufacturer'] + '</span>');
         let portion = $('<span class="product-portion product-data">Portion: ' + nutrient['portion'] + ' [g]</span>');
@@ -84,13 +82,25 @@ function loadProducts(data) {
         let protein = $('<span class="product-protein product-data">Protein: ' + nutrient['protein'] + ' [g]</span>');
         let carbohydrates = $('<span class="product-carbohydrates product-data">Carbohydrates: ' + nutrient['carbohydrates'] + ' [g]</span>');
         let fats = $('<span class="product-fats product-data">Fats: ' + nutrient['fats'] + ' [g]</span>');
-        element.append(productName);
-        element.append(manufacturer);
-        element.append(kcal);
-        element.append(portion);
-        element.append(protein);
-        element.append(carbohydrates);
-        element.append(fats);
+        let editOption = $('<div class="edit image"></div>');
+        let removeOption = $('<div class="trash image"></div>');
+        editOption.click(function() {
+            redirectToEdit(ids[i]);
+        });
+        removeOption.click(function() {
+            removeProduct(ids[i]);
+        })
+        productDetails.append(productName);
+        productDetails.append(manufacturer);
+        productDetails.append(kcal);
+        productDetails.append(portion);
+        productDetails.append(protein);
+        productDetails.append(carbohydrates);
+        productDetails.append(fats);
+        productOptions.append(editOption);
+        productOptions.append(removeOption);
+        element.append(productDetails);
+        element.append(productOptions);
         productList.append(element);
     }
 }
@@ -114,6 +124,17 @@ function clearParagraph(p) {
 function clearSearch(search) {
     $(search).val('');
 }
+
+function redirectToEdit(id) {
+
+}
+
+function removeProduct(id) {
+    $.sweetModal.confirm('Removing product', 'Are you sure you want to remove this product?', function() {
+        removeProduct();
+    });
+}
+
 function getUserProducts() {
     $.ajax({
         url: '/get_user_products/',
@@ -139,6 +160,38 @@ function getUserMeals() {
             },
             204: function() {
                 fillWithData('#user-meals-list p', 'You have no meals');
+            }
+        }
+    });
+}
+
+function removeProduct(id) {
+    url = '/product/' + id;
+    console.log(url);
+    let csrftoken = getCookie('csrftoken');
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                xhr.setRequestHeader('content-type', 'application/json');
+            }
+        }
+    });
+    $.ajax({
+        url: url,
+        type: 'DELETE',
+        statusCode: {
+            200: function() {
+                $.sweetModal({
+                    content: 'Product has been removed',
+                    icon: $.sweetModal.ICON_SUCCESS
+                });
+            },
+            500: function() {
+                $.sweetModal({
+                    content: 'Sorry, an error occured',
+                    icon: $.sweetModal.ICON_ERROR
+                });
             }
         }
     });

@@ -94,9 +94,9 @@ body {
 
 .product {
     width: 100%;
-    height: 120px;
+    height: 130px;
     border-bottom: solid 1px white;
-    padding: 10px 0;
+    padding: 20px 0;
 }
 
 .product:nth-child(1) {
@@ -115,9 +115,29 @@ body {
 }
 
 .product-name, .product-portion, .product-manufacturer, .product-kcal {
-    width: 40%;
+    width: 45%;
 }
 
 .product-protein, .product-carbohydrates, .product-fats {
     width: 30%;
+}
+
+.product-details {
+    width: 90%;
+    display: inline-block;
+    height: 100%;
+}
+
+.product-options {
+    width: 10%;
+    display: inline-block;
+    height: 100%;
+    padding: 10px 0;
+}
+
+.product-options div {
+    cursor: pointer;
+}
+.product-options div:first-child {
+    margin-bottom: 15px;
 }
