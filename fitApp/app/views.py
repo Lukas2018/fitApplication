@@ -69,6 +69,7 @@ def login(request):
     }
     return render(request, 'login.html', context)
 
+@login_required
 def logout(request):
     auth_logout(request)
     return redirect('/login')
@@ -86,6 +87,7 @@ def register(request):
     }
     return render(request, 'register.html', context)
 
+@login_required
 def user_data(request):
     form = UserDataForm(request.POST or None)
     if request.method == 'POST':
@@ -115,15 +117,19 @@ def user_data(request):
     }
     return render(request, 'user_data.html', context)
 
+@login_required
 def calendar(request):
     return render(request, 'calendar.html')
 
+@login_required
 def analyze(request):
     return render(request, 'analyze.html')
-    
+
+@login_required  
 def user_panel(request):
     return render(request, 'user_panel.html')
 
+@login_required
 def password_change(request):
     user = request.user
     form = PasswordChangeForm(user, request.POST or None)
@@ -138,47 +144,71 @@ def password_change(request):
     }
     return render(request, 'password_change.html', context)
 
+@login_required
 def product_creation(request):
     form = ProductForm(request.POST or None)
+    error = 0
     if request.method == 'POST':
         if form.is_valid():
-            product = Product()
-            nutrientes = Nutrientes()
-            product.name = form.cleaned_data['name']
-            product.manufacturer = form.cleaned_data['manufacturer']
-            product.user = request.user
-            product.save()
-            nutrientes.kcal = form.cleaned_data['kcal']
-            nutrientes.portion = form.cleaned_data['portion']
-            nutrientes.protein = form.cleaned_data['protein']
-            nutrientes.carbohydrates = form.cleaned_data['carbohydrates']
-            nutrientes.fats = form.cleaned_data['fats']
-            nutrientes.product = product
-            nutrientes.save()
-            return redirect('/index')
+            try:
+                product = Product()
+                nutrientes = Nutrientes()
+                product.name = form.cleaned_data['name']
+                product.manufacturer = form.cleaned_data['manufacturer']
+                product.user = request.user
+                product.save()
+                nutrientes.kcal = form.cleaned_data['kcal']
+                nutrientes.portion = form.cleaned_data['portion']
+                nutrientes.protein = form.cleaned_data['protein']
+                nutrientes.carbohydrates = form.cleaned_data['carbohydrates']
+                nutrientes.fats = form.cleaned_data['fats']
+                nutrientes.product = product
+                nutrientes.save()
+                return redirect(request.POST.get('next'))
+            except:
+                error = 1
     context = {
-        'form': form
+        'form': form,
+        'error': error
     }
     return render(request, 'product_create.html', context)
 
 @login_required
 def product_operation(request, id):
     form = ProductForm(request.POST or None)
-    if request.method == 'POST':
-        print('dupa')
-    if request.method == 'DELETE':
-        if request.is_ajax():
-            return HttpResponse(status=500)
     product = Product.objects.filter(id=id).first()
-    print(product)
     if product is None:
         return HttpResponse(status=404)
+    if request.method == 'POST':
+        try:
+            product.name = form.cleaned_data['name']
+            product.manufacturer = form.cleaned_data['manufacturer']
+            nutrientes = product.nutrientes_set.first()
+            nutrientes.kcal = form.cleaned_data['kcal']
+            nutrientes.portion = form.cleaned_data['portion']
+            nutrientes.protein = form.cleaned_data['protein']
+            nutrientes.carbohydrates = form.cleaned_data['carbohydrates']
+            nutrientes.fats = form.cleaned_data['fats']
+            nutrientes.save()
+            product.save()
+            return redirect(request.POST.get('next'))
+        except:
+            return HttpResponse(status=500)
+    if request.method == 'DELETE':
+        if request.is_ajax():
+            try:
+                product.delete()
+            except:
+                return HttpResponse(status=500)
+            return HttpResponse('OK', status=200)
+    
     context = {
         'form': form,
         'product': product
     }
     return render(request, 'product_create.html', context)
 
+@login_required
 def save_index_data(request):
     if request.method == 'POST':
         user = request.user
@@ -188,15 +218,20 @@ def save_index_data(request):
         day = int(data['date'].split('-')[2])
         date = datetime.date(year, month, day)
         day = user.day_set.filter(date=date).first()
-        user.userprofile.weight = float(data['weight'])
-        user.userprofile.pulse = int(data['pulse'])
-        day.weight = float(data['weight'])
-        day.pulse = int(data['pulse'])
-        day.water = int(data['water'])
-        user.save()
-        day.save()
-    return HttpResponse('OK', status=200)
-        
+        try:
+            user.userprofile.weight = float(data['weight'])
+            user.userprofile.pulse = int(data['pulse'])
+            day.weight = float(data['weight'])
+            day.pulse = int(data['pulse'])
+            day.water = int(data['water'])
+            user.save()
+            day.save()
+        except:
+            return HttpResponse('Server error occured', status=500)
+        return HttpResponse('OK', status=200)
+    return HttpResponse('Method not allowed', status=405)
+
+@login_required       
 def save_weight(request):
     if request.is_ajax():
         if request.method == 'POST':
@@ -207,12 +242,17 @@ def save_weight(request):
             day = int(data['date'].split('-')[2])
             date = datetime.date(year, month, day)
             day = user.day_set.filter(date=date).first()
-            user.userprofile.weight = float(data['weight'])
-            day.weight = float(data['weight'])
-            user.save()
-            day.save()
-    return HttpResponse('OK', status=200)
+            try:
+                user.userprofile.weight = float(data['weight'])
+                day.weight = float(data['weight'])
+                user.save()
+                day.save()
+            except:
+                return HttpResponse('Server error occured', status=500)
+            return HttpResponse('OK', status=200)
+    return HttpResponse('Method not allowed', status=405)
 
+@login_required
 def save_pulse(request):
     if request.is_ajax():
         if request.method == 'POST':
@@ -223,12 +263,17 @@ def save_pulse(request):
             day = int(data['date'].split('-')[2])
             date = datetime.date(year, month, day)
             day = user.day_set.filter(date=date).first()
-            user.userprofile.pulse = int(data['pulse'])
-            day.pulse = int(data['pulse'])
-            user.save()
-            day.save()
-    return HttpResponse('OK', status=200)
+            try:
+                user.userprofile.pulse = int(data['pulse'])
+                day.pulse = int(data['pulse'])
+                user.save()
+                day.save()
+            except:
+                return HttpResponse('Server error occured', status=500)
+            return HttpResponse('OK', status=200)
+    return HttpResponse('Method not allowed', status=405)
 
+@login_required
 def save_water(request):
     if request.is_ajax():
         if request.method == 'POST':
@@ -239,11 +284,16 @@ def save_water(request):
             day = int(data['date'].split('-')[2])
             date = datetime.date(year, month, day)
             day = user.day_set.filter(date=date).first()
-            day.water = int(data['water'])
-            user.save()
-            day.save()
-    return HttpResponse('OK', status=200)
+            try:
+                day.water = int(data['water'])
+                user.save()
+                day.save()
+            except:
+                return HttpResponse('Server error occured', status=500)
+            return HttpResponse('OK', status=200)
+    return HttpResponse('Method not allowed', status=405)
 
+@login_required
 def get_day_data(request):
     if request.is_ajax():
         if request.method == 'GET':
@@ -275,7 +325,9 @@ def get_day_data(request):
             }
             data = json.dumps(data)
             return HttpResponse(data, content_type='application/json', status=200)
+    return HttpResponse('Method not allowed', status=405)
 
+@login_required
 def get_day_specific_data(request):
     if request.is_ajax():
         if request.method == 'GET':
@@ -365,7 +417,9 @@ def get_day_specific_data(request):
                 start_date += delta
             data = json.dumps(data)
             return HttpResponse(data, content_type='application/json', status=200)
+    return HttpResponse('Method not allowed', status=405)
 
+@login_required
 def get_user_products(request):
     if request.is_ajax():
         if request.method == 'GET':
@@ -373,7 +427,7 @@ def get_user_products(request):
             data = {}
             products = Product.objects.filter(user=user)
             if products.count() == 0:
-                return HttpResponse(status=204)
+                return HttpResponse('No products', status=204)
             for product in products:
                 data[product.id] = {
                     'name': product.name,
@@ -394,7 +448,9 @@ def get_user_products(request):
                     i = i + 1
             data = json.dumps(data)
             return HttpResponse(data, content_type='application/json', status=200)
+    return HttpResponse('Method not allowed', status=405)
 
+@login_required
 def get_user_meals(request):
     if request.is_ajax():
         if request.method == 'GET':

@@ -72,7 +72,7 @@ function loadProducts(data) {
     for(let i=0; i < ids.length; i++) {
         let product = products[i];
         let nutrient = product['nutrientes'][0];
-        let element = $('<li class="product item"></li>');
+        let element = $('<li class="product-' + ids[i] + ' product item"></li>');
         let productDetails = $('<div class="product-details"></div>');
         let productOptions = $('<div class="product-options"></div>');
         let productName = $('<span class="product-name product-data item-name">' + product['name'] + '</span>');
@@ -117,6 +117,10 @@ function clearList(listName) {
     $(listName).empty();
 }
 
+function removeListElement(id) {
+    $('.product-' + id).remove();
+}
+
 function clearParagraph(p) {
     $(p).text('');
 }
@@ -130,8 +134,17 @@ function redirectToEdit(id) {
 }
 
 function removeProduct(id) {
-    $.sweetModal.confirm('Removing product', 'Are you sure you want to remove this product?', function() {
-        removeProduct();
+    swal({
+        title: "Removing product",
+        text: "Are you sure you want to remove this product?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+    .then((willDelete) => {
+        if (willDelete) {
+            removeUserProduct(id);
+        }
     });
 }
 
@@ -165,7 +178,8 @@ function getUserMeals() {
     });
 }
 
-function removeProduct(id) {
+function removeUserProduct(id) {
+    
     url = '/product/' + id;
     console.log(url);
     let csrftoken = getCookie('csrftoken');
@@ -182,15 +196,19 @@ function removeProduct(id) {
         type: 'DELETE',
         statusCode: {
             200: function() {
-                $.sweetModal({
-                    content: 'Product has been removed',
-                    icon: $.sweetModal.ICON_SUCCESS
+                swal({
+                    title: "Product has been removed!", 
+                    icon: "success"
                 });
+                removeListElement(id);
+                if($('.product').length == 0) {
+                    fillWithData('#user-products-list p', 'You have no products');
+                }
             },
             500: function() {
-                $.sweetModal({
-                    content: 'Sorry, an error occured',
-                    icon: $.sweetModal.ICON_ERROR
+                swal({
+                    title: "Sorry, an server error occured", 
+                    icon: "error"
                 });
             }
         }

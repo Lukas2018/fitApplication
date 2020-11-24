@@ -196,6 +196,5 @@ function getDateFromUrl() {
         let today = new Date();
         date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
     }
-    console.log(date);
     return date;
 }
