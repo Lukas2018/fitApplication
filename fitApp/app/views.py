@@ -119,15 +119,18 @@ def user_data(request):
 
 @login_required
 def calendar(request):
-    return render(request, 'calendar.html')
+    return render(request, 'calendar.html', context)
 
 @login_required
 def analyze(request):
-    return render(request, 'analyze.html')
+    return render(request, 'analyze.html', context)
 
 @login_required  
 def user_panel(request):
-    return render(request, 'user_panel.html')
+    context = {}
+    if request.GET:
+        context['success'] = 1
+    return render(request, 'user_panel.html', context)
 
 @login_required
 def password_change(request):
@@ -164,7 +167,7 @@ def product_creation(request):
                 nutrientes.fats = form.cleaned_data['fats']
                 nutrientes.product = product
                 nutrientes.save()
-                return redirect(request.POST.get('next'))
+                return redirect(request.POST.get('next') + '?successful=1')
             except:
                 error = 1
     context = {
@@ -175,25 +178,27 @@ def product_creation(request):
 
 @login_required
 def product_operation(request, id):
+    error = 0
     form = ProductForm(request.POST or None)
     product = Product.objects.filter(id=id).first()
     if product is None:
         return HttpResponse(status=404)
+    nutrientes = product.nutrientes_set.first()
     if request.method == 'POST':
-        try:
-            product.name = form.cleaned_data['name']
-            product.manufacturer = form.cleaned_data['manufacturer']
-            nutrientes = product.nutrientes_set.first()
-            nutrientes.kcal = form.cleaned_data['kcal']
-            nutrientes.portion = form.cleaned_data['portion']
-            nutrientes.protein = form.cleaned_data['protein']
-            nutrientes.carbohydrates = form.cleaned_data['carbohydrates']
-            nutrientes.fats = form.cleaned_data['fats']
-            nutrientes.save()
-            product.save()
-            return redirect(request.POST.get('next'))
-        except:
-            return HttpResponse(status=500)
+        if form.is_valid():
+            try:
+                product.name = form.cleaned_data['name']
+                product.manufacturer = form.cleaned_data['manufacturer']
+                nutrientes.kcal = form.cleaned_data['kcal']
+                nutrientes.portion = form.cleaned_data['portion']
+                nutrientes.protein = form.cleaned_data['protein']
+                nutrientes.carbohydrates = form.cleaned_data['carbohydrates']
+                nutrientes.fats = form.cleaned_data['fats']
+                nutrientes.save()
+                product.save()
+                return redirect(request.POST.get('next') + '?successful=1')
+            except:
+                error = 1
     if request.method == 'DELETE':
         if request.is_ajax():
             try:
@@ -201,10 +206,12 @@ def product_operation(request, id):
             except:
                 return HttpResponse(status=500)
             return HttpResponse('OK', status=200)
-    
     context = {
         'form': form,
-        'product': product
+        'product': product,
+        'nutrientes': nutrientes,
+        'is_edit': True,
+        'error': error
     }
     return render(request, 'product_create.html', context)
 

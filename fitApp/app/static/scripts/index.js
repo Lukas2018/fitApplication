@@ -1,6 +1,6 @@
 let somethingChanged = 0;
 
-window.onload = function () {
+window.addEventListener('load', function() {
     let timerW;
     let timerP;
     let timerB;
@@ -81,7 +81,7 @@ window.onload = function () {
         }, timeToWait);
     });
     getDateFromUrl();
-}
+});
 
 window.onbeforeunload = function() {
     if(somethingChanged == 1) {

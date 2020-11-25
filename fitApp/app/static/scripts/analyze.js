@@ -1,6 +1,6 @@
 let currentView = -1;
 
-window.onload = function() {
+window.addEventListener('load', function() {
     $('.down-arrow').click(function() {
         switchSubMenu($(this));
     });
@@ -37,7 +37,7 @@ window.onload = function() {
     $('.pulse-menu').click(function() {
         subMenuClick(this, 'pulse', 8);
     });
-}
+});
 
 function switchSubMenu(element) {
     if(element.hasClass('down-arrow')){

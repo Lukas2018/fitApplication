@@ -1,4 +1,4 @@
-window.onload = function() {
+window.addEventListener('load', function() {
     $('.add-product').click(function() {
         window.location = '/product/';
     });
@@ -8,7 +8,7 @@ window.onload = function() {
     $('.search-input').keyup(function() {
         searchItems(this);
     })
-}
+});
 
 function showAccountData() {
     $('#user-products').css('display', 'none');
@@ -130,7 +130,7 @@ function clearSearch(search) {
 }
 
 function redirectToEdit(id) {
-
+    window.location = '/product/' + id;
 }
 
 function removeProduct(id) {
@@ -179,9 +179,7 @@ function getUserMeals() {
 }
 
 function removeUserProduct(id) {
-    
     url = '/product/' + id;
-    console.log(url);
     let csrftoken = getCookie('csrftoken');
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {

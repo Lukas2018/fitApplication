@@ -13,7 +13,7 @@ var monthText = [
     'December'
 ];
 
-window.onload = function () {
+window.addEventListener('load', function() {
     let today = new Date();
     let day = today.getDate();
     let month = today.getMonth();
@@ -42,7 +42,7 @@ window.onload = function () {
         'date': date
     });
     getData('/get_day_data/', data);
-}
+});
 
 function fillTable(month, year) {
     let date = new Date(year, month, 1);

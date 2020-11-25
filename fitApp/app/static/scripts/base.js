@@ -1,3 +1,22 @@
+window.addEventListener('load', function() {
+    if($('#error').val() == 1) {
+        swal({
+            title: 'Sorry, an server error occured', 
+            icon: 'error'
+        });
+    }
+    if($('#success').val() == 1) {
+        swal({
+            title: 'Operation completed successfully', 
+            icon: 'success'
+        }).then(function() {
+            let url = 'http://localhost:8000/' + window.location.href.split('/')[3];
+            console.log(url)
+            window.history.pushState("", "", url);
+        });
+    }
+});
+
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
