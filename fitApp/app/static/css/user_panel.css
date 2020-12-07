@@ -111,7 +111,8 @@ body {
 }
 
 .product .product-name {
-    font-size: large;
+    font-size: x-large;
+    font-weight: 700;
 }
 
 .product-name, .product-portion, .product-manufacturer, .product-kcal {

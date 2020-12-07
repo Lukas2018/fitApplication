@@ -84,12 +84,16 @@ class Meal(models.Model):
     dishes = models.ManyToManyField('Dish')
 
 class Training(models.Model):
-    name = models.CharField(max_length=60)
-    physical_activities = models.ManyToManyField('PhysicalActivity')
+    time = models.IntegerField()
+    lose_kcal = models.FloatField()
+    notes = models.CharField(max_length=255, blank=True, null=True)
+    physical_activity = models.ForeignKey('PhysicalActivity', on_delete=models.CASCADE, blank=True, null=True)
+    day = models.ForeignKey('Day', on_delete=models.CASCADE)
 
 class PhysicalActivity(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=60)
-    type = models.CharField(max_length=60)
-    lose_kcal = models.FloatField()
-    time = models.IntegerField()
-    repeats = models.IntegerField()
+    description = models.CharField(max_length=60, blank=True, null=True)
+    met = models.FloatField(max_length=60)
+    image_class = models.CharField(max_length=60)
+    

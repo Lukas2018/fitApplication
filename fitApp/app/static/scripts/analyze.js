@@ -339,6 +339,7 @@ function getLastWeekDates() {
     let first = today.getDate() - minusDay - 6;
     let last = first + 6;
     let leftDate = new Date(today.setDate(first));
+    today = new Date();
     let rightDate = new Date(today.setDate(last));
     return generateDateArray(leftDate, rightDate);
 }
@@ -411,9 +412,6 @@ function clearCanvas() {
 }
 
 function renderChart(type, labels, label, dataSummary, dataExpected, begin, isTime) {
-    console.log(dataSummary);
-    console.log(dataExpected);
-    console.log(labels);
     let datasets = [{
         label: label,
         data: dataSummary,

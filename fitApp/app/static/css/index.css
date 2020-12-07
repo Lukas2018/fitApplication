@@ -55,3 +55,31 @@ html, body {
 #menu img:hover {
     cursor: pointer;
 }
+
+#bottles {
+    display: inline-flex;
+    flex-wrap: wrap;
+    margin: 0 15%;
+}
+
+#bottles div {
+    margin-top: 10px;
+}
+
+#sports {
+    background-color: white;
+}
+
+.sport-activity {
+    display: none;
+    border-bottom: 1px solid #ced4da;
+    border-left: 1px solid #ced4da;
+    border-right: 1px solid #ced4da;
+    cursor: pointer;
+    font-size: large;
+    padding: 5px;
+}
+
+.sport-activity .activity-name {
+    margin-left: 20px;
+}

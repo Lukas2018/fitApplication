@@ -80,6 +80,9 @@ window.addEventListener('load', function() {
             sendData('/save_pulse/', data);
         }, timeToWait);
     });
+    $('.search-input').keyup(function() {
+        searchItems(this);
+    })
     getDateFromUrl();
 });
 
@@ -116,7 +119,7 @@ function hideDetails(arrowElem) {
 function addBottle() {
     emptyBottles = $('.empty-bottle');
     if(emptyBottles.length == 0) {
-        $('#bottles').append('<li class="empty-bottle image"></li>');
+        $('#bottles').append('<div class="empty-bottle image size-30"></div>');
         let bottleElem = $('.empty-bottle').last();
         bottleElem.click(function() {
             fillBottle(bottleElem);
@@ -168,6 +171,55 @@ function increment(elem, value) {
     elem.text(Math.round((parseFloat(elem.text()) + value) * 10) / 10);
 }
 
+function searchItems(search) {
+    let pattern = $(search).val().toLowerCase().trim();
+    let patternParts = pattern.split(' ');
+    let items = $('.sport-activity');
+    if(pattern != '') {
+        let matched = 0;
+        for(let i=0; i < items.length; i++) {
+            let find = false;
+            let sport = $(items[i]).find('.activity-name').text();
+            let sportParts = sport.split(' ');
+            if(sportParts.length != 1) {
+                let total = 0;
+                for(let j=0; j < sportParts.length; j++) {
+                    for(let k=0; k < patternParts.length; k++) {
+                        if(sportParts[j].toLowerCase().startsWith(patternParts[k].toLowerCase())) {
+                            console.log(sportParts[j] + '-' + patternParts[k])
+                            total++;
+                            break;
+                        }
+                    }
+                }
+                if(total == patternParts.length) {
+                    find = true;
+                    matched++;
+                }
+            }
+            else {
+                if(sport.toLowerCase().startsWith(pattern)) {
+                    find = true;
+                    matched++;
+                }
+            }
+            if(find == false) {
+                $(items[i]).css('display', 'none');
+            }
+            else {
+                $(items[i]).css('display', 'flex');
+            }
+            if(matched == 5) {
+                break;
+            }
+        }
+    }
+    else {
+        items.each(function() {
+            $(this).css('display', 'none');
+        });
+    }
+}
 function sendData(endpoint, data) {
     let csrftoken = getCookie('csrftoken');
     $.ajaxSetup({

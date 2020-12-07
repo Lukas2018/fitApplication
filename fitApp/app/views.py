@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from app.forms import LoginForm, RegisterForm, UserDataForm, PasswordChangeForm, ProductForm
-from app.models import Product, Day, Nutrientes
+from app.models import Product, Day, Nutrientes, PhysicalActivity
 from app.basic_functions import convert_seconds_to_time_string
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -42,13 +42,15 @@ def index(request):
                         expected_carbohydrates = user.userprofile.carbohydrates, expected_fats = user.userprofile.fats,
                         expected_water = user.userprofile.water, expected_steps = user.userprofile.steps, user=user)
         day.save()
+    activites = PhysicalActivity.objects.all()
     empty_bottles = math.ceil((day.expected_water - day.water)/250)
     full_bottles = math.ceil(day.expected_water / 250) - empty_bottles
     context = {
         'empty_loop_times': range(1, empty_bottles + 1),
         'full_loop_times': range(1, full_bottles + 1),
         'day': day,
-        'workout_time': convert_seconds_to_time_string(day.activity_time)
+        'workout_time': convert_seconds_to_time_string(day.activity_time),
+        'activities': activites
     }
     return render(request, 'index.html', context)
 
@@ -108,7 +110,7 @@ def user_data(request):
             user.save()
             day = Day(date=datetime.datetime.now(), weight=user.userprofile.weight, pulse=user.userprofile.pulse, 
                         expected_kcal=user.userprofile.kcal, expected_protein = user.userprofile.protein, 
-                        expected_carbohydates = user.userprofile.carbohydrates, expected_fats = user.userprofile.fats,
+                        expected_carbohydrates = user.userprofile.carbohydrates, expected_fats = user.userprofile.fats,
                         expected_water = user.userprofile.water, expected_steps = user.userprofile.steps, user=user)
             day.save()
             return redirect('/index')
@@ -119,11 +121,11 @@ def user_data(request):
 
 @login_required
 def calendar(request):
-    return render(request, 'calendar.html', context)
+    return render(request, 'calendar.html')
 
 @login_required
 def analyze(request):
-    return render(request, 'analyze.html', context)
+    return render(request, 'analyze.html')
 
 @login_required  
 def user_panel(request):

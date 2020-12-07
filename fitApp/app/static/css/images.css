@@ -100,32 +100,22 @@
 
 .edit {
     background-image: url('/static/media/edit.svg');
-    width: 25px;
-    height: 25px;
 }
 
 .trash {
     background-image: url('/static/media/trash.svg');
-    width: 25px;
-    height: 25px;
 }
 
 #meals .image.plus {
     background-image: url('/static/media/plus.svg');
-    height: 40px;
-    width: 40px;
 }
 
 .arrow-down {
     background-image: url('/static/media/down-arrow.svg');
-    height: 40px;
-    width: 40px;
 }
 
 .arrow-up {
-    background-image: url('/static/media/up-arrow.svg');
-    height: 40px;
-    width: 40px;   
+    background-image: url('/static/media/up-arrow.svg');  
 }
 
 .down-arrow {
@@ -144,14 +134,139 @@
 
 .empty-bottle {
     background-image: url('/static/media/water-cup-empty.svg');
-    float: left;
-    height: 30px;
-    width: 30px;
 }
 
 .full-bottle {
     background-image: url('/static/media/water-cup-full.svg');
-    float: left;
+}
+
+.archery {
+    background-image: url('/static/media/archery.svg');
+}
+
+.badminton {
+    background-image: url('/static/media/badminton.svg');
+}
+
+.basketball {
+    background-image: url('/static/media/basketball.svg');
+}
+
+.bike {
+    background-image: url('/static/media/bicycle.svg');
+}
+
+.billiard {
+    background-image: url('/static/media/billiard.svg');
+}
+
+.bowling {
+    background-image: url('/static/media/bowling.svg');
+}
+
+.boxing {
+    background-image: url('/static/media/boxing.svg');
+}
+
+.canoe {
+    background-image: url('/static/media/canoe.svg');
+}
+
+.climbing {
+    background-image: url('/static/media/climbing.svg');
+}
+
+.diving {
+    background-image: url('/static/media/scuba.svg');
+}
+
+.fencing {
+    background-image: url('/static/media/fencing.svg');
+}
+
+.football {
+    background-image: url('/static/media/football.svg');
+}
+
+.golf {
+    background-image: url('/static/media/golf.svg');
+}
+
+.gym {
+    background-image: url('/static/media/gym.svg');
+}
+
+.gymnastics {
+    background-image: url('/static/media/gymnastics.svg');
+}
+
+.hockey {
+    background-image: url('/static/media/hockey.svg');
+}
+
+.ice-skate {
+    background-image: url('/static/media/ice-skate.svg');
+}
+
+.martial-arts {
+    background-image: url('/static/media/judo.svg');
+}
+
+.running {
+    background-image: url('/static/media/running.svg');
+}
+
+.skateboard {
+    background-image: url('/static/media/skateboard.svg');
+}
+
+.skiing {
+    background-image: url('/static/media/skiing.svg');
+}
+
+.snowboard {
+    background-image: url('/static/media/snowboarding.svg');
+}
+
+.surfing {
+    background-image: url('/static/media/surf.svg');
+}
+
+.swimming {
+    background-image: url('/static/media/swimmer.svg');
+}
+
+.table-tennis {
+    background-image: url('/static/media/table-tennis.svg');
+}
+
+.tennis {
+    background-image: url('/static/media/tennis.svg');
+}
+
+.windsurfing {
+    background-image: url('/static/media/windsurf.svg');
+}
+
+.volleyball {
+    background-image: url('/static/media/volleyball.svg');
+}
+
+.yoga {
+    background-image: url('/static/media/lotus.svg');
+}
+
+.size-25 {
+    height: 25px;
+    width: 25px;
+}
+
+.size-30 {
     height: 30px;
     width: 30px;
+}
+
+.size-40 {
+    height: 40px;
+    width: 40px;
 }

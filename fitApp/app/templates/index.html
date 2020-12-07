@@ -129,8 +129,8 @@
                         <h3>Breakfast</h3>
                     </div>
                     <div class="col-md-1"></div>
-                    <div class="col-md-1"><div class="image plus"></div></div>
-                    <div class="col-md-1"><div class="image arrow arrow-down"></div></div>
+                    <div class="col-md-1"><div class="image plus size-40"></div></div>
+                    <div class="col-md-1"><div class="image arrow arrow-down size-40"></div></div>
                     <div class="col-md-1"></div>
                 </div>
             </div>
@@ -142,8 +142,8 @@
                         <h3>Lunch</h3>
                     </div>
                     <div class="col-md-1"></div>
-                    <div class="col-md-1"><div class="image plus"></div></div>
-                    <div class="col-md-1"><div class="image arrow arrow-down"></div></div>
+                    <div class="col-md-1"><div class="image plus size-40"></div></div>
+                    <div class="col-md-1"><div class="image arrow arrow-down size-40"></div></div>
                     <div class="col-md-1"></div>
                 </div>
             </div>
@@ -155,8 +155,8 @@
                         <h3>Dinner</h3>
                     </div>
                     <div class="col-md-1"></div>
-                    <div class="col-md-1"><div class="image plus"></div></div>
-                    <div class="col-md-1"><div class="image arrow arrow-down"></div></div>
+                    <div class="col-md-1"><div class="image plus size-40"></div></div>
+                    <div class="col-md-1"><div class="image arrow arrow-down size-40"></div></div>
                     <div class="col-md-1"></div>
                 </div>
             </div>
@@ -168,8 +168,8 @@
                         <h3>Other Meals</h3>
                     </div>
                     <div class="col-md-1"></div>
-                    <div class="col-md-1"><div class="image plus"></div></div>
-                    <div class="col-md-1"><div class="image arrow arrow-down"></div></div>
+                    <div class="col-md-1"><div class="image plus size-40"></div></div>
+                    <div class="col-md-1"><div class="image arrow arrow-down size-40"></div></div>
                     <div class="col-md-1"></div>
                 </div>
             </div>
@@ -181,32 +181,40 @@
                         <h3>Water</h3>
                     </div>
                     <div class="col-md-1"></div>
-                    <div class="col-md-1"><div class="image plus"></div></div>
-                    <div class="col-md-1"><div class="image arrow arrow-down"></div></div>
+                    <div class="col-md-1"><div class="image plus size-40"></div></div>
+                    <div class="col-md-1"><div class="image arrow arrow-down size-40"></div></div>
                     <div class="col-md-1"></div>
                 </div>
                 <div class="row details">
-                    <ul id="bottles">
+                    <div id="bottles">
                         {% for i in full_loop_times %}
-                            <li class="full-bottle image"></li>
+                            <div class="full-bottle image"></div>
                         {% endfor %}
                         {% for i in empty_loop_times %}
-                            <li class="empty-bottle image"></li>
+                            <div class="empty-bottle image"></div>
                         {% endfor %}
-                    </ul>
-                    <div style="clear: both;"></div>
+                    </div>
                 </div>
             </div>
         </div>
         <div id="activity" class="col-md-3">
-            <label for="steps">Liczba kroków:</label>
-            <input id="age" class="form-control" type="number" name="age" placeholder="Podaj kroki" value="0" required>
-            <p>Pozostała liczba kroków: <span id="steps"></span></p>
-            <ul>
-                <li>Trening 1</li>
-                <li>Trening 2</li>
-            </ul>
-            <p>Spalone kalorie: <span id="kcal_lose"></span></p>
+            <div class="input-group md-form form-sm form-1 pl-0">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></span>
+                </div>
+                <input class="form-control search-input" type="text" placeholder="Search activity" aria-label="Search">
+            </div>
+            <div id="sports">
+                {% for activity in activities %}
+                    <div class="sport-activity">
+                        <div class="{{activity.image_class}} image size-30"></div>
+                        <div class="activity-name">{{ activity.name }}</div>
+                        {% if activity.description != None %}
+                            <div class="activity-description"> - {{ activity.description }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
     <div class="row p-4">

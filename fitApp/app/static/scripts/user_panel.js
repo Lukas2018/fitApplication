@@ -37,30 +37,37 @@ function showMeals() {
 }
 
 function searchItems(search) {
-    let patern = $(search).val().toLowerCase();
+    let pattern = $(search).val().toLowerCase().trim();
+    let patternParts = pattern.split(' ');
     let items = $('.item');
-    items.each(function() {
-        $(this).css('display', 'block');
-    });
     for(let i=0; i < items.length; i++) {
         let find = false;
         let product = $(items[i]).find('.item-name').text();
         let productParts = product.split(' ');
-        if(patern.split(" ").length == 1) {
-            for(let j=0; j < productParts.length; j++) {
-                if(productParts[j].toLowerCase().startsWith(patern)) {
-                    find = true;
-                    break;
+        if(productParts.length != 1) {
+            let total = 0;
+                for(let j=0; j < productParts.length; j++) {
+                    for(let k=0; k < patternParts.length; k++) {
+                        if(productParts[j].toLowerCase().startsWith(patternParts[k].toLowerCase())) {
+                            total++;
+                            break;
+                        }
+                    }
                 }
-            }
+                if(total == patternParts.length) {
+                    find = true;
+                }
         }
         else {
-            if(product.toLowerCase().includes(patern)) {
+            if(product.toLowerCase().startsWith(pattern)) {
                 find = true;
             }
         }
         if(find == false) {
             $(items[i]).css('display', 'none');
+        }
+        else {
+            $(items[i]).css('display', 'block');
         }
     }
 }
@@ -82,8 +89,8 @@ function loadProducts(data) {
         let protein = $('<span class="product-protein product-data">Protein: ' + nutrient['protein'] + ' [g]</span>');
         let carbohydrates = $('<span class="product-carbohydrates product-data">Carbohydrates: ' + nutrient['carbohydrates'] + ' [g]</span>');
         let fats = $('<span class="product-fats product-data">Fats: ' + nutrient['fats'] + ' [g]</span>');
-        let editOption = $('<div class="edit image"></div>');
-        let removeOption = $('<div class="trash image"></div>');
+        let editOption = $('<div class="edit size-25 image"></div>');
+        let removeOption = $('<div class="trash size-25 image"></div>');
         editOption.click(function() {
             redirectToEdit(ids[i]);
         });
