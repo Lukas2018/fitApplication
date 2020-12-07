@@ -120,15 +120,11 @@
 
 .down-arrow {
     background-image: url('/static/media/arrow-down.svg');
-    height: 30px;
-    width: 30px;
     cursor: pointer;
 }
 
 .up-arrow {
     background-image: url('/static/media/arrow-up.svg');
-    height: 30px;
-    width: 30px;
     cursor: pointer;
 }
 

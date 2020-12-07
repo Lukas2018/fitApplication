@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from app.forms import LoginForm, RegisterForm, UserDataForm, PasswordChangeForm, ProductForm
-from app.models import Product, Day, Nutrientes, PhysicalActivity
+from app.models import Product, Day, Nutrientes, PhysicalActivity, Training
 from app.basic_functions import convert_seconds_to_time_string
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -45,12 +45,14 @@ def index(request):
     activites = PhysicalActivity.objects.all()
     empty_bottles = math.ceil((day.expected_water - day.water)/250)
     full_bottles = math.ceil(day.expected_water / 250) - empty_bottles
+    trainings = day.training_set.all()
     context = {
         'empty_loop_times': range(1, empty_bottles + 1),
         'full_loop_times': range(1, full_bottles + 1),
         'day': day,
         'workout_time': convert_seconds_to_time_string(day.activity_time),
-        'activities': activites
+        'activities': activites,
+        'trainings': trainings
     }
     return render(request, 'index.html', context)
 
@@ -300,6 +302,76 @@ def save_water(request):
             except:
                 return HttpResponse('Server error occured', status=500)
             return HttpResponse('OK', status=200)
+    return HttpResponse('Method not allowed', status=405)
+
+@login_required
+def training_creation(request):
+    if request.is_ajax():
+        if request.method == 'POST':
+            user = request.user
+            data = json.loads(request.body)
+            year = int(data['date'].split('-')[0])
+            month = int(data['date'].split('-')[1])
+            day = int(data['date'].split('-')[2])
+            date = datetime.date(year, month, day)
+            day = user.day_set.filter(date=date).first()
+            if day is not None:
+                activity = PhysicalActivity.objects.filter(id=int(data['activity'])).first()
+                if activity is not None:
+                    training = Training()
+                    try:
+                        day.lose_kcal = day.lose_kcal + data['lose']
+                        day.activity_time = day.activity_time + data['time']
+                        training.lose_kcal = data['lose']
+                        training.notes = data['notes']
+                        training.time = data['time']
+                        training.day = day
+                        training.physical_activity = activity
+                        day.save()
+                        training.save()
+                    except:
+                        return HttpResponse('Server error occured', status=500)
+                    return HttpResponse('OK', status=200)
+            return HttpResponse('Bad request', status=400)
+    return HttpResponse('Method not allowed', status=405)
+
+@login_required
+def training_operation(request, id):
+    if request.is_ajax():
+        user = request.user
+        data = json.loads(request.body)
+        year = int(data['date'].split('-')[0])
+        month = int(data['date'].split('-')[1])
+        day = int(data['date'].split('-')[2])
+        date = datetime.date(year, month, day)
+        day = user.day_set.filter(date=date).first()
+        if request.method == 'POST':
+            if day is not None:
+                training = Training.objects.filter(id=id, day=day).first()
+                if training is not None:   
+                    try:
+                        day.lose_kcal = day.lose_kcal + data['lose'] - training.lose_kcal
+                        day.activity_time = day.activity_time + data['time'] - training.time
+                        training.lose_kcal = data['lose']
+                        training.notes = data['notes']
+                        training.time = data['time']
+                        training.day = day
+                        day.save()
+                        training.save()
+                    except:
+                        return HttpResponse('Server error occured', status=500)
+                    return HttpResponse('OK', status=200)
+                return HttpResponse(status=404)
+            return HttpResponse('Bad request', status=400)
+        if request.method == 'DELETE':
+            if day is not None:
+                training = Training.objects.filter(id=id, day=day).first()
+                if training is not None:   
+                    try:
+                        training.delete()
+                    except:
+                        return HttpResponse(status=500)
+                    return HttpResponse('OK', status=200)
     return HttpResponse('Method not allowed', status=405)
 
 @login_required

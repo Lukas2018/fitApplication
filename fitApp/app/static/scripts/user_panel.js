@@ -202,8 +202,8 @@ function removeUserProduct(id) {
         statusCode: {
             200: function() {
                 swal({
-                    title: "Product has been removed!", 
-                    icon: "success"
+                    title: 'Product has been removed!', 
+                    icon: 'success'
                 });
                 removeListElement(id);
                 if($('.product').length == 0) {
@@ -212,8 +212,8 @@ function removeUserProduct(id) {
             },
             500: function() {
                 swal({
-                    title: "Sorry, an server error occured", 
-                    icon: "error"
+                    title: 'Sorry, an server error occured', 
+                    icon: 'error'
                 });
             }
         }

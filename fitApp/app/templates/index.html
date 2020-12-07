@@ -188,10 +188,10 @@
                 <div class="row details">
                     <div id="bottles">
                         {% for i in full_loop_times %}
-                            <div class="full-bottle image"></div>
+                            <div class="full-bottle image size-30"></div>
                         {% endfor %}
                         {% for i in empty_loop_times %}
-                            <div class="empty-bottle image"></div>
+                            <div class="empty-bottle image size-30"></div>
                         {% endfor %}
                     </div>
                 </div>
@@ -213,6 +213,12 @@
                             <div class="activity-description"> - {{ activity.description }}</div>
                         {% endif %}
                     </div>
+                {% endfor %}
+            </div>
+            <div id="trainings">
+                {% for training in trainings %}
+                    <div class="{{ training.physical_activity.image_class }} image size-40"></div>
+                    <div>{{ training.physical_activity.name }}</div>
                 {% endfor %}
             </div>
         </div>

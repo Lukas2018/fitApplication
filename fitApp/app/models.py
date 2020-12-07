@@ -84,6 +84,7 @@ class Meal(models.Model):
     dishes = models.ManyToManyField('Dish')
 
 class Training(models.Model):
+    id = models.AutoField(primary_key=True)
     time = models.IntegerField()
     lose_kcal = models.FloatField()
     notes = models.CharField(max_length=255, blank=True, null=True)

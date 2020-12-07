@@ -83,3 +83,7 @@ html, body {
 .sport-activity .activity-name {
     margin-left: 20px;
 }
+
+.modal-img {
+    margin: auto;
+}

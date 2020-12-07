@@ -22,7 +22,7 @@ window.addEventListener('load', function() {
                 'date': getDateFromUrl(),
                 'water': $('.water-data .data .current').text()
             });
-            sendData('/save_water/', data);
+            sendData('/save_water/', data, 'POST', false);
         }, timeToWait);
     });
     $('.full-bottle').click(function() {
@@ -33,7 +33,7 @@ window.addEventListener('load', function() {
                 'date': getDateFromUrl(),
                 'water': $('.water-data .data .current').text()
             });
-            sendData('/save_water/', data);
+            sendData('/save_water/', data, 'POST', false);
         }, timeToWait);
     });
     $('.weight-data .minus').click(function() {
@@ -44,7 +44,7 @@ window.addEventListener('load', function() {
                 'date': getDateFromUrl(),
                 'weight': $('.weight-data .data').text()
             });
-            sendData('/save_weight/', data);
+            sendData('/save_weight/', data, 'POST', false);
         }, timeToWait);
     }); 
     $('.weight-data .plus').click(function() {
@@ -55,7 +55,7 @@ window.addEventListener('load', function() {
                 'date': getDateFromUrl(),
                 'weight': $('.weight-data .data').text()
             });
-            sendData('/save_weight/', data);
+            sendData('/save_weight/', data, 'POST', false);
         }, timeToWait);
     });
     $('.heart-data .minus').click(function() {
@@ -66,7 +66,7 @@ window.addEventListener('load', function() {
                 'date': getDateFromUrl(),
                 'pulse': $('.heart-data .data').text()
             });
-            sendData('/save_pulse/', data);
+            sendData('/save_pulse/', data, 'POST', false);
         }, timeToWait);
     }); 
     $('.heart-data .plus').click(function() {
@@ -77,12 +77,15 @@ window.addEventListener('load', function() {
                 'date': getDateFromUrl(),
                 'pulse': $('.heart-data .data').text()
             });
-            sendData('/save_pulse/', data);
+            sendData('/save_pulse/', data, 'POST', false);
         }, timeToWait);
     });
     $('.search-input').keyup(function() {
         searchItems(this);
-    })
+    });
+    $('.sport-activity').click(function() {
+        createTraining(this);
+    });
     getDateFromUrl();
 });
 
@@ -186,7 +189,6 @@ function searchItems(search) {
                 for(let j=0; j < sportParts.length; j++) {
                     for(let k=0; k < patternParts.length; k++) {
                         if(sportParts[j].toLowerCase().startsWith(patternParts[k].toLowerCase())) {
-                            console.log(sportParts[j] + '-' + patternParts[k])
                             total++;
                             break;
                         }
@@ -220,7 +222,69 @@ function searchItems(search) {
         });
     }
 }
-function sendData(endpoint, data) {
+
+function createTraining(sport) {
+    let sportName = $(sport).find('.activity-name').text();
+    let imgClass = $(sport).find('.image').attr('class').split(' ')[0];
+    console.log(imgClass);
+    let content = document.createElement('div');
+    content.className = 'content';
+    let img = document.createElement('div');
+    img.classList.add('modal-img');
+    img.classList.add('image');
+    img.classList.add(imgClass);
+    img.classList.add('size-40');
+    let activityName = document.createElement('div');
+    activityName.innerHTML = sportName;
+    let timeInput = document.createElement('input');
+    timeInput.type = 'time';
+    content.appendChild(img);
+    content.appendChild(activityName);
+    content.appendChild(timeInput);
+    /*swal({
+        title: 'Add activity', 
+        content: content,
+        button: 'Add', 
+        allowOutsideClick: "true" 
+    });*/
+
+    /*let data = JSON.stringify({
+        'date': getDateFromUrl(),
+        'activity': 52,
+        'lose': 100,
+        'time': 3600,
+        'notes': '12km'
+    });
+    sendData('/training/', data, true);*/
+}
+
+function editTraining(training) {
+    let id = 2;
+    let data = JSON.stringify({
+        'date': getDateFromUrl(),
+        'lose': 100,
+        'time': 3500,
+        'notes': '12km'
+    });
+    let url = '/training/' + id + '/';
+    sendData(url, data, 'POST', true);
+}
+
+function deleteTraining(training) {
+    let id = 2;
+    let data = JSON.stringify({
+        'date': getDateFromUrl(),
+    });
+    let url = '/training/' + id + '/';
+    sendData(url, data, 'DELETE', true);
+}
+
+function calculateLoseKcal(met, time, weight) {
+    let lose = met * time * weight;
+    return lose;
+}
+
+function sendData(endpoint, data, type, modal) {
     let csrftoken = getCookie('csrftoken');
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {
@@ -232,11 +296,53 @@ function sendData(endpoint, data) {
     });
 
     $.ajax({
-        type: 'POST',
+        type: type,
         url: endpoint,
         data: data,
         contentType: 'application/json; charset=utf-8',
-        dataType: 'json'
+        dataType: 'json',
+        statusCode: {
+            200: function() {
+                if(modal == true) {
+                    swal({
+                        title: 'Training added successfully', 
+                        icon: 'success'
+                    });
+                }
+            },
+            400: function() {
+                if(modal == true) {
+                    swal({
+                        title: 'Bad request', 
+                        icon: 'error'
+                    });
+                }
+            },
+            404: function() {
+                if(modal == true) {
+                    swal({
+                        title: 'Not found', 
+                        icon: 'error'
+                    });
+                }
+            },
+            405: function() {
+                if(modal == true) {
+                    swal({
+                        title: 'Method not allowed', 
+                        icon: 'error'
+                    });
+                }
+            },
+            500: function() {
+                if(modal == true) {
+                    swal({
+                        title: 'Sorry, an server error occured',
+                        icon: 'error'
+                    });
+                }
+            }
+        }
     });
 }
 
