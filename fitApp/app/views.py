@@ -331,7 +331,14 @@ def training_creation(request):
                         training.save()
                     except:
                         return HttpResponse('Server error occured', status=500)
-                    return HttpResponse('OK', status=200)
+                    data = {
+                        'id': training.id,
+                        'activity_name': activity.name,
+                        'met': activity.met,
+                        'class_name': activity.image_class
+                    }
+                    data = json.dumps(data)
+                    return HttpResponse(data, content_type='application/json', status=200)
             return HttpResponse('Bad request', status=400)
     return HttpResponse('Method not allowed', status=405)
 
@@ -368,10 +375,14 @@ def training_operation(request, id):
                 training = Training.objects.filter(id=id, day=day).first()
                 if training is not None:   
                     try:
+                        day.lose_kcal = day.lose_kcal - training.lose_kcal
+                        day.activity_time = day.activity_time - training.time
+                        day.save()
                         training.delete()
                     except:
                         return HttpResponse(status=500)
                     return HttpResponse('OK', status=200)
+                return HttpResponse(status=404)
     return HttpResponse('Method not allowed', status=405)
 
 @login_required
@@ -480,6 +491,8 @@ def get_day_specific_data(request):
                         elif data_type == 'steps':
                             summary = 0
                             expected = last_non_null_value.expected_steps
+                        elif data_type == 'workout':
+                            summary = 0
                         elif data_type == 'water':
                             summary = 0
                             expected = last_non_null_value.expected_water
@@ -497,6 +510,7 @@ def get_day_specific_data(request):
                     }
                 start_date += delta
             data = json.dumps(data)
+            print(data)
             return HttpResponse(data, content_type='application/json', status=200)
     return HttpResponse('Method not allowed', status=405)
 

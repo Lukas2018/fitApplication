@@ -466,18 +466,3 @@ function renderChart(type, labels, label, dataSummary, dataExpected, begin, isTi
         }
     });
 }
-
-function convertSecondsToTimeString(seconds) {
-    let hours = Math.floor(seconds / 3600);
-    let minutes = Math.floor((seconds % 3600) / 60);
-    seconds = Math.floor(seconds - hours * 3600 - minutes * 60);
-    let result = addZeroIfNeeded(hours) + ':' + addZeroIfNeeded(minutes) + ':' + addZeroIfNeeded(seconds);
-    return result;
-}
-
-function addZeroIfNeeded(time) {
-    if(time < 10) {
-        return '0' + time
-    }
-    return time
-}

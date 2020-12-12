@@ -35,3 +35,33 @@ function getCookie(name) {
 function csrfSafeMethod(method) {
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
+
+function convertSecondsToTimeString(seconds) {
+    let hours = Math.floor(seconds/3600);
+    let minutes = Math.floor((seconds % 3600) / 60);
+    seconds = seconds - hours * 3600 - minutes * 60;
+    result = addZeroIfNeeded(hours) + ':' + addZeroIfNeeded(minutes) + ':' + addZeroIfNeeded(seconds);
+    return result;
+}
+
+function convertTimeStringToSeconds(time) {
+    time = time.split(':');
+    let hours = parseInt(cutZeroIfNeeded(time[0]));
+    let minutes = parseInt(cutZeroIfNeeded(time[1]));
+    let seconds = parseInt(cutZeroIfNeeded(time[2]));
+    return 3600*hours + 60*minutes + seconds; 
+}
+
+function addZeroIfNeeded(time) {
+    if(time < 10) {
+        return '0' + time.toString();
+    }
+    return time.toString();
+}
+
+function cutZeroIfNeeded(time) {
+    if(time[0] == '0') {
+        return time[1];
+    }
+    return time;
+}

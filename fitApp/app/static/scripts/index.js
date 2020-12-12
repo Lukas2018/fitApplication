@@ -8,6 +8,9 @@ window.addEventListener('load', function() {
     $('.arrow-down').click(function() {
         showDetails($(this));
     });
+    $('.down-arrow').click(function() {
+        showTrainingDetails($(this));
+    });
     $('#water .plus').click(function() {
         if($('#water .arrow').hasClass('arrow-down')) {
             $()
@@ -22,7 +25,7 @@ window.addEventListener('load', function() {
                 'date': getDateFromUrl(),
                 'water': $('.water-data .data .current').text()
             });
-            sendData('/save_water/', data, 'POST', false);
+            sendData('/save_water/', data);
         }, timeToWait);
     });
     $('.full-bottle').click(function() {
@@ -33,7 +36,7 @@ window.addEventListener('load', function() {
                 'date': getDateFromUrl(),
                 'water': $('.water-data .data .current').text()
             });
-            sendData('/save_water/', data, 'POST', false);
+            sendData('/save_water/', data);
         }, timeToWait);
     });
     $('.weight-data .minus').click(function() {
@@ -44,7 +47,7 @@ window.addEventListener('load', function() {
                 'date': getDateFromUrl(),
                 'weight': $('.weight-data .data').text()
             });
-            sendData('/save_weight/', data, 'POST', false);
+            sendData('/save_weight/', data);
         }, timeToWait);
     }); 
     $('.weight-data .plus').click(function() {
@@ -55,7 +58,7 @@ window.addEventListener('load', function() {
                 'date': getDateFromUrl(),
                 'weight': $('.weight-data .data').text()
             });
-            sendData('/save_weight/', data, 'POST', false);
+            sendData('/save_weight/', data);
         }, timeToWait);
     });
     $('.heart-data .minus').click(function() {
@@ -66,7 +69,7 @@ window.addEventListener('load', function() {
                 'date': getDateFromUrl(),
                 'pulse': $('.heart-data .data').text()
             });
-            sendData('/save_pulse/', data, 'POST', false);
+            sendData('/save_pulse/', data);
         }, timeToWait);
     }); 
     $('.heart-data .plus').click(function() {
@@ -77,7 +80,7 @@ window.addEventListener('load', function() {
                 'date': getDateFromUrl(),
                 'pulse': $('.heart-data .data').text()
             });
-            sendData('/save_pulse/', data, 'POST', false);
+            sendData('/save_pulse/', data);
         }, timeToWait);
     });
     $('.search-input').keyup(function() {
@@ -86,6 +89,21 @@ window.addEventListener('load', function() {
     $('.sport-activity').click(function() {
         createTraining(this);
     });
+    $('.trash').each(function() {
+        $(this).on('click', function() {
+            deleteTraining(this);
+        })
+    });
+    $('.edit').each(function() {
+        $(this).on('click', function() {
+            editTraining(this);
+        })
+    });
+    $('.training-time .data').each(function() {
+        if($(this).text().split(':').length == 1) {
+            $(this).text(convertSecondsToTimeString(parseInt($(this).text())));
+        }
+    })
     getDateFromUrl();
 });
 
@@ -116,6 +134,24 @@ function hideDetails(arrowElem) {
     listElem.css('display', 'none');
     arrowElem.click(function() {
         showDetails(arrowElem);
+    });
+}
+
+function showTrainingDetails(arrowElem) {
+    let listElem = arrowElem.parent().parent().parent().find('.training-details');
+    arrowElem.removeClass('down-arrow').addClass('up-arrow');
+    listElem.css('display', 'flex');
+    $(arrowElem).click(function() {
+        hideTrainingDetails(arrowElem);
+    });
+}
+
+function hideTrainingDetails(arrowElem) {
+    let listElem = arrowElem.parent().parent().parent().find('.training-details');
+    arrowElem.removeClass('up-arrow').addClass('down-arrow');
+    listElem.css('display', 'none');
+    $(arrowElem).click(function() {
+        showTrainingDetails(arrowElem);
     });
 }
 
@@ -194,7 +230,7 @@ function searchItems(search) {
                         }
                     }
                 }
-                if(total == patternParts.length) {
+                if(total >= patternParts.length) {
                     find = true;
                     matched++;
                 }
@@ -224,9 +260,92 @@ function searchItems(search) {
 }
 
 function createTraining(sport) {
+    let content = createModalContent(sport);
+    swal({
+        title: 'Add activity', 
+        content: content,
+        buttons: {
+            confirm: 'Add',
+            cancel: true
+        }, 
+        allowOutsideClick: "true" 
+    }).then(function(willAdd) {
+        if(willAdd) {
+            let sportId = parseInt($(sport).attr('class').split('sport-activity-id-')[1].split(' ')[0]);
+            let sportMet = parseFloat($(sport).attr('class').split('activity-met-')[1].split(' ')[0]);
+            let weight = parseFloat($('.weight-data .data').text());
+            let time = convertTimeStringToSeconds($('#input-activity-time').val() + ":00");
+            let lose = calculateLoseKcal(sportMet, time, weight);
+            let note = $('#input-note').val();
+            let data = JSON.stringify({
+                'date': getDateFromUrl(),
+                'activity': sportId,
+                'lose': lose,
+                'time': time,
+                'notes': note
+            });
+            addTraining('/training/', data);
+        }
+        $('.search-input').val('');
+        $('.sport-activity').each(function() {
+            $(this).css('display', 'none');
+        })
+    });
+}
+
+function editTraining(sport) {
+    let content = createModalContent(sport);
+    swal({
+        title: 'Edit activity', 
+        content: content,
+        buttons: {
+            confirm: 'Edit',
+            cancel: true
+        }, 
+        allowOutsideClick: "true" 
+    }).then(function(willEdit) {
+        if(willEdit) {
+            let sportId = parseInt($(sport).attr('class').split('sport-activity-id-')[1].split(' ')[0]);
+            let sportMet = parseFloat($(sport).attr('class').split('activity-met-')[1].split(' ')[0]);
+            let weight = parseFloat($('.weight-data .data').text());
+            let time = convertTimeStringToSeconds($('#input-activity-time').val() + ":00");
+            let lose = calculateLoseKcal(sportMet, time, weight);
+            let note = $('#input-note').val();
+            let data = JSON.stringify({
+                'date': getDateFromUrl(),
+                'activity': sportId,
+                'lose': lose,
+                'time': time,
+                'notes': note
+            });
+            //let url = '/training/' + id + '/';
+            //sendData(url, data, 'POST', true);
+        }
+    });
+}
+
+function deleteTraining(training) {
+    swal({
+        title: "Removing training",
+        text: "Are you sure you want to remove this training?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+    .then((willDelete) => {
+        if(willDelete) {
+            let id = $(training).attr('class').split('id-')[1].split(' ')[0];
+            let data = JSON.stringify({
+                'date': getDateFromUrl(),
+            });
+            removeTraining(id, data);
+        }
+    });
+}
+
+function createModalContent(sport) {
     let sportName = $(sport).find('.activity-name').text();
     let imgClass = $(sport).find('.image').attr('class').split(' ')[0];
-    console.log(imgClass);
     let content = document.createElement('div');
     content.className = 'content';
     let img = document.createElement('div');
@@ -237,54 +356,27 @@ function createTraining(sport) {
     let activityName = document.createElement('div');
     activityName.innerHTML = sportName;
     let timeInput = document.createElement('input');
+    timeInput.id = 'input-activity-time';
     timeInput.type = 'time';
+    timeInput.value = '00:00';
+    let textarea = document.createElement('textarea');
+    textarea.id = 'input-note';
+    textarea.maxLength = 255;
+    textarea.placeholder = 'Your training notes...';
     content.appendChild(img);
     content.appendChild(activityName);
     content.appendChild(timeInput);
-    /*swal({
-        title: 'Add activity', 
-        content: content,
-        button: 'Add', 
-        allowOutsideClick: "true" 
-    });*/
-
-    /*let data = JSON.stringify({
-        'date': getDateFromUrl(),
-        'activity': 52,
-        'lose': 100,
-        'time': 3600,
-        'notes': '12km'
-    });
-    sendData('/training/', data, true);*/
-}
-
-function editTraining(training) {
-    let id = 2;
-    let data = JSON.stringify({
-        'date': getDateFromUrl(),
-        'lose': 100,
-        'time': 3500,
-        'notes': '12km'
-    });
-    let url = '/training/' + id + '/';
-    sendData(url, data, 'POST', true);
-}
-
-function deleteTraining(training) {
-    let id = 2;
-    let data = JSON.stringify({
-        'date': getDateFromUrl(),
-    });
-    let url = '/training/' + id + '/';
-    sendData(url, data, 'DELETE', true);
+    content.appendChild(textarea);
+    return content;
 }
 
 function calculateLoseKcal(met, time, weight) {
+    time = (time / 3600).toFixed(2);
     let lose = met * time * weight;
-    return lose;
+    return parseFloat(lose.toFixed(2));
 }
 
-function sendData(endpoint, data, type, modal) {
+function sendData(endpoint, data) {
     let csrftoken = getCookie('csrftoken');
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {
@@ -296,54 +388,172 @@ function sendData(endpoint, data, type, modal) {
     });
 
     $.ajax({
-        type: type,
+        type: 'POST',
+        url: endpoint,
+        data: data,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+    });
+}
+
+function addTraining(endpoint, data) {
+    let csrftoken = getCookie('csrftoken');
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                xhr.setRequestHeader('content-type', 'application/json');
+            }
+        }
+    });
+    $.ajax({
+        type: 'POST',
         url: endpoint,
         data: data,
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
         statusCode: {
-            200: function() {
-                if(modal == true) {
-                    swal({
-                        title: 'Training added successfully', 
-                        icon: 'success'
-                    });
-                }
+            200: function(responseData) {
+                swal({
+                    title: 'Training added successfully', 
+                    icon: 'success'
+                });
+                data = JSON.parse(data);
+                addTrainingElement(data, responseData);
+                updateActivitySummary(0, 0, data.time, data.lose);
             },
             400: function() {
-                if(modal == true) {
-                    swal({
-                        title: 'Bad request', 
-                        icon: 'error'
-                    });
-                }
+                swal({
+                    title: 'Bad request', 
+                    icon: 'error'
+                });
             },
             404: function() {
-                if(modal == true) {
-                    swal({
-                        title: 'Not found', 
-                        icon: 'error'
-                    });
-                }
+                swal({
+                    title: 'Not found', 
+                    icon: 'error'
+                });
             },
             405: function() {
-                if(modal == true) {
-                    swal({
-                        title: 'Method not allowed', 
-                        icon: 'error'
-                    });
-                }
+                swal({
+                    title: 'Method not allowed', 
+                    icon: 'error'
+                });
             },
             500: function() {
-                if(modal == true) {
-                    swal({
-                        title: 'Sorry, an server error occured',
-                        icon: 'error'
-                    });
-                }
+                swal({
+                    title: 'Sorry, an server error occured',
+                    icon: 'error'
+                });
             }
         }
     });
+}
+
+function addTrainingElement(data, responseData) {
+    let trainings = $('#trainings');
+    let trainingContainer = $('<div id="training-id-' + responseData['id'] + '" class="training"></div>');
+    let trainingDataContainer = $('<div class="training-data activity-met-' + responseData['met'] + '"></div>');
+    let trainingImage = $('<div class="' + responseData['class_name'] + ' image size-40"></div>');
+    let trainingName = $('<div class="activity">' + responseData['activity_name'] + '</div>');
+    let trainingOperationsContainer = $('<div class="training-operations"></div>');
+    let trainingEdit = $('<div class="image edit size-25 id-' + responseData['id'] +'"></div>');
+    let trainingDelete = $('<div class="image trash size-25 id-' + responseData['id'] + '"></div>');
+    let trainingArrow = $('<div class="image down-arrow size-25"></div>');
+    let trainingDetailsContainer = $('<div class="training-details"></div>');
+    let trainingTime = $('<div class="training-time">Time:' + '<div class="data">' + convertSecondsToTimeString(data.time) + '</div></div>');
+    let trainingKcal = $('<div class="training-kcal">Burned kcal:' + '<div class="data">' + data.lose + '</div></div>');
+    let trainingNote = $('<div class="training-note">' + data.notes + '</div>');
+    trainingEdit.click(function() {
+        editTraining(this);
+    })
+    trainingDelete.click(function() {
+        deleteTraining(this);
+    })
+    trainingArrow.click(function() {
+        showTrainingDetails($(this));
+    })
+    trainingOperationsContainer.append(trainingEdit);
+    trainingOperationsContainer.append(trainingDelete);
+    trainingOperationsContainer.append(trainingArrow);
+    trainingDataContainer.append(trainingImage);
+    trainingDataContainer.append(trainingName);
+    trainingDataContainer.append(trainingOperationsContainer);
+    trainingDetailsContainer.append(trainingTime);
+    trainingDetailsContainer.append(trainingKcal);
+    trainingDetailsContainer.append(trainingNote);
+    trainingContainer.append(trainingDataContainer);
+    trainingContainer.append(trainingDetailsContainer);
+    trainings.append(trainingContainer);
+}
+
+function removeTraining(id, data) {
+    let url = '/training/' + id + '/';
+    let csrftoken = getCookie('csrftoken');
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                xhr.setRequestHeader('content-type', 'application/json');
+            }
+        }
+    });
+    $.ajax({
+        type: 'DELETE',
+        url: url,
+        data: data,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        statusCode: {
+            200: function() {
+                swal({
+                    title: 'Training has been removed', 
+                    icon: 'success'
+                });
+                let time = convertTimeStringToSeconds($('#training-id-' + id + ' .training-time .data').text());
+                let lose = parseFloat($('#training-id-' + id + ' .training-kcal .data').text());
+                updateActivitySummary(time, lose, 0, 0);
+                removeTrainingElement(id);
+            },
+            400: function() {
+                swal({
+                    title: 'Bad request', 
+                    icon: 'error'
+                });
+            },
+            404: function() {
+                swal({
+                    title: 'Not found', 
+                    icon: 'error'
+                });
+            },
+            405: function() {
+                swal({
+                    title: 'Method not allowed', 
+                    icon: 'error'
+                });
+            },
+            500: function() {
+                swal({
+                    title: 'Sorry, an server error occured',
+                    icon: 'error'
+                });
+            }
+        }
+    });
+}
+
+function removeTrainingElement(id) {
+    $('#trainings').find('#training-id-' + id).remove();
+}
+
+function updateActivitySummary(oldTime, oldLose, time, lose) {
+    let totalKcal = parseFloat($('.kcal-lose .data').text());
+    totalKcal = totalKcal - oldLose + lose;
+    $('.kcal-lose .data').text(totalKcal);
+    let totalTime = $('.workout-data .data').text();
+    totalTime = convertTimeStringToSeconds(totalTime) - oldTime + time;
+    $('.workout-data .data').text(convertSecondsToTimeString(totalTime));
 }
 
 function getDateFromUrl() {

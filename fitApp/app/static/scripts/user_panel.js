@@ -186,7 +186,7 @@ function getUserMeals() {
 }
 
 function removeUserProduct(id) {
-    url = '/product/' + id;
+    url = '/product/' + id + '/';
     let csrftoken = getCookie('csrftoken');
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {

@@ -100,10 +100,12 @@
 
 .edit {
     background-image: url('/static/media/edit.svg');
+    cursor: pointer;
 }
 
 .trash {
     background-image: url('/static/media/trash.svg');
+    cursor: pointer;
 }
 
 #meals .image.plus {

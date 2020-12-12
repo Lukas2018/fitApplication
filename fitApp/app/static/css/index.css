@@ -68,6 +68,9 @@ html, body {
 
 #sports {
     background-color: white;
+    position: absolute;
+    width: 100%;
+    top: 37px;
 }
 
 .sport-activity {
@@ -76,14 +79,57 @@ html, body {
     border-left: 1px solid #ced4da;
     border-right: 1px solid #ced4da;
     cursor: pointer;
-    font-size: large;
     padding: 5px;
+    align-items: center;
 }
 
 .sport-activity .activity-name {
     margin-left: 20px;
+    font-size: large;
+}
+
+.sport-activity .activity-description {
+    margin-left: auto;
+    font-style: oblique;
+    font-size: medium;
 }
 
 .modal-img {
     margin: auto;
+}
+
+.training {
+    margin-top: 20px;
+    font-size: large;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(0,0,0,.1)
+}
+
+.training-data {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.training-details {
+    display: none;
+}
+
+.training-operations {
+    display: flex;
+}
+
+.training-operations div {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#input-activity-time {
+    width: 50%;
+}
+
+#input-note {
+    width: 60%;
+    margin-top: 20px;
+    resize: none;
 }
