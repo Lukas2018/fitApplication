@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.http import HttpResponse
+from decimal import Decimal
 import datetime
 import json
 import math
@@ -320,8 +321,9 @@ def training_creation(request):
                 if activity is not None:
                     training = Training()
                     try:
-                        day.lose_kcal = day.lose_kcal + data['lose']
-                        day.activity_time = day.activity_time + data['time']
+                        print(data['lose'])
+                        day.lose_kcal = round(day.lose_kcal + data['lose'], 1)
+                        day.activity_time = round(day.activity_time + data['time'])
                         training.lose_kcal = data['lose']
                         training.notes = data['notes']
                         training.time = data['time']
@@ -357,8 +359,8 @@ def training_operation(request, id):
                 training = Training.objects.filter(id=id, day=day).first()
                 if training is not None:   
                     try:
-                        day.lose_kcal = day.lose_kcal + data['lose'] - training.lose_kcal
-                        day.activity_time = day.activity_time + data['time'] - training.time
+                        day.lose_kcal = round(day.lose_kcal + data['lose'] - training.lose_kcal, 1)
+                        day.activity_time = round(day.activity_time + data['time'] - training.time)
                         training.lose_kcal = data['lose']
                         training.notes = data['notes']
                         training.time = data['time']
@@ -375,14 +377,15 @@ def training_operation(request, id):
                 training = Training.objects.filter(id=id, day=day).first()
                 if training is not None:   
                     try:
-                        day.lose_kcal = day.lose_kcal - training.lose_kcal
-                        day.activity_time = day.activity_time - training.time
+                        day.lose_kcal = round(day.lose_kcal - training.lose_kcal, 1)
+                        day.activity_time = round(day.activity_time - training.time)
                         day.save()
                         training.delete()
                     except:
                         return HttpResponse(status=500)
                     return HttpResponse('OK', status=200)
                 return HttpResponse(status=404)
+            return HttpResponse('Bad request', status=400)
     return HttpResponse('Method not allowed', status=405)
 
 @login_required

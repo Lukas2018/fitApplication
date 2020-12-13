@@ -221,7 +221,7 @@
                     <div id="training-id-{{ training.id}}" class="training">
                         <div class="training-data activity-met-{{ training.physical_activity.met }}">
                             <div class="{{ training.physical_activity.image_class }} image size-40"></div>
-                            <div class="activity">{{ training.physical_activity.name }}</div>
+                            <div class="activity-name">{{ training.physical_activity.name }}</div>
                             <div class="training-operations">
                                 <div class="image edit size-25 id-{{ training.id }}"></div>
                                 <div class="image trash size-25 id-{{ training.id }}"></div>
@@ -229,8 +229,8 @@
                             </div>
                         </div>
                         <div class="training-details">
-                            <div class="training-time">Time: <div class="data">{{ training.time }}</div></div>
-                            <div class="training-kcal">Burned kcal: <div class="data">{{ training.lose_kcal }}</div></div>
+                            <div class="training-time">Time: &nbsp;<div class="data">{{ training.time }}</div></div>
+                            <div class="training-kcal">Burned kcal:	&nbsp;<div class="data">{{ training.lose_kcal }}</div></div>
                             <div class="training-note">{{ training.notes }}</div>
                         </div>
                     </div>

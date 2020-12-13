@@ -111,8 +111,25 @@ html, body {
     justify-content: space-around;
 }
 
+.training-data .activity-name {
+    font-weight: 640;
+}
+
 .training-details {
     display: none;
+    flex-wrap: wrap;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.training-time, .training-kcal {
+    display: inline-flex;
+    width: 50%;
+}
+
+.training-note {
+    width: 100%;
+    text-align: center;
 }
 
 .training-operations {

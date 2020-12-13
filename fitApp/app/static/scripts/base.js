@@ -39,7 +39,7 @@ function csrfSafeMethod(method) {
 function convertSecondsToTimeString(seconds) {
     let hours = Math.floor(seconds/3600);
     let minutes = Math.floor((seconds % 3600) / 60);
-    seconds = seconds - hours * 3600 - minutes * 60;
+    seconds = Math.floor(seconds - hours * 3600 - minutes * 60);
     result = addZeroIfNeeded(hours) + ':' + addZeroIfNeeded(minutes) + ':' + addZeroIfNeeded(seconds);
     return result;
 }

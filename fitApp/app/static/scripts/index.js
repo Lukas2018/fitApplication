@@ -260,7 +260,7 @@ function searchItems(search) {
 }
 
 function createTraining(sport) {
-    let content = createModalContent(sport);
+    let content = createModalContent(sport, null, null);
     swal({
         title: 'Add activity', 
         content: content,
@@ -293,8 +293,12 @@ function createTraining(sport) {
     });
 }
 
-function editTraining(sport) {
-    let content = createModalContent(sport);
+function editTraining(training) {
+    training = $(training).parent().parent().parent();
+    let time = training.find('.training-time .data').text();
+    time = time.split(':')[0] + ':' + time.split(':')[1];
+    let note = training.find('.training-note').text();
+    let content = createModalContent(training, time, note);
     swal({
         title: 'Edit activity', 
         content: content,
@@ -305,21 +309,20 @@ function editTraining(sport) {
         allowOutsideClick: "true" 
     }).then(function(willEdit) {
         if(willEdit) {
-            let sportId = parseInt($(sport).attr('class').split('sport-activity-id-')[1].split(' ')[0]);
-            let sportMet = parseFloat($(sport).attr('class').split('activity-met-')[1].split(' ')[0]);
+            let sportMet = parseFloat($(training).find('.training-data').attr('class').split('activity-met-')[1].split(' ')[0]);
             let weight = parseFloat($('.weight-data .data').text());
             let time = convertTimeStringToSeconds($('#input-activity-time').val() + ":00");
             let lose = calculateLoseKcal(sportMet, time, weight);
+            console.log(lose);
             let note = $('#input-note').val();
             let data = JSON.stringify({
                 'date': getDateFromUrl(),
-                'activity': sportId,
                 'lose': lose,
                 'time': time,
                 'notes': note
             });
-            //let url = '/training/' + id + '/';
-            //sendData(url, data, 'POST', true);
+            let id = training.attr('id').split('-')[2];
+            editTrainingData(id, data);
         }
     });
 }
@@ -343,7 +346,10 @@ function deleteTraining(training) {
     });
 }
 
-function createModalContent(sport) {
+function createModalContent(sport, time, note) {
+    if(time == null) {
+        time = '00:00';
+    }
     let sportName = $(sport).find('.activity-name').text();
     let imgClass = $(sport).find('.image').attr('class').split(' ')[0];
     let content = document.createElement('div');
@@ -358,11 +364,12 @@ function createModalContent(sport) {
     let timeInput = document.createElement('input');
     timeInput.id = 'input-activity-time';
     timeInput.type = 'time';
-    timeInput.value = '00:00';
+    timeInput.value = time;
     let textarea = document.createElement('textarea');
     textarea.id = 'input-note';
     textarea.maxLength = 255;
     textarea.placeholder = 'Your training notes...';
+    textarea.value = note;
     content.appendChild(img);
     content.appendChild(activityName);
     content.appendChild(timeInput);
@@ -373,7 +380,7 @@ function createModalContent(sport) {
 function calculateLoseKcal(met, time, weight) {
     time = (time / 3600).toFixed(2);
     let lose = met * time * weight;
-    return parseFloat(lose.toFixed(2));
+    return parseFloat(lose.toFixed(1));
 }
 
 function sendData(endpoint, data) {
@@ -455,14 +462,14 @@ function addTrainingElement(data, responseData) {
     let trainingContainer = $('<div id="training-id-' + responseData['id'] + '" class="training"></div>');
     let trainingDataContainer = $('<div class="training-data activity-met-' + responseData['met'] + '"></div>');
     let trainingImage = $('<div class="' + responseData['class_name'] + ' image size-40"></div>');
-    let trainingName = $('<div class="activity">' + responseData['activity_name'] + '</div>');
+    let trainingName = $('<div class="activity-name">' + responseData['activity_name'] + '</div>');
     let trainingOperationsContainer = $('<div class="training-operations"></div>');
     let trainingEdit = $('<div class="image edit size-25 id-' + responseData['id'] +'"></div>');
     let trainingDelete = $('<div class="image trash size-25 id-' + responseData['id'] + '"></div>');
     let trainingArrow = $('<div class="image down-arrow size-25"></div>');
     let trainingDetailsContainer = $('<div class="training-details"></div>');
-    let trainingTime = $('<div class="training-time">Time:' + '<div class="data">' + convertSecondsToTimeString(data.time) + '</div></div>');
-    let trainingKcal = $('<div class="training-kcal">Burned kcal:' + '<div class="data">' + data.lose + '</div></div>');
+    let trainingTime = $('<div class="training-time">Time: &nbsp;' + '<div class="data">' + convertSecondsToTimeString(data.time) + '</div></div>');
+    let trainingKcal = $('<div class="training-kcal">Burned kcal: &nbsp;' + '<div class="data">' + data.lose + '</div></div>');
     let trainingNote = $('<div class="training-note">' + data.notes + '</div>');
     trainingEdit.click(function() {
         editTraining(this);
@@ -485,6 +492,70 @@ function addTrainingElement(data, responseData) {
     trainingContainer.append(trainingDataContainer);
     trainingContainer.append(trainingDetailsContainer);
     trainings.append(trainingContainer);
+}
+
+function editTrainingData(id, data) {
+    let url = '/training/' + id + '/';
+    let csrftoken = getCookie('csrftoken');
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                xhr.setRequestHeader('content-type', 'application/json');
+            }
+        }
+    });
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: data,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        statusCode: {
+            200: function() {
+                swal({
+                    title: 'Training has been updated', 
+                    icon: 'success'
+                });
+                let time = convertTimeStringToSeconds($('#training-id-' + id + ' .training-time .data').text());
+                let lose = parseFloat($('#training-id-' + id + ' .training-kcal .data').text());
+                data = JSON.parse(data);
+                updateActivitySummary(time, lose, data.time, data.lose);
+                editTrainingElement(id, data);
+            },
+            400: function() {
+                swal({
+                    title: 'Bad request', 
+                    icon: 'error'
+                });
+            },
+            404: function() {
+                swal({
+                    title: 'Not found', 
+                    icon: 'error'
+                });
+            },
+            405: function() {
+                swal({
+                    title: 'Method not allowed', 
+                    icon: 'error'
+                });
+            },
+            500: function() {
+                swal({
+                    title: 'Sorry, an server error occured',
+                    icon: 'error'
+                });
+            }
+        }
+    });
+}
+
+function editTrainingElement(id, data) {
+    let training = $('#trainings').find('#training-id-' + id);
+    training.find('.training-time .data').text(convertSecondsToTimeString(data.time));
+    training.find('.training-kcal .data').text(data.lose);
+    training.find('.training-note').text(data.notes);
 }
 
 function removeTraining(id, data) {
@@ -550,7 +621,7 @@ function removeTrainingElement(id) {
 function updateActivitySummary(oldTime, oldLose, time, lose) {
     let totalKcal = parseFloat($('.kcal-lose .data').text());
     totalKcal = totalKcal - oldLose + lose;
-    $('.kcal-lose .data').text(totalKcal);
+    $('.kcal-lose .data').text(totalKcal.toFixed(1));
     let totalTime = $('.workout-data .data').text();
     totalTime = convertTimeStringToSeconds(totalTime) - oldTime + time;
     $('.workout-data .data').text(convertSecondsToTimeString(totalTime));
