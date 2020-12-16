@@ -130,6 +130,16 @@
     cursor: pointer;
 }
 
+.down-arrow-black {
+    background-image: url('/static/media/arrow-down-black.svg');
+    cursor: pointer;
+}
+
+.up-arrow-black {
+    background-image: url('/static/media/arrow-up-black.svg');
+    cursor: pointer;
+}
+
 .empty-bottle {
     background-image: url('/static/media/water-cup-empty.svg');
 }

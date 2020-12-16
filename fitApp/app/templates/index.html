@@ -133,6 +133,36 @@
                     <div class="col-md-1"><div class="image arrow arrow-down size-40"></div></div>
                     <div class="col-md-1"></div>
                 </div>
+                <div id="breakfast-products" class="meal-id-">
+                    {% for meal in meals %}
+                        {% if meal.meal_type.name == 'Breakfast' %}
+                            <div class="breakfast-product breakfast-product-id-"></div>
+                        {% endif %}
+                    {% endfor %}
+                    <button onclick="detailMealProduct()">Hehe</button>
+                </div>
+                <div id="breakfast-summary" class="meal-summary">
+                    {% for meal in meals %}
+                        {% if meal.meal_type.name == 'Breakfast' %}
+                            <div>
+                                <div>Calories:</div>
+                                <div>{{ meal.summary_kcal }}</div>
+                            </div>
+                            <div>
+                                <div>Protein:</div>
+                                <div>{{ meal.summary_protein }}</div>
+                            </div>
+                            <div>
+                                <div>Carbohydrates:</div>
+                                <div>{{ meal.summary_carbohydrates }}</div>
+                            </div>
+                            <div>
+                                <div>Fats:</div>
+                                <div>{{ meal.summary_fats }}</div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
             <hr/>
             <div id="lunch" class="text-center">
@@ -145,6 +175,13 @@
                     <div class="col-md-1"><div class="image plus size-40"></div></div>
                     <div class="col-md-1"><div class="image arrow arrow-down size-40"></div></div>
                     <div class="col-md-1"></div>
+                </div>
+                <div id="lunch-products">
+                    {% for meal in meals %}
+                        {% if meal.meal_type.name == 'Lunch' %}
+
+                        {% endif %}
+                    {% endfor %}
                 </div>
             </div>
             <hr/>
@@ -159,6 +196,13 @@
                     <div class="col-md-1"><div class="image arrow arrow-down size-40"></div></div>
                     <div class="col-md-1"></div>
                 </div>
+                <div id="dinner-products">
+                    {% for meal in meals %}
+                        {% if meal.meal_type.name == 'Dinner' %}
+
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
             <hr/>
             <div id="other-meals" class="text-center">
@@ -171,6 +215,13 @@
                     <div class="col-md-1"><div class="image plus size-40"></div></div>
                     <div class="col-md-1"><div class="image arrow arrow-down size-40"></div></div>
                     <div class="col-md-1"></div>
+                </div>
+                <div id="other-products">
+                    {% for meal in meals %}
+                        {% if meal.meal_type.name == 'Other' %}
+
+                        {% endif %}
+                    {% endfor %}
                 </div>
             </div>
             <hr/>
@@ -225,7 +276,7 @@
                             <div class="training-operations">
                                 <div class="image edit size-25 id-{{ training.id }}"></div>
                                 <div class="image trash size-25 id-{{ training.id }}"></div>
-                                <div class="image down-arrow size-25"></div>
+                                <div class="image down-arrow-black size-25"></div>
                             </div>
                         </div>
                         <div class="training-details">

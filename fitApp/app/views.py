@@ -1,14 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from app.forms import LoginForm, RegisterForm, UserDataForm, PasswordChangeForm, ProductForm
-from app.models import Product, Day, Nutrientes, PhysicalActivity, Training
-from app.basic_functions import convert_seconds_to_time_string
+from app.models import Product, Day, Nutrientes, PhysicalActivity, Training, MealSet, MealType, Meal, MealProduct
+from app.basic_functions import convert_seconds_to_time_string, calculate_kcal, calculate_proteins, calculate_carbohydrates, calculate_fats
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.http import HttpResponse
-from decimal import Decimal
 import datetime
 import json
 import math
@@ -27,32 +26,55 @@ def index(request):
     if day is None:
         previous_day = user.day_set.filter(date__lte=date).order_by('-date').first()
         next_day = user.day_set.filter(date__gte=date).order_by('date').first()
+        meal_set = MealSet()
+        meal_set.save()
         if previous_day is not None:
             day = Day(date=date, weight=previous_day.weight, pulse=previous_day.pulse, 
                         expected_kcal=previous_day.expected_kcal, expected_protein = previous_day.expected_protein, 
                         expected_carbohydrates = previous_day.expected_carbohydrates, expected_fats = previous_day.expected_fats,
-                        expected_water = previous_day.expected_water, expected_steps = previous_day.expected_steps, user=user)
+                        expected_water = previous_day.expected_water, expected_steps = previous_day.expected_steps, 
+                        meal_set=meal_set, user=user)
         elif next_day is not None:
             day = Day(date=date, weight=next_day.weight, pulse=next_day.pulse, 
                         expected_kcal=next_day.expected_kcal, expected_protein = next_day.expected_protein, 
                         expected_carbohydrates = next_day.expected_carbohydrates, expected_fats = next_day.expected_fats,
-                        expected_water = next_day.expected_water, expected_steps = next_day.expected_steps, user=user)
+                        expected_water = next_day.expected_water, expected_steps = next_day.expected_steps, 
+                        meal_set=meal_set, user=user)
         else:
             day = Day(date=date, weight=user.userprofile.weight, pulse=user.userprofile.pulse, 
                         expected_kcal=user.userprofile.kcal, expected_protein = user.userprofile.protein, 
                         expected_carbohydrates = user.userprofile.carbohydrates, expected_fats = user.userprofile.fats,
-                        expected_water = user.userprofile.water, expected_steps = user.userprofile.steps, user=user)
+                        expected_water = user.userprofile.water, expected_steps = user.userprofile.steps, 
+                        meal_set=meal_set, user=user)
         day.save()
     activites = PhysicalActivity.objects.all()
     empty_bottles = math.ceil((day.expected_water - day.water)/250)
     full_bottles = math.ceil(day.expected_water / 250) - empty_bottles
     trainings = day.training_set.all()
+    meals = day.meal_set.meal_set.all()
+    breakfast = meals.filter(meal_type=MealType.objects.filter(name='Breakfast').first()).first()
+    lunch = meals.filter(meal_type=MealType.objects.filter(name='Lunch').first()).first()
+    dinner = meals.filter(meal_type=MealType.objects.filter(name='Dinner').first()).first()
+    others = meals.filter(meal_type=MealType.objects.filter(name='Other').first()).first()
+    if breakfast is not None:
+        breakfast = breakfast.mealproduct_set.all()
+    if lunch is not None:
+        lunch = lunch.mealproduct_set.all()
+    if dinner is not None:
+        dinner = dinner.mealproduct_set.all()
+    if others is not None:
+        others = others.mealproduct_set.all()
     context = {
         'empty_loop_times': range(1, empty_bottles + 1),
         'full_loop_times': range(1, full_bottles + 1),
         'day': day,
         'workout_time': convert_seconds_to_time_string(day.activity_time),
         'activities': activites,
+        'meals': meals,
+        'breakfast': breakfast,
+        'lunch': lunch,
+        'dinner': dinner,
+        'others': others,
         'trainings': trainings
     }
     return render(request, 'index.html', context)
@@ -164,14 +186,14 @@ def product_creation(request):
                 product.name = form.cleaned_data['name']
                 product.manufacturer = form.cleaned_data['manufacturer']
                 product.user = request.user
-                product.save()
                 nutrientes.kcal = form.cleaned_data['kcal']
                 nutrientes.portion = form.cleaned_data['portion']
                 nutrientes.protein = form.cleaned_data['protein']
                 nutrientes.carbohydrates = form.cleaned_data['carbohydrates']
                 nutrientes.fats = form.cleaned_data['fats']
-                nutrientes.product = product
                 nutrientes.save()
+                product.nutrient = nutrientes
+                product.save()
                 return redirect(request.POST.get('next') + '?successful=1')
             except:
                 error = 1
@@ -188,18 +210,17 @@ def product_operation(request, id):
     product = Product.objects.filter(id=id).first()
     if product is None:
         return HttpResponse(status=404)
-    nutrientes = product.nutrientes_set.first()
     if request.method == 'POST':
         if form.is_valid():
             try:
                 product.name = form.cleaned_data['name']
                 product.manufacturer = form.cleaned_data['manufacturer']
-                nutrientes.kcal = form.cleaned_data['kcal']
-                nutrientes.portion = form.cleaned_data['portion']
-                nutrientes.protein = form.cleaned_data['protein']
-                nutrientes.carbohydrates = form.cleaned_data['carbohydrates']
-                nutrientes.fats = form.cleaned_data['fats']
-                nutrientes.save()
+                product.nutrient.kcal = form.cleaned_data['kcal']
+                product.nutrient.portion = form.cleaned_data['portion']
+                product.nutrient.protein = form.cleaned_data['protein']
+                product.nutrient.carbohydrates = form.cleaned_data['carbohydrates']
+                product.nutrient.fats = form.cleaned_data['fats']
+                product.nutrient.save()
                 product.save()
                 return redirect(request.POST.get('next') + '?successful=1')
             except:
@@ -214,12 +235,77 @@ def product_operation(request, id):
     context = {
         'form': form,
         'product': product,
-        'nutrientes': nutrientes,
         'is_edit': True,
         'error': error
     }
     return render(request, 'product_create.html', context)
 
+@login_required
+def meal_creation(request):
+    if request.is_ajax():
+        if request.method == 'POST':
+            user = request.user
+            data = json.loads(request.body)
+            year = int(data['date'].split('-')[0])
+            month = int(data['date'].split('-')[1])
+            day = int(data['date'].split('-')[2])
+            date = datetime.date(year, month, day)
+            day = user.day_set.filter(date=date).first()
+            if day is not None:
+                meal_set = day.objects.filter(meal_set=MealSet.objects.filter(id=data['mealSetId']).first()).first().meal_set
+                if meal_set is not None:
+                    meal_type = MealType.objects.filter(name=data['mealType']).first()
+                    if meal_type is not None:
+                        meal = meal_set.meal_set.filter(meal_type=meal_type)
+                        if meal is None:
+                            meal = Meal()
+                            meal.meal_type = meal_type
+                            meal.meal_set = meal_set
+                            meal.save()
+                        products = data['products']
+                        summary_kcal = 0
+                        summary_protein = 0
+                        summary_carbohydrates = 0
+                        summary_fats = 0
+                        for item in products:
+                            product = Product.objects.filter(id=item['id']).first()
+                            if product is not None:
+                                portion = float(item['portion'])
+                                kcal = calculate_kcal(product.id, portion)
+                                protein = calculate_proteins(product.id, portion)
+                                carbohydrates = calculate_carbohydrates(product.id, portion)
+                                fats = calculate_fats(product.id, portion)
+                                try:
+                                    meal_product = MealProduct()
+                                    meal_product.meal = meal
+                                    meal_product.product = product
+                                    meal_product.portion = portion
+                                    meal_product.kcal = kcal
+                                    meal_product.protein = protein
+                                    meal_product.carbohydrates = carbohydrates
+                                    meal_product.fats = fats
+                                    meal_product.save()
+                                except:
+                                    return HttpResponse('Server error occured', status=500)
+                                summary_kcal = summary_kcal + kcal
+                                summary_protein = summary_protein + protein
+                                summary_carbohydrates = summary_carbohydrates + carbohydrates
+                                summary_fats = summary_fats + fats
+                        try:
+                            meal.summary_kcal = summary_kcal
+                            meal.summary_protein = summary_protein
+                            meal.summary_carbohydrates = summary_carbohydrates
+                            meal.summary_fats = summary_fats
+                            meal.save()
+                        except:
+                            return HttpResponse('Server error occured', status=500)
+                        return HttpResponse('OK', status=200)
+            return HttpResponse('Bad request', status=400)
+    return HttpResponse('Method not allowed', status=405)
+
+@login_required
+def delete_product_from_meal(request):
+    return HttpResponse()
 @login_required
 def save_index_data(request):
     if request.method == 'POST':
@@ -321,7 +407,6 @@ def training_creation(request):
                 if activity is not None:
                     training = Training()
                     try:
-                        print(data['lose'])
                         day.lose_kcal = round(day.lose_kcal + data['lose'], 1)
                         day.activity_time = round(day.activity_time + data['time'])
                         training.lose_kcal = data['lose']
@@ -513,7 +598,6 @@ def get_day_specific_data(request):
                     }
                 start_date += delta
             data = json.dumps(data)
-            print(data)
             return HttpResponse(data, content_type='application/json', status=200)
     return HttpResponse('Method not allowed', status=405)
 
@@ -530,26 +614,20 @@ def get_user_products(request):
                 data[product.id] = {
                     'name': product.name,
                     'manufacturer': product.manufacturer,
-                    'nutrientes': {}
-                }
-                nutrientes = product.nutrientes_set.all()
-                i = 0
-                for nutrient in nutrientes:
-                    data[product.id]['nutrientes'][i] = {
-                        'kcal': nutrient.kcal,
-                        'protein': nutrient.protein,
-                        'carbohydrates': nutrient.carbohydrates,
-                        'fats': nutrient.fats,
-                        'portion': nutrient.portion,
-                        'is_portion': nutrient.is_portion
+                    'nutrientes': {
+                        'kcal': product.nutrient.kcal,
+                        'protein': product.nutrient.protein,
+                        'carbohydrates': product.nutrient.carbohydrates,
+                        'fats': product.nutrient.fats,
+                        'portion': product.nutrient.portion
                     }
-                    i = i + 1
+                }
             data = json.dumps(data)
             return HttpResponse(data, content_type='application/json', status=200)
     return HttpResponse('Method not allowed', status=405)
 
 @login_required
-def get_user_meals(request):
+def get_user_dishes(request):
     if request.is_ajax():
         if request.method == 'GET':
             return HttpResponse(status=204)

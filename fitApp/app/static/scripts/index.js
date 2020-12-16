@@ -8,7 +8,7 @@ window.addEventListener('load', function() {
     $('.arrow-down').click(function() {
         showDetails($(this));
     });
-    $('.down-arrow').click(function() {
+    $('.down-arrow-black').click(function() {
         showTrainingDetails($(this));
     });
     $('#water .plus').click(function() {
@@ -139,7 +139,7 @@ function hideDetails(arrowElem) {
 
 function showTrainingDetails(arrowElem) {
     let listElem = arrowElem.parent().parent().parent().find('.training-details');
-    arrowElem.removeClass('down-arrow').addClass('up-arrow');
+    arrowElem.removeClass('down-arrow-black').addClass('up-arrow-black');
     listElem.css('display', 'flex');
     $(arrowElem).click(function() {
         hideTrainingDetails(arrowElem);
@@ -148,7 +148,7 @@ function showTrainingDetails(arrowElem) {
 
 function hideTrainingDetails(arrowElem) {
     let listElem = arrowElem.parent().parent().parent().find('.training-details');
-    arrowElem.removeClass('up-arrow').addClass('down-arrow');
+    arrowElem.removeClass('up-arrow-black').addClass('down-arrow-black');
     listElem.css('display', 'none');
     $(arrowElem).click(function() {
         showTrainingDetails(arrowElem);
@@ -210,6 +210,121 @@ function increment(elem, value) {
     elem.text(Math.round((parseFloat(elem.text()) + value) * 10) / 10);
 }
 
+function editMealProduct() {
+    let content = createModalProductContent();
+    swal({
+        title: 'Product edit', 
+        content: content,
+        buttons: {
+            confirm: 'Edit',
+            cancel: true
+        }, 
+        allowOutsideClick: 'true' 
+    }).then(function(willEdit) {
+        if(willEdit) {
+            let mealProductId = 0;
+            let kcal = 0;
+            let portion = 0;
+            let protein = 0;
+            let carbohydrates = 0;
+            let fats = 0;
+            let data = JSON.stringify({
+                'date': getDateFromUrl(),
+                'id': mealProductId,
+                'kcal': kcal,
+                'portion': portion,
+                'protein': protein,
+                'carbohydrates': carbohydrates,
+                'fats': fats;
+            });
+
+        }
+    });
+}
+
+function removeMealProduct() {
+    swal({
+        title: 'Removing product',
+        text: 'Are you sure you want to remove this product from your meal?',
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true,
+    })
+    .then((willDelete) => {
+        if(willDelete) {
+            let mealProductId = 0;
+            let data = JSON.stringify({
+                'date': getDateFromUrl(),
+            });
+        }
+    });
+}
+
+function detailMealProduct() {
+    let content = createModalProductContent();
+    swal({
+        title: 'Product details', 
+        content: content,
+        buttons: {
+            confirm: 'Ok',
+        }, 
+        allowOutsideClick: 'true' 
+    })
+}
+
+function createModalProductContent() {
+    let product = 0;
+    let content = document.createElement('div');
+    content.className = 'content';
+    let productName = document.createElement('div');
+    productName.innerHTML = product;
+    let detailContent = document.createElement('div');
+    detailContent.className = 'detail-content';
+    let kcalContainer = document.createElement('div');
+    let kcalName = document.createElement('div');
+    kcalName.innerHTML = 'Kcal:';
+    let kcalValue = document.createElement('div');
+    kcalValue.innerHTML = '250';
+    kcalContainer.appendChild(kcalName);
+    kcalContainer.appendChild(kcalValue);
+    let portionContainer = document.createElement('div');
+    let portionName = document.createElement('div');
+    portionName.innerHTML = 'Portion:';
+    let portionValue = document.createElement('div');
+    portionValue.innerHTML = '50g';
+    portionContainer.appendChild(portionName);
+    portionContainer.appendChild(portionValue);
+    let proteinContainer = document.createElement('div');
+    let proteinName = document.createElement('div');
+    proteinName.innerHTML = 'Protein:';
+    let proteinValue = document.createElement('div');
+    proteinValue.innerHTML = '50g';
+    proteinContainer.appendChild(proteinName);
+    proteinContainer.appendChild(proteinValue);
+    let carboContainer = document.createElement('div');
+    let carboName = document.createElement('div');
+    carboName.innerHTML = 'Carbohydrates:';
+    let carboValue = document.createElement('div');
+    carboValue.innerHTML = '50g';
+    carboContainer.appendChild(carboName);
+    carboContainer.appendChild(carboValue);
+    let fatsContainer = document.createElement('div');
+    let fatsName = document.createElement('div');
+    fatsName.innerHTML = 'Fats:';
+    let fatsValue = document.createElement('div');
+    fatsValue.innerHTML = '50g';
+    fatsContainer.appendChild(fatsName);
+    fatsContainer.appendChild(fatsValue);
+    detailContent.appendChild(kcalContainer);
+    detailContent.appendChild(portionContainer);
+    detailContent.appendChild(proteinContainer);
+    detailContent.appendChild(carboContainer);
+    detailContent.appendChild(fatsContainer);
+    content.appendChild(productName);
+    content.appendChild(detailContent);
+    return content;
+}
+
 function searchItems(search) {
     let pattern = $(search).val().toLowerCase().trim();
     let patternParts = pattern.split(' ');
@@ -260,7 +375,7 @@ function searchItems(search) {
 }
 
 function createTraining(sport) {
-    let content = createModalContent(sport, null, null);
+    let content = createModalTrainingContent(sport, null, null);
     swal({
         title: 'Add activity', 
         content: content,
@@ -268,7 +383,7 @@ function createTraining(sport) {
             confirm: 'Add',
             cancel: true
         }, 
-        allowOutsideClick: "true" 
+        allowOutsideClick: 'true' 
     }).then(function(willAdd) {
         if(willAdd) {
             let sportId = parseInt($(sport).attr('class').split('sport-activity-id-')[1].split(' ')[0]);
@@ -298,7 +413,7 @@ function editTraining(training) {
     let time = training.find('.training-time .data').text();
     time = time.split(':')[0] + ':' + time.split(':')[1];
     let note = training.find('.training-note').text();
-    let content = createModalContent(training, time, note);
+    let content = createModalTrainingContent(training, time, note);
     swal({
         title: 'Edit activity', 
         content: content,
@@ -306,7 +421,7 @@ function editTraining(training) {
             confirm: 'Edit',
             cancel: true
         }, 
-        allowOutsideClick: "true" 
+        allowOutsideClick: 'true' 
     }).then(function(willEdit) {
         if(willEdit) {
             let sportMet = parseFloat($(training).find('.training-data').attr('class').split('activity-met-')[1].split(' ')[0]);
@@ -329,9 +444,9 @@ function editTraining(training) {
 
 function deleteTraining(training) {
     swal({
-        title: "Removing training",
-        text: "Are you sure you want to remove this training?",
-        icon: "warning",
+        title: 'Removing training',
+        text: 'Are you sure you want to remove this training?',
+        icon: 'warning',
         buttons: true,
         dangerMode: true,
     })
@@ -346,7 +461,7 @@ function deleteTraining(training) {
     });
 }
 
-function createModalContent(sport, time, note) {
+function createModalTrainingContent(sport, time, note) {
     if(time == null) {
         time = '00:00';
     }
@@ -466,7 +581,7 @@ function addTrainingElement(data, responseData) {
     let trainingOperationsContainer = $('<div class="training-operations"></div>');
     let trainingEdit = $('<div class="image edit size-25 id-' + responseData['id'] +'"></div>');
     let trainingDelete = $('<div class="image trash size-25 id-' + responseData['id'] + '"></div>');
-    let trainingArrow = $('<div class="image down-arrow size-25"></div>');
+    let trainingArrow = $('<div class="image down-arrow-black size-25"></div>');
     let trainingDetailsContainer = $('<div class="training-details"></div>');
     let trainingTime = $('<div class="training-time">Time: &nbsp;' + '<div class="data">' + convertSecondsToTimeString(data.time) + '</div></div>');
     let trainingKcal = $('<div class="training-kcal">Burned kcal: &nbsp;' + '<div class="data">' + data.lose + '</div></div>');

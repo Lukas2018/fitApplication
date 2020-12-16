@@ -10,55 +10,55 @@
             </div>
             <div class="col-lg-4 p-3 p-sm-3 my-auto rounded shadow-custom">
                 {% if is_edit %}
-                <form id="custom_form" class="form" action="/product/{{product.id}}/" method="post">
+                <form id="custom_form" class="form" action="/product/{{ product.id }}/" method="post">
                     {% csrf_token %}
                     <input id="next" type="hidden" name="next" value="">
                     <h1 class="text-center text-header">Dodaj produkt</h1>
                     <div class="form-group">
                         <label for="name">Nazwa produktu</label>
-                        <input id="name" class="form-control" type="text" name="name" value="{{product.name}}" placeholder="Nazwa" required>
+                        <input id="name" class="form-control" type="text" name="name" value="{{ product.name }}" placeholder="Nazwa" required>
                         {% for error in form.name.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group">
                         <label for="manufacturer">Producent</label>
-                        <input id="manufacturer" class="form-control" type="text" name="manufacturer" value="{{product.manufacturer}}" placeholder="Producent">
+                        <input id="manufacturer" class="form-control" type="text" name="manufacturer" value="{{ product.manufacturer }}" placeholder="Producent">
                         {% for error in form.manufacturer.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group">
                         <label for="portion">Porcja [g]</label>
-                        <input id="portion" class="form-control" type="number" name="portion" value="{{nutrientes.portion}}" placeholder="Porcja" required>
+                        <input id="portion" class="form-control" type="number" name="portion" value="{{ product.nutrient.portion }}" placeholder="Porcja" required>
                         {% for error in form.portion.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group">
                         <label for="kcal">Kalorie</label>
-                        <input id="kcal" class="form-control" type="number" step="0.1" name="kcal" value="{{nutrientes.kcal}}" placeholder="Kalorie" required>
+                        <input id="kcal" class="form-control" type="number" step="0.1" name="kcal" value="{{ product.nutrient.kcal }}" placeholder="Kalorie" required>
                         {% for error in form.kcal.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group">
                         <label for="protein">Białko [g]</label>
-                        <input id="protein" class="form-control" type="number" step="0.01" name="protein" value="{{nutrientes.protein}}" placeholder="Białko" required>
+                        <input id="protein" class="form-control" type="number" step="0.01" name="protein" value="{{ product.nutrient.protein }}" placeholder="Białko" required>
                         {% for error in form.protein.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group">
                         <label for="carbohydrates">Węglowodany [g]</label>
-                        <input id="carbohydrates" class="form-control" type="number" step="0.01" name="carbohydrates" value="{{nutrientes.carbohydrates}}" placeholder="Węglowoddany" required>
+                        <input id="carbohydrates" class="form-control" type="number" step="0.01" name="carbohydrates" value="{{ product.nutrient.carbohydrates }}" placeholder="Węglowoddany" required>
                         {% for error in form.carbohydrates.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group">
                         <label for="fats">Tłuszcze [g]</label>
-                        <input id="fats" class="form-control" type="number" step="0.01" name="fats" value="{{nutrientes.fats}}" placeholder="Tłuszcze" required>
+                        <input id="fats" class="form-control" type="number" step="0.01" name="fats" value="{{ product.nutrient.fats }}" placeholder="Tłuszcze" required>
                         {% for error in form.fats.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}

@@ -32,6 +32,7 @@ urlpatterns = [
     path('password_change/', views.password_change, name='password_change'),
     path('product/', views.product_creation, name='product_creation'),
     path('product/<int:id>/', views.product_operation, name='product_operation'),
+    path('meal/', views.meal_creation, name='meal_creation'),
     path('save_index_data/', views.save_index_data, name='save_index_data'),
     path('save_weight/', views.save_weight, name='save_weight'),
     path('save_pulse/', views.save_pulse, name='save_pulse'),
@@ -41,5 +42,5 @@ urlpatterns = [
     path('get_day_data/', views.get_day_data, name='get_day_data'),
     path('get_day_specific_data/', views.get_day_specific_data, name='get_day_specific_data'),
     path('get_user_products/', views.get_user_products, name='get_user_products'),
-    path('get_user_meals/', views.get_user_meals, name='get_user_meals')
+    path('get_user_dishes/', views.get_user_dishes, name='get_user_dishes')
 ]

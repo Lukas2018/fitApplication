@@ -66,6 +66,16 @@ html, body {
     margin-top: 10px;
 }
 
+.meal-summary {
+    display: flex;
+    justify-content: space-around;
+}
+
+.detail-content {
+    display: flex;
+    justify-content: space-around;
+}
+
 #sports {
     background-color: white;
     position: absolute;
@@ -118,17 +128,18 @@ html, body {
 .training-details {
     display: none;
     flex-wrap: wrap;
+    margin-top: 15px;
     margin-left: 5%;
     margin-right: 5%;
 }
 
 .training-time, .training-kcal {
     display: inline-flex;
-    width: 50%;
+    flex-grow: 1;
 }
 
 .training-note {
-    width: 100%;
+    flex-grow: 2;
     text-align: center;
 }
 

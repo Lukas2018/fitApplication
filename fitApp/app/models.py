@@ -43,6 +43,7 @@ class Product(models.Model):
     name = models.CharField(max_length=60)
     manufacturer = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    nutrient = models.OneToOneField('Nutrientes', on_delete=models.CASCADE)
     
 class Nutrientes(models.Model):
     kcal = models.FloatField()
@@ -50,8 +51,6 @@ class Nutrientes(models.Model):
     carbohydrates = models.FloatField()
     fats = models.FloatField()
     portion = models.FloatField()
-    is_portion = models.BooleanField(default=False)
-    product = models.ForeignKey('Product', on_delete=models.CASCADE)
 
 class Day(models.Model):
     date = models.DateField()
@@ -71,17 +70,34 @@ class Day(models.Model):
     activity_time = models.IntegerField(default=0)
     weight = models.FloatField()
     pulse = models.IntegerField(default=60)
-    meals = models.ForeignKey('Meal', on_delete=models.CASCADE, blank=True, null=True)
+    meal_set = models.OneToOneField('MealSet', on_delete=models.CASCADE, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
+class MealSet(models.Model):
+    id = models.AutoField(primary_key=True)
+
+class MealType(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=60)
+
 class Meal(models.Model):
-    type = models.CharField(max_length=60)
+    id = models.AutoField(primary_key=True)
     summary_kcal = models.FloatField()
     summary_protein = models.FloatField()
     summary_carbohydrates = models.FloatField()
     summary_fats = models.FloatField()
-    products = models.ManyToManyField('Product')
-    dishes = models.ManyToManyField('Dish')
+    meal_type = models.ForeignKey('MealType', on_delete=models.CASCADE)
+    meal_set = models.ForeignKey('MealSet', on_delete=models.CASCADE)
+
+class MealProduct(models.Model):
+    id = models.AutoField(primary_key=True)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    meal = models.ForeignKey('Meal', on_delete=models.CASCADE)
+    portion = models.FloatField()
+    kcal = models.FloatField()
+    protein = models.FloatField()
+    carbohydrates = models.FloatField()
+    fats = models.FloatField()
 
 class Training(models.Model):
     id = models.AutoField(primary_key=True)

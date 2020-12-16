@@ -78,7 +78,7 @@ function loadProducts(data) {
     let ids = Object.keys(data);
     for(let i=0; i < ids.length; i++) {
         let product = products[i];
-        let nutrient = product['nutrientes'][0];
+        let nutrient = product['nutrientes'];
         let element = $('<li class="product-' + ids[i] + ' product item"></li>');
         let productDetails = $('<div class="product-details"></div>');
         let productOptions = $('<div class="product-options"></div>');
