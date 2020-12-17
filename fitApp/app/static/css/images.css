@@ -108,6 +108,11 @@
     cursor: pointer;
 }
 
+.loupe {
+    background-image: url('/static/media/loupe.svg');
+    cursor: pointer;
+}
+
 #meals .image.plus {
     background-image: url('/static/media/plus.svg');
 }
@@ -262,6 +267,11 @@
 
 .yoga {
     background-image: url('/static/media/lotus.svg');
+}
+
+.size-20 {
+    height: 20px;
+    width: 20px;
 }
 
 .size-25 {

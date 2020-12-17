@@ -83,18 +83,33 @@ window.addEventListener('load', function() {
             sendData('/save_pulse/', data);
         }, timeToWait);
     });
+    $('.product-operations .trash').each(function() {
+        $(this).on('click', function() {
+            removeMealProduct(this);
+        });
+    });
+    $('.product-operations .edit').each(function() {
+        $(this).on('click', function() {
+            editMealProduct(this);
+        });
+    });
+    $('.product-operations .loupe').each(function() {
+        $(this).on('click', function() {
+            detailMealProduct(this);
+        });
+    });
     $('.search-input').keyup(function() {
         searchItems(this);
     });
     $('.sport-activity').click(function() {
         createTraining(this);
     });
-    $('.trash').each(function() {
+    $('.training-operation .trash').each(function() {
         $(this).on('click', function() {
             deleteTraining(this);
         })
     });
-    $('.edit').each(function() {
+    $('.training-operations .edit').each(function() {
         $(this).on('click', function() {
             editTraining(this);
         })
@@ -120,7 +135,7 @@ window.onbeforeunload = function() {
 }
 
 function showDetails(arrowElem) {
-    let listElem = arrowElem.parent().parent().parent().find('.details');
+    let listElem = arrowElem.parent().parent().parent().find('.meal-details');
     arrowElem.removeClass('arrow-down').addClass('arrow-up');
     listElem.css('display', 'block');
     $(arrowElem).click(function() {
@@ -129,7 +144,7 @@ function showDetails(arrowElem) {
 }
 
 function hideDetails(arrowElem) {
-    let listElem = arrowElem.parent().parent().parent().find('.details');
+    let listElem = arrowElem.parent().parent().parent().find('.meal-details');
     arrowElem.removeClass('arrow-up').addClass('arrow-down');
     listElem.css('display', 'none');
     arrowElem.click(function() {
@@ -235,7 +250,7 @@ function editMealProduct() {
                 'portion': portion,
                 'protein': protein,
                 'carbohydrates': carbohydrates,
-                'fats': fats;
+                'fats': fats
             });
 
         }
@@ -260,8 +275,9 @@ function removeMealProduct() {
     });
 }
 
-function detailMealProduct() {
-    let content = createModalProductContent();
+function detailMealProduct(product) {
+    product = $(product).parent().parent();
+    let content = createModalProductContent(product);
     swal({
         title: 'Product details', 
         content: content,
@@ -272,47 +288,46 @@ function detailMealProduct() {
     })
 }
 
-function createModalProductContent() {
-    let product = 0;
+function createModalProductContent(productElement) {
     let content = document.createElement('div');
     content.className = 'content';
     let productName = document.createElement('div');
-    productName.innerHTML = product;
+    productName.innerHTML = productElement.find('.product-name').text();
     let detailContent = document.createElement('div');
     detailContent.className = 'detail-content';
     let kcalContainer = document.createElement('div');
     let kcalName = document.createElement('div');
     kcalName.innerHTML = 'Kcal:';
     let kcalValue = document.createElement('div');
-    kcalValue.innerHTML = '250';
+    kcalValue.innerHTML = productElement.find('.product-kcal .data').text();
     kcalContainer.appendChild(kcalName);
     kcalContainer.appendChild(kcalValue);
     let portionContainer = document.createElement('div');
     let portionName = document.createElement('div');
     portionName.innerHTML = 'Portion:';
     let portionValue = document.createElement('div');
-    portionValue.innerHTML = '50g';
+    portionValue.innerHTML = productElement.find('.product-portion').val() + 'g';
     portionContainer.appendChild(portionName);
     portionContainer.appendChild(portionValue);
     let proteinContainer = document.createElement('div');
     let proteinName = document.createElement('div');
     proteinName.innerHTML = 'Protein:';
     let proteinValue = document.createElement('div');
-    proteinValue.innerHTML = '50g';
+    proteinValue.innerHTML = productElement.find('.product-protein').val() + 'g';
     proteinContainer.appendChild(proteinName);
     proteinContainer.appendChild(proteinValue);
     let carboContainer = document.createElement('div');
     let carboName = document.createElement('div');
     carboName.innerHTML = 'Carbohydrates:';
     let carboValue = document.createElement('div');
-    carboValue.innerHTML = '50g';
+    carboValue.innerHTML = productElement.find('.product-carbohydrates').val() + 'g';
     carboContainer.appendChild(carboName);
     carboContainer.appendChild(carboValue);
     let fatsContainer = document.createElement('div');
     let fatsName = document.createElement('div');
     fatsName.innerHTML = 'Fats:';
     let fatsValue = document.createElement('div');
-    fatsValue.innerHTML = '50g';
+    fatsValue.innerHTML = productElement.find('.product-fats').val() + 'g';
     fatsContainer.appendChild(fatsName);
     fatsContainer.appendChild(fatsValue);
     detailContent.appendChild(kcalContainer);

@@ -133,35 +133,51 @@
                     <div class="col-md-1"><div class="image arrow arrow-down size-40"></div></div>
                     <div class="col-md-1"></div>
                 </div>
-                <div id="breakfast-products" class="meal-id-">
+                <div class="meal-details">
                     {% for meal in meals %}
                         {% if meal.meal_type.name == 'Breakfast' %}
-                            <div class="breakfast-product breakfast-product-id-"></div>
-                        {% endif %}
-                    {% endfor %}
-                    <button onclick="detailMealProduct()">Hehe</button>
-                </div>
-                <div id="breakfast-summary" class="meal-summary">
-                    {% for meal in meals %}
-                        {% if meal.meal_type.name == 'Breakfast' %}
-                            <div>
-                                <div>Calories:</div>
-                                <div>{{ meal.summary_kcal }}</div>
-                            </div>
-                            <div>
-                                <div>Protein:</div>
-                                <div>{{ meal.summary_protein }}</div>
-                            </div>
-                            <div>
-                                <div>Carbohydrates:</div>
-                                <div>{{ meal.summary_carbohydrates }}</div>
-                            </div>
-                            <div>
-                                <div>Fats:</div>
-                                <div>{{ meal.summary_fats }}</div>
+                            <div id="breakfast-products" class="meal-products meal-id-{{ meal.id }}">
+                                {% for product in breakfast %}
+                                    <div class="row col-md-12 meal-product breakfast-product-id-{{ product.id }}">
+                                        <input class="product-portion" type="hidden" value="{{ product.portion }}"/>
+                                        <input class="product-protein" type="hidden" value="{{ product.protein }}"/>
+                                        <input class="product-carbohydrates" type="hidden" value="{{ product.carbohydrates }}"/>
+                                        <input class="product-fats" type="hidden" value="{{ product.fats }}"/>
+                                        <div class="col-md-6 product-name">{{ product.product.name }}</div>
+                                        <div class="col-md-3 row product-kcal"><div class="data">{{ product.kcal }}</div>&nbsp; kcal</div>
+                                        <div class="product-operations row col-md-3">
+                                            <div class="image edit size-20"></div>
+                                            <div class="image trash size-20"></div>
+                                            <div class="image loupe size-20"></div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
                             </div>
                         {% endif %}
                     {% endfor %}
+                    
+                    <div id="breakfast-summary" class="meal-summary">
+                        {% for meal in meals %}
+                            {% if meal.meal_type.name == 'Breakfast' %}
+                                <div>
+                                    <div class="summary-title">Calories:</div>
+                                    <div>{{ meal.summary_kcal }}</div>
+                                </div>
+                                <div>
+                                    <div class="summary-title">Protein:</div>
+                                    <div>{{ meal.summary_protein }}</div>
+                                </div>
+                                <div>
+                                    <div class="summary-title">Carbohydrates:</div>
+                                    <div>{{ meal.summary_carbohydrates }}</div>
+                                </div>
+                                <div>
+                                    <div class="summary-title">Fats:</div>
+                                    <div>{{ meal.summary_fats }}</div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
             <hr/>
@@ -176,12 +192,51 @@
                     <div class="col-md-1"><div class="image arrow arrow-down size-40"></div></div>
                     <div class="col-md-1"></div>
                 </div>
-                <div id="lunch-products">
+                <div class="meal-details">
                     {% for meal in meals %}
                         {% if meal.meal_type.name == 'Lunch' %}
-
+                            <div id="lunch-products" class="meal-products meal-id-{{ meal.id }}">
+                                {% for product in lunch %}
+                                    <div class="row col-md-12 meal-product lunch-product-id-{{ product.id }}">
+                                        <input class="product-portion" type="hidden" value="{{ product.portion }}"/>
+                                        <input class="product-protein" type="hidden" value="{{ product.protein }}"/>
+                                        <input class="product-carbohydrates" type="hidden" value="{{ product.carbohydrates }}"/>
+                                        <input class="product-fats" type="hidden" value="{{ product.fats }}"/>
+                                        <div class="col-md-6 product-name">{{ product.product.name }}</div>
+                                        <div class="col-md-3 row product-kcal"><div class="data">{{ product.kcal }}</div>&nbsp; kcal</div>
+                                        <div class="product-operations row col-md-3">
+                                            <div class="image edit size-20"></div>
+                                            <div class="image trash size-20"></div>
+                                            <div class="image loupe size-20"></div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
                         {% endif %}
                     {% endfor %}
+                    
+                    <div id="lunch-summary" class="meal-summary">
+                        {% for meal in meals %}
+                            {% if meal.meal_type.name == 'Lunch' %}
+                                <div>
+                                    <div class="summary-title">Calories:</div>
+                                    <div>{{ meal.summary_kcal }}</div>
+                                </div>
+                                <div>
+                                    <div class="summary-title">Protein:</div>
+                                    <div>{{ meal.summary_protein }}</div>
+                                </div>
+                                <div>
+                                    <div class="summary-title">Carbohydrates:</div>
+                                    <div>{{ meal.summary_carbohydrates }}</div>
+                                </div>
+                                <div>
+                                    <div class="summary-title">Fats:</div>
+                                    <div>{{ meal.summary_fats }}</div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
             <hr/>
@@ -196,12 +251,50 @@
                     <div class="col-md-1"><div class="image arrow arrow-down size-40"></div></div>
                     <div class="col-md-1"></div>
                 </div>
-                <div id="dinner-products">
+                <div class="meal-details">
                     {% for meal in meals %}
                         {% if meal.meal_type.name == 'Dinner' %}
-
+                            <div id="dinner-products" class="meal-products meal-id-{{ meal.id }}">
+                                {% for product in dinner %}
+                                    <div class="row col-md-12 meal-product dinner-product-id-{{ product.id }}">
+                                        <input class="product-portion" type="hidden" value="{{ product.portion }}"/>
+                                        <input class="product-protein" type="hidden" value="{{ product.protein }}"/>
+                                        <input class="product-carbohydrates" type="hidden" value="{{ product.carbohydrates }}"/>
+                                        <input class="product-fats" type="hidden" value="{{ product.fats }}"/>
+                                        <div class="col-md-6 product-name">{{ product.product.name }}</div>
+                                        <div class="col-md-3 row product-kcal"><div class="data">{{ product.kcal }}</div>&nbsp; kcal</div>
+                                        <div class="product-operations row col-md-3">
+                                            <div class="image edit size-20"></div>
+                                            <div class="image trash size-20"></div>
+                                            <div class="image loupe size-20"></div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
                         {% endif %}
                     {% endfor %}
+                    <div id="lunch-summary" class="meal-summary">
+                        {% for meal in meals %}
+                            {% if meal.meal_type.name == 'Lunch' %}
+                                <div>
+                                    <div class="summary-title">Calories:</div>
+                                    <div>{{ meal.summary_kcal }}</div>
+                                </div>
+                                <div>
+                                    <div class="summary-title">Protein:</div>
+                                    <div>{{ meal.summary_protein }}</div>
+                                </div>
+                                <div>
+                                    <div class="summary-title">Carbohydrates:</div>
+                                    <div>{{ meal.summary_carbohydrates }}</div>
+                                </div>
+                                <div>
+                                    <div class="summary-title">Fats:</div>
+                                    <div>{{ meal.summary_fats }}</div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
             <hr/>
@@ -216,12 +309,50 @@
                     <div class="col-md-1"><div class="image arrow arrow-down size-40"></div></div>
                     <div class="col-md-1"></div>
                 </div>
-                <div id="other-products">
+                <div class="meal-details">
                     {% for meal in meals %}
                         {% if meal.meal_type.name == 'Other' %}
-
+                            <div id="other-products" class="meal-products meal-id-{{ meal.id }}">
+                                {% for product in others %}
+                                    <div class="row col-md-12 meal-product other-product-id-{{ product.id }}">
+                                        <input class="product-portion" type="hidden" value="{{ product.portion }}"/>
+                                        <input class="product-protein" type="hidden" value="{{ product.protein }}"/>
+                                        <input class="product-carbohydrates" type="hidden" value="{{ product.carbohydrates }}"/>
+                                        <input class="product-fats" type="hidden" value="{{ product.fats }}"/>
+                                        <div class="col-md-6 product-name">{{ product.product.name }}</div>
+                                        <div class="col-md-3 row product-kcal"><div class="data">{{ product.kcal }}</div>&nbsp; kcal</div>
+                                        <div class="product-operations row col-md-3">
+                                            <div class="image edit size-20"></div>
+                                            <div class="image trash size-20"></div>
+                                            <div class="image loupe size-20"></div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
                         {% endif %}
                     {% endfor %}
+                    <div id="other-summary" class="meal-summary">
+                        {% for meal in meals %}
+                            {% if meal.meal_type.name == 'Other' %}
+                                <div>
+                                    <div class="summary-title">Calories:</div>
+                                    <div>{{ meal.summary_kcal }}</div>
+                                </div>
+                                <div>
+                                    <div class="summary-title">Protein:</div>
+                                    <div>{{ meal.summary_protein }}</div>
+                                </div>
+                                <div>
+                                    <div class="summary-title">Carbohydrates:</div>
+                                    <div>{{ meal.summary_carbohydrates }}</div>
+                                </div>
+                                <div>
+                                    <div class="summary-title">Fats:</div>
+                                    <div>{{ meal.summary_fats }}</div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
             <hr/>
@@ -236,7 +367,7 @@
                     <div class="col-md-1"><div class="image arrow arrow-down size-40"></div></div>
                     <div class="col-md-1"></div>
                 </div>
-                <div class="row details">
+                <div class="row meal-details">
                     <div id="bottles">
                         {% for i in full_loop_times %}
                             <div class="full-bottle image size-30"></div>

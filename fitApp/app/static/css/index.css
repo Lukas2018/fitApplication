@@ -34,7 +34,7 @@ html, body {
     width: 100%;
 }
 
-#water .details {
+.meal-details {
     display: none;
     margin-top: 20px;
 }
@@ -67,8 +67,25 @@ html, body {
 }
 
 .meal-summary {
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 75%;
     display: flex;
     justify-content: space-around;
+}
+
+.summary-title {
+    font-weight: 500;
+}
+
+.meal-product {
+    margin-top: 10px;
+}
+
+.product-operations div {
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .detail-content {
