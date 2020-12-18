@@ -305,7 +305,40 @@ def meal_creation(request):
 
 @login_required
 def delete_product_from_meal(request):
-    return HttpResponse()
+    if request.is_ajax():
+        if request.method == 'DELETE':
+            user = request.user
+            data = json.loads(request.body)
+            year = int(data['date'].split('-')[0])
+            month = int(data['date'].split('-')[1])
+            day = int(data['date'].split('-')[2])
+            date = datetime.date(year, month, day)
+            day = user.day_set.filter(date=date).first()
+            if day is not None:
+                meal_set = MealSet.objects.filter(id=int(data['mealSetId'])).first()
+                if day.meal_set == meal_set:
+                    meal = Meal.objects.filter(id=int(data['mealId']), meal_set=meal_set).first()
+                    if meal is not None:
+                        meal_product = meal.mealproduct_set.filter(id=int(data['mealProductId'])).first()
+                        if meal_product is not None:
+                            try:
+                                meal.summary_kcal = round(meal.summary_kcal - meal_product.kcal, 1)
+                                meal.summary_protein = round(meal.summary_protein - meal_product.protein, 1)
+                                meal.summary_carbohydrates = round(meal.summary_carbohydrates - meal_product.carbohydrates, 1)
+                                meal.summary_fats = round(meal.summary_fats - meal_product.fats, 1)
+                                day.summary_kcal = round(day.summary_kcal - meal_product.kcal, 1)
+                                day.summary_protein = round(day.summary_protein - meal_product.protein, 1)
+                                day.summary_carbohydrates = round(day.summary_carbohydrates - meal_product.carbohydrates, 1)
+                                day.summary_fats = round(day.summary_fats - meal_product.fats, 1)
+                                meal.save()
+                                day.save()
+                                meal_product.delete()
+                            except:
+                                return HttpResponse('Server error occured', status=500)
+                            return HttpResponse('Ok', status=200)
+            return HttpResponse('Bad request', status=400)
+    return HttpResponse('Method not allowed', status=405)
+
 @login_required
 def save_index_data(request):
     if request.method == 'POST':

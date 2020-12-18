@@ -13,7 +13,7 @@ window.addEventListener('load', function() {
     });
     $('#water .plus').click(function() {
         if($('#water .arrow').hasClass('arrow-down')) {
-            $()
+            showDetails($('#water .arrow'));
         }
         addBottle();
     })
@@ -85,7 +85,7 @@ window.addEventListener('load', function() {
     });
     $('.product-operations .trash').each(function() {
         $(this).on('click', function() {
-            removeMealProduct(this);
+            deleteMealProduct(this);
         });
     });
     $('.product-operations .edit').each(function() {
@@ -225,6 +225,26 @@ function increment(elem, value) {
     elem.text(Math.round((parseFloat(elem.text()) + value) * 10) / 10);
 }
 
+function sendData(endpoint, data) {
+    let csrftoken = getCookie('csrftoken');
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                xhr.setRequestHeader('content-type', 'application/json');
+            }
+        }
+    });
+
+    $.ajax({
+        type: 'POST',
+        url: endpoint,
+        data: data,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+    });
+}
+
 function editMealProduct() {
     let content = createModalProductContent();
     swal({
@@ -257,7 +277,8 @@ function editMealProduct() {
     });
 }
 
-function removeMealProduct() {
+function deleteMealProduct(product) {
+    product = $(product).parent().parent();
     swal({
         title: 'Removing product',
         text: 'Are you sure you want to remove this product from your meal?',
@@ -267,10 +288,16 @@ function removeMealProduct() {
     })
     .then((willDelete) => {
         if(willDelete) {
-            let mealProductId = 0;
+            let mealSetId = $('#meals').attr('class').split('meal-set-id-')[1].split(' ')[0];
+            let mealId = product.parent().attr('class').split('meal-id-')[1].split(' ')[0];
+            let mealProductId = product.attr('class').split('product-id-')[1].split(' ')[0];
             let data = JSON.stringify({
                 'date': getDateFromUrl(),
+                'mealSetId': mealSetId,
+                'mealId': mealId,
+                'mealProductId': mealProductId
             });
+            removeMealProduct(data);
         }
     });
 }
@@ -338,6 +365,100 @@ function createModalProductContent(productElement) {
     content.appendChild(productName);
     content.appendChild(detailContent);
     return content;
+}
+
+function removeMealProduct(data) {
+    let csrftoken = getCookie('csrftoken');
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                xhr.setRequestHeader('content-type', 'application/json');
+            }
+        }
+    });
+    $.ajax({
+        type: 'DELETE',
+        url: '/delete_product_from_meal/',
+        data: data,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        statusCode: {
+            200: function() {
+                swal({
+                    title: 'Product has been removed', 
+                    icon: 'success'
+                });
+                data = JSON.parse(data);
+                let kcal = parseFloat(parseFloat($('.meal-product.product-id-' + data.mealProductId + ' .product-kcal .data').text()).toFixed(1));
+                let protein = parseFloat(parseFloat($('.meal-product.product-id-' + data.mealProductId + ' .product-protein').val()).toFixed(1));
+                let carbohydrates = parseFloat(parseFloat($('.meal-product.product-id-' + data.mealProductId + ' .product-carbohydrates').val()).toFixed(1));
+                let fats = parseFloat(parseFloat($('.meal-product.product-id-' + data.mealProductId + ' .product-fats').val()).toFixed(1));
+                updateFoodSummary(kcal, protein, carbohydrates, fats, 0, 0, 0, 0);
+                updateMealSummary(data.mealId, kcal, protein, carbohydrates, fats, 0, 0, 0, 0);
+                removeProductElement(data.mealProductId);
+            },
+            400: function() {
+                swal({
+                    title: 'Bad request', 
+                    icon: 'error'
+                });
+            },
+            404: function() {
+                swal({
+                    title: 'Not found', 
+                    icon: 'error'
+                });
+            },
+            405: function() {
+                swal({
+                    title: 'Method not allowed', 
+                    icon: 'error'
+                });
+            },
+            500: function() {
+                swal({
+                    title: 'Sorry, an server error occured',
+                    icon: 'error'
+                });
+            }
+        }
+    });
+}
+
+function removeProductElement(id) {
+    $('.meal-product.product-id-' + id).remove();
+}
+
+function updateFoodSummary(oldKcal, oldProtein, oldCarbohydrates, oldFats, kcal, protein, carbohydrates, fats) {
+    let totalKcal = parseFloat($('.kcal-data .data .current').text());
+    totalKcal = totalKcal - oldKcal + kcal;
+    $('.kcal-data .data .current').text(totalKcal.toFixed(1));
+    let totalProtein = parseFloat($('.protein-data .data .current').text());
+    totalProtein = totalProtein - oldProtein + protein;
+    $('.protein-data .data .current').text(totalProtein.toFixed(1));
+    let totalCarbo = parseFloat($('.carbohydrates-data .data .current').text());
+    totalCarbo = totalCarbo - oldCarbohydrates + carbohydrates;
+    $('.carbohydrates-data .data .current').text(totalCarbo.toFixed(1));
+    let totalFats = parseFloat($('.fats-data .data .current').text());
+    totalFats = totalFats - oldFats + fats;
+    $('.fats-data .data .current').text(totalFats.toFixed(1));
+}
+
+function updateMealSummary(id, oldKcal, oldProtein, oldCarbohydrates, oldFats, kcal, protein, carbohydrates, fats) {
+    let mealSummary = $('.meal-id-' + id).parent().find('.meal-summary');
+    let totalKcal = parseFloat(mealSummary.find('.summary-kcal').text());
+    totalKcal = totalKcal - oldKcal + kcal;
+    mealSummary.find('.summary-kcal').text(totalKcal.toFixed(1));
+    let totalProtein = parseFloat(mealSummary.find('.summary-protein').text());
+    totalProtein = totalProtein - oldProtein + protein;
+    mealSummary.find('.summary-protein').text(totalProtein.toFixed(1));
+    let totalCarbo = parseFloat(mealSummary.find('.summary-carbohydrates').text());
+    totalCarbo = totalCarbo - oldCarbohydrates + carbohydrates;
+    mealSummary.find('.summary-carbohydrates').text(totalCarbo.toFixed(1));
+    let totalFats = parseFloat(mealSummary.find('.summary-fats').text());
+    totalFats = totalFats - oldFats + fats;
+    mealSummary.find('.summary-fats').text(totalFats.toFixed(1));
 }
 
 function searchItems(search) {
@@ -443,7 +564,6 @@ function editTraining(training) {
             let weight = parseFloat($('.weight-data .data').text());
             let time = convertTimeStringToSeconds($('#input-activity-time').val() + ":00");
             let lose = calculateLoseKcal(sportMet, time, weight);
-            console.log(lose);
             let note = $('#input-note').val();
             let data = JSON.stringify({
                 'date': getDateFromUrl(),
@@ -511,26 +631,6 @@ function calculateLoseKcal(met, time, weight) {
     time = (time / 3600).toFixed(2);
     let lose = met * time * weight;
     return parseFloat(lose.toFixed(1));
-}
-
-function sendData(endpoint, data) {
-    let csrftoken = getCookie('csrftoken');
-    $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader('X-CSRFToken', csrftoken);
-                xhr.setRequestHeader('content-type', 'application/json');
-            }
-        }
-    });
-
-    $.ajax({
-        type: 'POST',
-        url: endpoint,
-        data: data,
-        contentType: 'application/json; charset=utf-8',
-        dataType: 'json',
-    });
 }
 
 function addTraining(endpoint, data) {

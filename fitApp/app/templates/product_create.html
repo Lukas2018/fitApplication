@@ -44,21 +44,21 @@
                     </div>
                     <div class="form-group">
                         <label for="protein">Białko [g]</label>
-                        <input id="protein" class="form-control" type="number" step="0.01" name="protein" value="{{ product.nutrient.protein }}" placeholder="Białko" required>
+                        <input id="protein" class="form-control" type="number" step="0.1" name="protein" value="{{ product.nutrient.protein }}" placeholder="Białko" required>
                         {% for error in form.protein.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group">
                         <label for="carbohydrates">Węglowodany [g]</label>
-                        <input id="carbohydrates" class="form-control" type="number" step="0.01" name="carbohydrates" value="{{ product.nutrient.carbohydrates }}" placeholder="Węglowoddany" required>
+                        <input id="carbohydrates" class="form-control" type="number" step="0.1" name="carbohydrates" value="{{ product.nutrient.carbohydrates }}" placeholder="Węglowoddany" required>
                         {% for error in form.carbohydrates.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group">
                         <label for="fats">Tłuszcze [g]</label>
-                        <input id="fats" class="form-control" type="number" step="0.01" name="fats" value="{{ product.nutrient.fats }}" placeholder="Tłuszcze" required>
+                        <input id="fats" class="form-control" type="number" step="0.1" name="fats" value="{{ product.nutrient.fats }}" placeholder="Tłuszcze" required>
                         {% for error in form.fats.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
@@ -103,21 +103,21 @@
                     </div>
                     <div class="form-group">
                         <label for="protein">Białko [g]</label>
-                        <input id="protein" class="form-control" type="number" step="0.01" name="protein" placeholder="Białko" required>
+                        <input id="protein" class="form-control" type="number" step="0.1" name="protein" placeholder="Białko" required>
                         {% for error in form.protein.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group">
                         <label for="carbohydrates">Węglowodany [g]</label>
-                        <input id="carbohydrates" class="form-control" type="number" step="0.01" name="carbohydrates" placeholder="Węglowoddany" required>
+                        <input id="carbohydrates" class="form-control" type="number" step="0.1" name="carbohydrates" placeholder="Węglowoddany" required>
                         {% for error in form.carbohydrates.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group">
                         <label for="fats">Tłuszcze [g]</label>
-                        <input id="fats" class="form-control" type="number" step="0.01" name="fats" placeholder="Tłuszcze" required>
+                        <input id="fats" class="form-control" type="number" step="0.1" name="fats" placeholder="Tłuszcze" required>
                         {% for error in form.fats.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}

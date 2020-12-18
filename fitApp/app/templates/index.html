@@ -121,7 +121,7 @@
                 </div>
             </div>
         </div>
-        <div id="meals" class="col-md-6">
+        <div id="meals" class="col-md-6 meal-set-id-{{ day.meal_set.id }}">
             <div id="breakfast" class="text-center">
                 <div class="row text-center">
                     <div class="col-md-4 image breakfast"></div>
@@ -138,7 +138,7 @@
                         {% if meal.meal_type.name == 'Breakfast' %}
                             <div id="breakfast-products" class="meal-products meal-id-{{ meal.id }}">
                                 {% for product in breakfast %}
-                                    <div class="row col-md-12 meal-product breakfast-product-id-{{ product.id }}">
+                                    <div class="row col-md-12 meal-product product-id-{{ product.id }}">
                                         <input class="product-portion" type="hidden" value="{{ product.portion }}"/>
                                         <input class="product-protein" type="hidden" value="{{ product.protein }}"/>
                                         <input class="product-carbohydrates" type="hidden" value="{{ product.carbohydrates }}"/>
@@ -155,25 +155,24 @@
                             </div>
                         {% endif %}
                     {% endfor %}
-                    
                     <div id="breakfast-summary" class="meal-summary">
                         {% for meal in meals %}
                             {% if meal.meal_type.name == 'Breakfast' %}
                                 <div>
                                     <div class="summary-title">Calories:</div>
-                                    <div>{{ meal.summary_kcal }}</div>
+                                    <div class="summary-kcal">{{ meal.summary_kcal }}</div>
                                 </div>
                                 <div>
                                     <div class="summary-title">Protein:</div>
-                                    <div>{{ meal.summary_protein }}</div>
+                                    <div class="summary-protein">{{ meal.summary_protein }}</div>
                                 </div>
                                 <div>
                                     <div class="summary-title">Carbohydrates:</div>
-                                    <div>{{ meal.summary_carbohydrates }}</div>
+                                    <div class="summary-carbohydrates">{{ meal.summary_carbohydrates }}</div>
                                 </div>
                                 <div>
                                     <div class="summary-title">Fats:</div>
-                                    <div>{{ meal.summary_fats }}</div>
+                                    <div class="summary-fats">{{ meal.summary_fats }}</div>
                                 </div>
                             {% endif %}
                         {% endfor %}
@@ -197,7 +196,7 @@
                         {% if meal.meal_type.name == 'Lunch' %}
                             <div id="lunch-products" class="meal-products meal-id-{{ meal.id }}">
                                 {% for product in lunch %}
-                                    <div class="row col-md-12 meal-product lunch-product-id-{{ product.id }}">
+                                    <div class="row col-md-12 meal-product product-id-{{ product.id }}">
                                         <input class="product-portion" type="hidden" value="{{ product.portion }}"/>
                                         <input class="product-protein" type="hidden" value="{{ product.protein }}"/>
                                         <input class="product-carbohydrates" type="hidden" value="{{ product.carbohydrates }}"/>
@@ -214,25 +213,24 @@
                             </div>
                         {% endif %}
                     {% endfor %}
-                    
                     <div id="lunch-summary" class="meal-summary">
                         {% for meal in meals %}
                             {% if meal.meal_type.name == 'Lunch' %}
                                 <div>
                                     <div class="summary-title">Calories:</div>
-                                    <div>{{ meal.summary_kcal }}</div>
+                                    <div class="summary-kcal">{{ meal.summary_kcal }}</div>
                                 </div>
                                 <div>
                                     <div class="summary-title">Protein:</div>
-                                    <div>{{ meal.summary_protein }}</div>
+                                    <div class="summary-protein">{{ meal.summary_protein }}</div>
                                 </div>
                                 <div>
                                     <div class="summary-title">Carbohydrates:</div>
-                                    <div>{{ meal.summary_carbohydrates }}</div>
+                                    <div class="summary_carbohydrates">{{ meal.summary_carbohydrates }}</div>
                                 </div>
                                 <div>
                                     <div class="summary-title">Fats:</div>
-                                    <div>{{ meal.summary_fats }}</div>
+                                    <div class="summary_fats">{{ meal.summary_fats }}</div>
                                 </div>
                             {% endif %}
                         {% endfor %}
@@ -256,7 +254,7 @@
                         {% if meal.meal_type.name == 'Dinner' %}
                             <div id="dinner-products" class="meal-products meal-id-{{ meal.id }}">
                                 {% for product in dinner %}
-                                    <div class="row col-md-12 meal-product dinner-product-id-{{ product.id }}">
+                                    <div class="row col-md-12 meal-product product-id-{{ product.id }}">
                                         <input class="product-portion" type="hidden" value="{{ product.portion }}"/>
                                         <input class="product-protein" type="hidden" value="{{ product.protein }}"/>
                                         <input class="product-carbohydrates" type="hidden" value="{{ product.carbohydrates }}"/>
@@ -278,19 +276,19 @@
                             {% if meal.meal_type.name == 'Lunch' %}
                                 <div>
                                     <div class="summary-title">Calories:</div>
-                                    <div>{{ meal.summary_kcal }}</div>
+                                    <div class="summary-kcal">{{ meal.summary_kcal }}</div>
                                 </div>
                                 <div>
                                     <div class="summary-title">Protein:</div>
-                                    <div>{{ meal.summary_protein }}</div>
+                                    <div class="summary-protein">{{ meal.summary_protein }}</div>
                                 </div>
                                 <div>
                                     <div class="summary-title">Carbohydrates:</div>
-                                    <div>{{ meal.summary_carbohydrates }}</div>
+                                    <div class="summary-carbohydrates">{{ meal.summary_carbohydrates }}</div>
                                 </div>
                                 <div>
                                     <div class="summary-title">Fats:</div>
-                                    <div>{{ meal.summary_fats }}</div>
+                                    <div class="summary-fats">{{ meal.summary_fats }}</div>
                                 </div>
                             {% endif %}
                         {% endfor %}
@@ -314,7 +312,7 @@
                         {% if meal.meal_type.name == 'Other' %}
                             <div id="other-products" class="meal-products meal-id-{{ meal.id }}">
                                 {% for product in others %}
-                                    <div class="row col-md-12 meal-product other-product-id-{{ product.id }}">
+                                    <div class="row col-md-12 meal-product product-id-{{ product.id }}">
                                         <input class="product-portion" type="hidden" value="{{ product.portion }}"/>
                                         <input class="product-protein" type="hidden" value="{{ product.protein }}"/>
                                         <input class="product-carbohydrates" type="hidden" value="{{ product.carbohydrates }}"/>
@@ -336,19 +334,19 @@
                             {% if meal.meal_type.name == 'Other' %}
                                 <div>
                                     <div class="summary-title">Calories:</div>
-                                    <div>{{ meal.summary_kcal }}</div>
+                                    <div class="summary-kcal">{{ meal.summary_kcal }}</div>
                                 </div>
                                 <div>
                                     <div class="summary-title">Protein:</div>
-                                    <div>{{ meal.summary_protein }}</div>
+                                    <div class="summary-protein">{{ meal.summary_protein }}</div>
                                 </div>
                                 <div>
                                     <div class="summary-title">Carbohydrates:</div>
-                                    <div>{{ meal.summary_carbohydrates }}</div>
+                                    <div class="summary-carbohydrates">{{ meal.summary_carbohydrates }}</div>
                                 </div>
                                 <div>
                                     <div class="summary-title">Fats:</div>
-                                    <div>{{ meal.summary_fats }}</div>
+                                    <div class="summary-fats">{{ meal.summary_fats }}</div>
                                 </div>
                             {% endif %}
                         {% endfor %}
