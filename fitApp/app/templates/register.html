@@ -8,24 +8,24 @@
             <div class="col-lg-4 p-3 p-sm-3 my-auto rounded shadow-custom">
                 <form id="register_form" class="form" action="/register/" method="post">
                     {% csrf_token %}
-                    <h1 class="text-center text-header">Zarejestruj się</h1>
+                    <h1 class="text-center text-header">Register</h1>
                     <div class="form-group">
                         <label for="email">E-mail</label>
                         <input id="email" class="form-control" type="text" name="email" placeholder="E-mail" required>
                     </div>
                     <div class="form-group">
-                        <label for="password">Hasło</label>
-                        <input id="password" class="form-control" type="password" name="password" placeholder="Hasło" required>
+                        <label for="password">Password</label>
+                        <input id="password" class="form-control" type="password" name="password" placeholder="Password" required>
                     </div>
                     <div class="form-group">
-                        <label for="password_repeat">Powtórz hasło</label>
-                        <input id="password_repeat" class="form-control" type="password" name="password_repeat" placeholder="Powtórz hasło" required>
+                        <label for="password_repeat">Repeat Password</label>
+                        <input id="password_repeat" class="form-control" type="password" name="password_repeat" placeholder="Repeat password" required>
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-primary btn-block active" type="sumbit">Prześlij formularz</button>
+                        <button class="btn btn-primary btn-block active" type="sumbit">Register</button>
                     </div>
                     <div class="form-group">
-                        <p>Masz konto? <a href="/login">Zaloguj się</a></p>
+                        <p>Already have an account? <a href="/login">Sign in</a></p>
                     </div>
                     {% for error in form.email.errors %}
                         <p class="invalid_data">[{{ error }}]</p>

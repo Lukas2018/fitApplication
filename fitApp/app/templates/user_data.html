@@ -12,7 +12,7 @@
             <div class="col-lg-4 p-3 p-sm-3 my-auto rounded shadow-custom">
                 <form id="user_data_form" class="form" action="/user_data/" method="post">
                     {% csrf_token %}
-                    <h1 class="text-center text-header">Dane użytkownika</h1>
+                    <h1 class="text-center text-header">User Data</h1>
                     <div class = "form-group first-part">
                         {% for subfield in form.sex %}
                             <tr>
@@ -25,88 +25,88 @@
                         {% endfor %}
                     </div>
                     <div class="form-group first-part">
-                        <label for="age">Wiek</label>
-                        <input id="age" class="form-control" type="number" name="age" placeholder="Podaj wiek" required>
+                        <label for="age">Age</label>
+                        <input id="age" class="form-control" type="number" name="age" placeholder="Enter age" required>
                         {% for error in form.age.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group first-part">
-                        <label for="weight">Waga [kg]</label>
-                        <input id="weight" class="form-control" step="0.1" type="number" name="weight" placeholder="Podaj wagę" required>
+                        <label for="weight">Weight [kg]</label>
+                        <input id="weight" class="form-control" step="0.1" type="number" name="weight" placeholder="Enter weight" required>
                         {% for error in form.weight.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group first-part">
-                        <label for="height">Wzrost [cm]</label>
-                        <input id="height" class="form-control" type="number" name="height" placeholder="Podaj wzrost" required>
+                        <label for="height">Height [cm]</label>
+                        <input id="height" class="form-control" type="number" name="height" placeholder="Enter height" required>
                         {% for error in form.height.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group first-part sport">
-                        <label for="sport">Aktywność fizyczna</label>
+                        <label for="sport">Physical activity</label>
                         {{ form.sport }}
                     </div>
                     <div class="form-group first-part target">
-                        <label for="target">Cel jaki chcesz osiągnąć</label>
+                        <label for="target">Your goal</label>
                         {{ form.target }}
                     </div>
                     <div class="form-group second-part">
-                        <label for="kcal">Kalorie</label>
-                        <input id="kcal" class="form-control" type="number" name="kcal" placeholder="Podaj kalorie" required>
+                        <label for="kcal">Calories</label>
+                        <input id="kcal" class="form-control" type="number" name="kcal" placeholder="Enter calories" required>
                         {% for error in form.kcal.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group second-part">
-                        <label for="protein">Białko [g]</label>
-                        <input id="protein" class="form-control" type="number" name="protein" placeholder="Podaj ilość białka" required>
+                        <label for="protein">Protein [g]</label>
+                        <input id="protein" class="form-control" type="number" name="protein" placeholder="Enter protein" required>
                         {% for error in form.protein.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group second-part">
-                        <label for="carbohydrates">Węglowodany [g]</label>
-                        <input id="carbohydrates" class="form-control" type="number" name="carbohydrates" placeholder="Podaj ilość węglowodanów" required>
+                        <label for="carbohydrates">Carbohydrates [g]</label>
+                        <input id="carbohydrates" class="form-control" type="number" name="carbohydrates" placeholder="Enter carbohydrates" required>
                         {% for error in form.carbohydrates.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group second-part">
-                        <label for="fats">Tłuszcze [g]</label>
-                        <input id="fats" class="form-control" type="number" name="fats" placeholder="Podaj ilość tłuszczy" required>
+                        <label for="fats">Fats [g]</label>
+                        <input id="fats" class="form-control" type="number" name="fats" placeholder="Enter fats" required>
                         {% for error in form.fats.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group second-part">
-                        <label for="water">Woda [ml]</label>
-                        <input id="water" class="form-control" type="number" step="0.01" name="water" placeholder="Podaj ilość wody" required>
+                        <label for="water">Water [ml]</label>
+                        <input id="water" class="form-control" type="number" step="0.01" name="water" placeholder="Enter water" required>
                         {% for error in form.water.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group second-part">
-                        <label for="steps">Kroki</label>
-                        <input id="steps" class="form-control" type="number" name="steps" placeholder="Podaj ilość kroków" required>
+                        <label for="steps">Steps</label>
+                        <input id="steps" class="form-control" type="number" name="steps" placeholder="Enter steps" required>
                         {% for error in form.steps.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
 
                     <div class="form-group first-part">
-                        <button class="btn btn-primary btn-block active" type="button" onclick="calculate()">Zatwierdź dane</button>
+                        <button class="btn btn-primary btn-block active" type="button" onclick="calculate()">Confirm data</button>
                     </div>
 
                     <div class="form-group second-part">
                         <div class="row">
                             <div class="col-md-3">
-                                <button class="btn btn-primary btn-block active" type="button" onclick="previousTab()">Wróć</button>
+                                <button class="btn btn-primary btn-block active" type="button" onclick="previousTab()">Back</button>
                             </div>
                             <div class="col-md-9">
-                                <button class="btn btn-primary btn-block active" type="sumbit">Zatwierdź dane</button>
+                                <button class="btn btn-primary btn-block active" type="sumbit">Confirm data</button>
                             </div>
                         </div>
                     </div>

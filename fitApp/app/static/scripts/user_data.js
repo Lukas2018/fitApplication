@@ -17,10 +17,10 @@ function calculate() {
     let steps = 10000;
     let water;
     if(sex == 0) {
-        bmr = 655 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
+        bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
     }
     else {
-        bmr = 66 + (13.7 * weight) + (5 * height) - (6.76 * age);
+        bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
     }
     if(sport == 0) {
         bmr = bmr * 1.2;
@@ -47,7 +47,7 @@ function calculate() {
         steps = 10000;
     }
     else if(sport == 4) {
-        bmr = bmr * 2.2;
+        bmr = bmr * 2.0;
         protein = weight * 2.8;
         carbohydrates = weight * 5;
         steps = 120000;

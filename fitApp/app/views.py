@@ -12,7 +12,24 @@ import datetime
 import json
 import math
 
+def redirect_if_not_user_data_fill(func):
+    def wrapper(request):
+        if request.user.is_authenticated:
+            if request.user.userprofile.first_login == 1:
+                return redirect('/user_data')
+            return func(request)
+        return redirect('/login')
+    return wrapper
+
+def redirect_if_user_authenticated(func):
+    def wrapper(request):
+        if request.user.is_authenticated:
+            return redirect('/index')
+        return func(request)
+    return wrapper
+
 @login_required
+@redirect_if_not_user_data_fill
 def index(request):
     user = request.user
     date = datetime.datetime.now()
@@ -79,6 +96,7 @@ def index(request):
     }
     return render(request, 'index.html', context)
 
+@redirect_if_user_authenticated
 def login(request):
     form = LoginForm(request.POST or None)
     if request.method == 'POST':
@@ -133,10 +151,12 @@ def user_data(request):
             user.userprofile.first_login = 0
             user.userprofile.pulse = 60
             user.save()
+            meal_set = MealSet()
+            meal_set.save()
             day = Day(date=datetime.datetime.now(), weight=user.userprofile.weight, pulse=user.userprofile.pulse, 
                         expected_kcal=user.userprofile.kcal, expected_protein = user.userprofile.protein, 
                         expected_carbohydrates = user.userprofile.carbohydrates, expected_fats = user.userprofile.fats,
-                        expected_water = user.userprofile.water, expected_steps = user.userprofile.steps, user=user)
+                        expected_water = user.userprofile.water, expected_steps = user.userprofile.steps, meal_set=meal_set, user=user)
             day.save()
             return redirect('/index')
     context = {
