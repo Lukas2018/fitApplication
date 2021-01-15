@@ -35,6 +35,7 @@ urlpatterns = [
     path('meal/', views.meal_creation, name='meal_creation'),
     path('delete_product_from_meal/', views.delete_product_from_meal, name='delete_product_from_meal'),
     path('save_index_data/', views.save_index_data, name='save_index_data'),
+    path('save_steps/', views.save_steps, name='save_steps'),
     path('save_weight/', views.save_weight, name='save_weight'),
     path('save_pulse/', views.save_pulse, name='save_pulse'),
     path('save_water/', views.save_water, name='save_water'),
@@ -43,5 +44,5 @@ urlpatterns = [
     path('get_day_data/', views.get_day_data, name='get_day_data'),
     path('get_day_specific_data/', views.get_day_specific_data, name='get_day_specific_data'),
     path('get_user_products/', views.get_user_products, name='get_user_products'),
-    path('get_user_dishes/', views.get_user_dishes, name='get_user_dishes')
+    path('export/', views.export, name='export')
 ]

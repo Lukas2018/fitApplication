@@ -247,5 +247,5 @@ function redirectToEdit() {
     let month = monthNumber($('.c-aside-month').text()) + 1;
     let day = parseInt($('.c-aside-num').text());
     let date = year + '-' + month + '-' + day;
-    window.location = '/index?date=' + date;
+    window.location = '/index/?date=' + date;
 }

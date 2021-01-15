@@ -24,6 +24,12 @@ html, body {
     margin-bottom: 5px;
 }
 
+.current-date {
+    font-size: large;
+    font-weight: 500;
+    text-align: center;
+}
+
 .weight-data .data {
     padding-right: 0;
     padding-left: 0;
@@ -177,4 +183,8 @@ html, body {
     width: 60%;
     margin-top: 20px;
     resize: none;
+}
+
+#steps {
+    margin-bottom: 10px;
 }

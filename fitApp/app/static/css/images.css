@@ -12,7 +12,8 @@
 }
 
 .eat {
-    background-image: url('/static/media/eating.svg');
+    /*background-image: url('/static/media/eating.svg');*/
+    background-image: url('/static/media/wedding-dinner.svg');
 }
 
 .lose {

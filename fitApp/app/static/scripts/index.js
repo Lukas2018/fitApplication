@@ -22,7 +22,7 @@ window.addEventListener('load', function() {
         fillBottle($(this));
         timerB = setTimeout(function () {
             let data = JSON.stringify({
-                'date': getDateFromUrl(),
+                'date': getDateFromCurrentDay(),
                 'water': $('.water-data .data .current').text()
             });
             sendData('/save_water/', data);
@@ -33,7 +33,7 @@ window.addEventListener('load', function() {
         emptyBottle($(this));
         timerB = setTimeout(function () {
             let data = JSON.stringify({
-                'date': getDateFromUrl(),
+                'date': getDateFromCurrentDay(),
                 'water': $('.water-data .data .current').text()
             });
             sendData('/save_water/', data);
@@ -44,7 +44,7 @@ window.addEventListener('load', function() {
         decrement($(this), 0.1);
         timerW = setTimeout(function () {
             let data = JSON.stringify({
-                'date': getDateFromUrl(),
+                'date': getDateFromCurrentDay(),
                 'weight': $('.weight-data .data').text()
             });
             sendData('/save_weight/', data);
@@ -55,7 +55,7 @@ window.addEventListener('load', function() {
         increment($(this), 0.1);
         timerW = setTimeout(function () {
             let data = JSON.stringify({
-                'date': getDateFromUrl(),
+                'date': getDateFromCurrentDay(),
                 'weight': $('.weight-data .data').text()
             });
             sendData('/save_weight/', data);
@@ -66,7 +66,7 @@ window.addEventListener('load', function() {
         decrement($(this), 1);
         timerP = setTimeout(function () {
             let data = JSON.stringify({
-                'date': getDateFromUrl(),
+                'date': getDateFromCurrentDay(),
                 'pulse': $('.heart-data .data').text()
             });
             sendData('/save_pulse/', data);
@@ -77,12 +77,24 @@ window.addEventListener('load', function() {
         increment($(this), 1);
         timerP = setTimeout(function () {
             let data = JSON.stringify({
-                'date': getDateFromUrl(),
+                'date': getDateFromCurrentDay(),
                 'pulse': $('.heart-data .data').text()
             });
             sendData('/save_pulse/', data);
         }, timeToWait);
     });
+    $('#step-counter').change(function() {
+        let steps = $('#step-counter').val();
+        if(steps == "") {
+            steps = 0;
+        }
+        let data = JSON.stringify({
+            'date': getDateFromCurrentDay(),
+            'steps': steps
+        });
+        $('.steps-data .data .current').text(steps);
+        sendData('/save_steps/', data);
+    })
     $('.product-operations .trash').each(function() {
         $(this).on('click', function() {
             deleteMealProduct(this);
@@ -119,13 +131,12 @@ window.addEventListener('load', function() {
             $(this).text(convertSecondsToTimeString(parseInt($(this).text())));
         }
     })
-    getDateFromUrl();
 });
 
 window.onbeforeunload = function() {
     if(somethingChanged == 1) {
         var formData = new FormData();
-        formData.append('date', getDateFromUrl());
+        formData.append('date', getDateFromCurrentDay());
         formData.append('weight', $('.weight-data .data').text());
         formData.append('pulse', $('.heart-data .data').text());
         formData.append('water', $('.water-data .data .current').text());
@@ -264,7 +275,7 @@ function editMealProduct() {
             let carbohydrates = 0;
             let fats = 0;
             let data = JSON.stringify({
-                'date': getDateFromUrl(),
+                'date': getDateFromCurrentDay(),
                 'id': mealProductId,
                 'kcal': kcal,
                 'portion': portion,
@@ -292,7 +303,7 @@ function deleteMealProduct(product) {
             let mealId = product.parent().attr('class').split('meal-id-')[1].split(' ')[0];
             let mealProductId = product.attr('class').split('product-id-')[1].split(' ')[0];
             let data = JSON.stringify({
-                'date': getDateFromUrl(),
+                'date': getDateFromCurrentDay(),
                 'mealSetId': mealSetId,
                 'mealId': mealId,
                 'mealProductId': mealProductId
@@ -529,7 +540,7 @@ function createTraining(sport) {
             let lose = calculateLoseKcal(sportMet, time, weight);
             let note = $('#input-note').val();
             let data = JSON.stringify({
-                'date': getDateFromUrl(),
+                'date': getDateFromCurrentDay(),
                 'activity': sportId,
                 'lose': lose,
                 'time': time,
@@ -566,7 +577,7 @@ function editTraining(training) {
             let lose = calculateLoseKcal(sportMet, time, weight);
             let note = $('#input-note').val();
             let data = JSON.stringify({
-                'date': getDateFromUrl(),
+                'date': getDateFromCurrentDay(),
                 'lose': lose,
                 'time': time,
                 'notes': note
@@ -589,7 +600,7 @@ function deleteTraining(training) {
         if(willDelete) {
             let id = $(training).attr('class').split('id-')[1].split(' ')[0];
             let data = JSON.stringify({
-                'date': getDateFromUrl(),
+                'date': getDateFromCurrentDay(),
             });
             removeTraining(id, data);
         }
@@ -857,13 +868,8 @@ function updateActivitySummary(oldTime, oldLose, time, lose) {
     $('.workout-data .data').text(convertSecondsToTimeString(totalTime));
 }
 
-function getDateFromUrl() {
-    let queryString = window.location.search;
-    let urlParams = new URLSearchParams(queryString);
-    let date = urlParams.get('date');
-    if(date == null) {
-        let today = new Date();
-        date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-    }
+function getDateFromCurrentDay() {
+    let currentDate = $('.current-date').text();
+    let date = currentDate.split('/')[2] + '-' + currentDate.split('/')[1] + '-' + currentDate.split('/')[0];
     return date;
 }

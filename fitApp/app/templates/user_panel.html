@@ -12,15 +12,15 @@
             <div id="user-panel-menu">
                 <div class="row" onclick="showAccountData()"><p>Account Data</p></div>
                 <div class="row" onclick="showProducts()"><p>My Products</p></div>
-                <div class="row" onclick="showMeals()"><p>My Meals</p></div>
+                <div class="row" onclick="showUserExport()"><p>Data Export</p></div>
             </div>
         </div>
         <div class="p-panel-container p-panel-style">
             <div id="account-data">
                 <h1>Account Data</h1>
                 <div class ="form-group">
-                    <p class="one-line">E-mail: {{ user }}</p><p class="one-line"><a href="/">Zmień adres e-mail</a></p><div style="clear:both;"></div>
-                    <p class="one-line">Hasło: ********</p><p class="one-line"><a href="/password_change/">Zmień hasło</a></p><div style="clear:both;"></div>
+                    <div>E-mail: {{ user }}</div>
+                    <div>Hasło: ********<a href="/password_change/">Zmień hasło</a></div>
                     <p>Age: {{ user.userprofile.age }}</p>
                     <p>Height: {{ user.userprofile.height }} [cm]</p>
                 </div>
@@ -45,25 +45,55 @@
                     <ul class="list products-list"></ul>
                 </div>
             </div>
-            <div id="user-meals">
-                <h1>Your meals</h1>
-                <div class="sub-header">
-                    <div class="search">
-                        <div class="input-group md-form form-sm form-1 pl-0">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></span>
-                            </div>
-                            <input class="form-control search-input" type="text" placeholder="Search" aria-label="Search">
-                        </div>
+            <div id="user-export">
+                <h1>Data export</h1>
+                <div class="export-dates">
+                    <input type="date" id="start" name="start">
+                    <input type="date" id="end" name="end">
+                </div>
+                <div class="export-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="kcal">
+                        <label class="form-check-label" for="kcal">Calories</label>
                     </div>
-                    <div class="add-button">
-                        <button class="btn btn-primary add-meal">Add meal</button>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="protein">
+                        <label class="form-check-label" for="protein">Protein</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="carbohydrates">
+                        <label class="form-check-label" for="carbohydrates">Carbohydrates</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="fats">
+                        <label class="form-check-label" for="fats">Fats</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="activity">
+                        <label class="form-check-label" for="activity">Activity time</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="steps">
+                        <label class="form-check-label" for="steps">Steps</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="burned-kcal">
+                        <label class="form-check-label" for="burned-kcal">Burned calories</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="water">
+                        <label class="form-check-label" for="water">Water</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="weight">
+                        <label class="form-check-label" for="weight">Weight</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="pulse">
+                        <label class="form-check-label" for="pulse">Pulse</label>
                     </div>
                 </div>
-                <div id="user-meals-list">
-                    <p></p>
-                    <ul class="list meals-list"></ul>
-                </div>
+                <button id="export-btn" class="btn btn-primary active" type="sumbit">Export</button>
             </div>
         </div>
     </div>

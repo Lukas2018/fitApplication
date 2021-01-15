@@ -8,17 +8,20 @@ window.addEventListener('load', function() {
     $('.search-input').keyup(function() {
         searchItems(this);
     })
+    $('#export-btn').click(function() {
+        exportData();
+    })
 });
 
 function showAccountData() {
     $('#user-products').css('display', 'none');
-    $('#user-meals').css('display', 'none');
+    $('#user-export').css('display', 'none');
     $('#account-data').css('display', 'block');
 }
 
 function showProducts() {
     $('#account-data').css('display', 'none');
-    $('#user-meals').css('display', 'none');
+    $('#user-export').css('display', 'none');
     $('#user-products').css('display', 'block');
     clearList('.products-list');
     clearParagraph('#user-products-list p');
@@ -26,14 +29,10 @@ function showProducts() {
     getUserProducts();
 }
 
-function showMeals() {
+function showUserExport() {
     $('#account-data').css('display', 'none');
     $('#user-products').css('display', 'none');
-    $('#user-meals').css('display', 'block');
-    clearList('.meals-list');
-    clearParagraph('#user-meals-list p');
-    clearSearch('#user-meals .search-input');
-    getUserMeals();
+    $('#user-export').css('display', 'block');
 }
 
 function searchItems(search) {
@@ -110,10 +109,6 @@ function loadProducts(data) {
         element.append(productOptions);
         productList.append(element);
     }
-}
-
-function loadMeals(data) {
-
 }
 
 function fillWithData(element, text) {
@@ -218,4 +213,83 @@ function removeUserProduct(id) {
             }
         }
     });
+}
+
+function exportData() {
+    let dateLeft = $('#start').val();
+    let dateRight = $('#end').val();
+    if(dateLeft == '' || dateRight == '') {
+        swal({
+            title: 'Fill dates to export the data', 
+            icon: 'warning'
+        });
+    }
+    else if(dateLeft > dateRight) {
+        swal({
+            title: 'Starting date cannot be greater than ending date', 
+            icon: 'warning'
+        });
+    }
+    else {
+        let kcal = Number($('#kcal').prop('checked'));
+        let protein = Number($('#protein').prop('checked'));
+        let carbohydrates = Number($('#carbohydrates').prop('checked'));
+        let fats = Number($('#fats').prop('checked'));
+        let activity = Number($('#activity').prop('checked'));
+        let steps = Number($('#steps').prop('checked'));
+        let burnedKcal = Number($('#burned-kcal').prop('checked'));
+        let water = Number($('#water').prop('checked'));
+        let weight = Number($('#weight').prop('checked'));
+        let pulse = Number($('#pulse').prop('checked'));
+        if(!kcal && !protein && !carbohydrates && !fats && !activity && !steps && !burnedKcal && !water && !weight && !pulse) {
+            swal({
+                title: 'Check at least one', 
+                icon: 'warning'
+            });
+        }
+        else {
+            let data = JSON.stringify({
+                'leftDate': dateLeft,
+                'rightDate': dateRight,
+                'kcal': kcal,
+                'protein': protein,
+                'carbohydrates': carbohydrates,
+                'fats': fats,
+                'activity': activity,
+                'steps': steps,
+                'burnedKcal': burnedKcal,
+                'water': water,
+                'weight': weight,
+                'pulse': pulse,
+            });
+            exportDataFromServer(data);
+        }
+    }
+}
+
+function exportDataFromServer(data) {
+    let request = new XMLHttpRequest();
+    let fileName = "export.csv";
+    request.open('POST', '/export/', true);
+    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+    request.responseType = 'blob';
+    request.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+    request.onload = function(e) {
+        if (this.status === 200) {
+            let blob = this.response;
+            if(window.navigator.msSaveOrOpenBlob) {
+                window.navigator.msSaveBlob(blob, fileName);
+            }
+            else{
+                let downloadLink = window.document.createElement('a');
+                let contentTypeHeader = request.getResponseHeader("Content-Type");
+                downloadLink.href = window.URL.createObjectURL(new Blob([blob], { type: contentTypeHeader }));
+                downloadLink.download = fileName;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            }
+        }
+    };
+    request.send(data);
 }

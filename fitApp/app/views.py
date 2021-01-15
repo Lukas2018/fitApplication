@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from app.forms import LoginForm, RegisterForm, UserDataForm, PasswordChangeForm, ProductForm
 from app.models import Product, Day, Nutrientes, PhysicalActivity, Training, MealSet, MealType, Meal, MealProduct
-from app.basic_functions import convert_seconds_to_time_string, calculate_kcal, calculate_proteins, calculate_carbohydrates, calculate_fats
+from app.basic_functions import convert_seconds_to_time_string, calculate_kcal, calculate_proteins, add_zero_if_needed
+from app.basic_functions import calculate_carbohydrates, calculate_fats, create_csv
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
@@ -11,6 +12,7 @@ from django.http import HttpResponse
 import datetime
 import json
 import math
+import csv
 
 def redirect_if_not_user_data_fill(func):
     def wrapper(request):
@@ -64,6 +66,7 @@ def index(request):
                         expected_water = user.userprofile.water, expected_steps = user.userprofile.steps, 
                         meal_set=meal_set, user=user)
         day.save()
+    date = add_zero_if_needed(day.date.day) + '/' + add_zero_if_needed(day.date.month) + '/' + str(day.date.year)
     activites = PhysicalActivity.objects.all()
     empty_bottles = math.ceil((day.expected_water - day.water)/250)
     full_bottles = math.ceil(day.expected_water / 250) - empty_bottles
@@ -85,6 +88,7 @@ def index(request):
         'empty_loop_times': range(1, empty_bottles + 1),
         'full_loop_times': range(1, full_bottles + 1),
         'day': day,
+        'date': date,
         'workout_time': convert_seconds_to_time_string(day.activity_time),
         'activities': activites,
         'meals': meals,
@@ -369,17 +373,41 @@ def save_index_data(request):
         day = int(data['date'].split('-')[2])
         date = datetime.date(year, month, day)
         day = user.day_set.filter(date=date).first()
-        try:
-            user.userprofile.weight = float(data['weight'])
-            user.userprofile.pulse = int(data['pulse'])
-            day.weight = float(data['weight'])
-            day.pulse = int(data['pulse'])
-            day.water = int(data['water'])
-            user.save()
-            day.save()
-        except:
-            return HttpResponse('Server error occured', status=500)
-        return HttpResponse('OK', status=200)
+        if day is not None:
+            try:
+                user.userprofile.weight = float(data['weight'])
+                user.userprofile.pulse = int(data['pulse'])
+                day.weight = float(data['weight'])
+                day.pulse = int(data['pulse'])
+                day.water = int(data['water'])
+                day.steps = int(data['steps'])
+                user.save()
+                day.save()
+            except:
+                return HttpResponse('Server error occured', status=500)
+            return HttpResponse('OK', status=200)
+        return HttpResponse('Bad request', status=400)
+    return HttpResponse('Method not allowed', status=405)
+
+@login_required       
+def save_steps(request):
+    if request.is_ajax():
+        if request.method == 'POST':
+            user = request.user
+            data = json.loads(request.body)
+            year = int(data['date'].split('-')[0])
+            month = int(data['date'].split('-')[1])
+            day = int(data['date'].split('-')[2])
+            date = datetime.date(year, month, day)
+            day = user.day_set.filter(date=date).first()
+            if day is not None:
+                try:
+                    day.steps = int(data['steps'])
+                    day.save()
+                except:
+                    return HttpResponse('Server error occured', status=500)
+                return HttpResponse('OK', status=200)
+            return HttpResponse('Bad request', status=400)
     return HttpResponse('Method not allowed', status=405)
 
 @login_required       
@@ -393,14 +421,16 @@ def save_weight(request):
             day = int(data['date'].split('-')[2])
             date = datetime.date(year, month, day)
             day = user.day_set.filter(date=date).first()
-            try:
-                user.userprofile.weight = float(data['weight'])
-                day.weight = float(data['weight'])
-                user.save()
-                day.save()
-            except:
-                return HttpResponse('Server error occured', status=500)
-            return HttpResponse('OK', status=200)
+            if day is not None:
+                try:
+                    user.userprofile.weight = float(data['weight'])
+                    day.weight = float(data['weight'])
+                    user.save()
+                    day.save()
+                except:
+                    return HttpResponse('Server error occured', status=500)
+                return HttpResponse('OK', status=200)
+            return HttpResponse('Bad request', status=400)
     return HttpResponse('Method not allowed', status=405)
 
 @login_required
@@ -414,14 +444,16 @@ def save_pulse(request):
             day = int(data['date'].split('-')[2])
             date = datetime.date(year, month, day)
             day = user.day_set.filter(date=date).first()
-            try:
-                user.userprofile.pulse = int(data['pulse'])
-                day.pulse = int(data['pulse'])
-                user.save()
-                day.save()
-            except:
-                return HttpResponse('Server error occured', status=500)
-            return HttpResponse('OK', status=200)
+            if day is not None:
+                try:
+                    user.userprofile.pulse = int(data['pulse'])
+                    day.pulse = int(data['pulse'])
+                    user.save()
+                    day.save()
+                except:
+                    return HttpResponse('Server error occured', status=500)
+                return HttpResponse('OK', status=200)
+            return HttpResponse('Bad request', status=400)
     return HttpResponse('Method not allowed', status=405)
 
 @login_required
@@ -435,13 +467,15 @@ def save_water(request):
             day = int(data['date'].split('-')[2])
             date = datetime.date(year, month, day)
             day = user.day_set.filter(date=date).first()
-            try:
-                day.water = int(data['water'])
-                user.save()
-                day.save()
-            except:
-                return HttpResponse('Server error occured', status=500)
-            return HttpResponse('OK', status=200)
+            if day is not None:
+                try:
+                    day.water = int(data['water'])
+                    user.save()
+                    day.save()
+                except:
+                    return HttpResponse('Server error occured', status=500)
+                return HttpResponse('OK', status=200)
+            return HttpResponse('Bad request', status=400)
     return HttpResponse('Method not allowed', status=405)
 
 @login_required
@@ -680,7 +714,13 @@ def get_user_products(request):
     return HttpResponse('Method not allowed', status=405)
 
 @login_required
-def get_user_dishes(request):
-    if request.is_ajax():
-        if request.method == 'GET':
-            return HttpResponse(status=204)
+def export(request):
+    if request.method == 'POST':
+        user = request.user
+        data = json.loads(request.body)
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="export.csv"'
+        writer = csv.writer(response)
+        create_csv(writer, user, data)
+        return response
+    return HttpResponse('Method not allowed', status=405)
