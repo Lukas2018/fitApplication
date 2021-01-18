@@ -152,17 +152,32 @@ def user_data(request):
             user.userprofile.fats = form.cleaned_data['fats']
             user.userprofile.water = form.cleaned_data['water']
             user.userprofile.steps = form.cleaned_data['steps']
-            user.userprofile.first_login = 0
-            user.userprofile.pulse = 60
             user.save()
-            meal_set = MealSet()
-            meal_set.save()
-            day = Day(date=datetime.datetime.now(), weight=user.userprofile.weight, pulse=user.userprofile.pulse, 
-                        expected_kcal=user.userprofile.kcal, expected_protein = user.userprofile.protein, 
-                        expected_carbohydrates = user.userprofile.carbohydrates, expected_fats = user.userprofile.fats,
-                        expected_water = user.userprofile.water, expected_steps = user.userprofile.steps, meal_set=meal_set, user=user)
-            day.save()
+            if user.userprofile.first_login == 1:
+                user.userprofile.first_login = 0
+                user.userprofile.pulse = 60
+                user.save()
+                meal_set = MealSet()
+                meal_set.save()
+                day = Day(date=datetime.datetime.now(), weight=user.userprofile.weight, pulse=user.userprofile.pulse, 
+                            expected_kcal=user.userprofile.kcal, expected_protein = user.userprofile.protein, 
+                            expected_carbohydrates = user.userprofile.carbohydrates, expected_fats = user.userprofile.fats,
+                            expected_water = user.userprofile.water, expected_steps = user.userprofile.steps, meal_set=meal_set, user=user)
+                day.save()
+            else:
+                day = user.day_set.filter(date=datetime.datetime.now()).first()
+                day.weight = form.cleaned_data['weight']
+                day.expected_kcal = form.cleaned_data['kcal']
+                day.expected_protein = form.cleaned_data['protein']
+                day.expected_carbohydrates = form.cleaned_data['carbohydrates']
+                day.expected_fats = form.cleaned_data['fats']
+                day.expected_water = form.cleaned_data['water']
+                day.expected_steps = form.cleaned_data['steps']
+                day.save()
+                return redirect('/user_panel')
             return redirect('/index')
+    if request.user.userprofile.first_login == 0:
+        form = UserDataForm(initial={'sex': request.user.userprofile.sex})
     context = {
         'form': form
     }

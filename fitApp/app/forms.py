@@ -14,7 +14,6 @@ class LoginForm(forms.Form):
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             user = None
-        print(user)
         if user is None:
             raise forms.ValidationError('Incorrect e-mail or password')
         else:
@@ -48,7 +47,7 @@ class UserDataForm(forms.Form):
     age = forms.IntegerField()
     weight = forms.FloatField()
     height = forms.FloatField()
-    sex = forms.ChoiceField(choices=[('0', 'Female'), ('1', 'Male')], widget=forms.RadioSelect)
+    sex = forms.ChoiceField(choices=[('0', 'Female'), ('1', 'Male')], initial='0', widget=forms.RadioSelect)
     target = forms.ChoiceField(choices=[('0', 'Want to gain weight'), ('1', 'Want to keep weight'), ('2', 'Want to lose weight')], widget=forms.Select)
     sport = forms.ChoiceField(choices=[('0', 'Lack of activity'), ('1', 'Low activity'), ('2', 'Average activity'),
                                           ('3', 'Large activity'), ('4', 'Very large activity')], widget=forms.Select)
