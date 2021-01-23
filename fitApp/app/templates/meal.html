@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block imports %}
+    <link rel="stylesheet" href="/static/css/meal.css">
+    <link rel="stylesheet" href="/static/css/images.css">
+    <script src="/static/scripts/meal.js"></script>
+{% endblock %}
+{% block content %}
+<div class="wrapper">
+    <div class="c-meal meal-id-{{ meal.id }}">
+        <div class="c-meal-container c-meal-style">
+            <h2>{{ meal_type }}</h2>
+            <h6>{{ date }}</h6>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Manufacturer</th>
+                        <th scope="col">Calories [kcal]</th>
+                        <th scope="col">Portion [g]</th>
+                        <th scope="col">Protein [g]</th>
+                        <th scope="col">Carbohydrates [g]</th>
+                        <th scope="col">Fats [g]</th>
+                        <th scope="col">Operations</th>
+                    </tr>
+                </thead>
+                <tbody id="meal-products">
+                    {% for product in products %}
+                        <tr class="product product-id-{{ product.id }}">
+                            <th class="number" scope="row">{{ forloop.counter }}</th>
+                            <td class="product-name">{{ product.product.name }}</td>
+                            <td class="product-manufacturer">{{ product.product.manufacturer }}</td>
+                            <td class="product-portion">{{ product.portion }}</td>
+                            <td class="product-kcal">{{ product.kcal }}</td>
+                            <td class="product-protein">{{ product.protein }}</td>
+                            <td class="product-carbohydrates">{{ product.carbohydrates }}</td>
+                            <td class="product-fats">{{ product.fats }}</td>
+                            <td class="product-operations">
+                                <div class="image edit size-20"></div>
+                                <div class="image trash size-20"></div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+            <button id="save-meal-button" class="btn btn-primary active">Save meal</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

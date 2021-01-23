@@ -39,35 +39,45 @@ function searchItems(search) {
     let pattern = $(search).val().toLowerCase().trim();
     let patternParts = pattern.split(' ');
     let items = $('.item');
-    for(let i=0; i < items.length; i++) {
-        let find = false;
-        let product = $(items[i]).find('.item-name').text();
-        let productParts = product.split(' ');
-        if(productParts.length != 1) {
-            let total = 0;
-                for(let j=0; j < productParts.length; j++) {
-                    for(let k=0; k < patternParts.length; k++) {
-                        if(productParts[j].toLowerCase().startsWith(patternParts[k].toLowerCase())) {
-                            total++;
-                            break;
+    if(pattern != '') {
+        let matched = 0;
+        for(let i=0; i < items.length; i++) {
+            let find = false;
+            let product = $(items[i]).find('.item-name').text();
+            let productParts = product.split(' ');
+            if(productParts.length != 1) {
+                let total = 0;
+                    for(let j=0; j < productParts.length; j++) {
+                        for(let k=0; k < patternParts.length; k++) {
+                            if(productParts[j].toLowerCase().startsWith(patternParts[k].toLowerCase())) {
+                                total++;
+                                break;
+                            }
                         }
                     }
-                }
-                if(total == patternParts.length) {
+                    if(total >= patternParts.length) {
+                        find = true;
+                        matched++;
+                    }
+            }
+            else {
+                if(product.toLowerCase().startsWith(pattern)) {
                     find = true;
+                    matched++;
                 }
-        }
-        else {
-            if(product.toLowerCase().startsWith(pattern)) {
-                find = true;
+            }
+            if(find == false) {
+                $(items[i]).css('display', 'none');
+            }
+            else {
+                $(items[i]).css('display', 'block');
             }
         }
-        if(find == false) {
-            $(items[i]).css('display', 'none');
-        }
-        else {
-            $(items[i]).css('display', 'block');
-        }
+    }
+    else {
+        items.each(function() {
+            $(this).css('display', 'block');
+        });
     }
 }
 
@@ -165,21 +175,6 @@ function getUserProducts() {
     });
 }
 
-function getUserMeals() {
-    $.ajax({
-        url: '/get_user_meals/',
-        type: 'GET',
-        statusCode: {
-            200: function(data) {
-                loadMeals(data);
-            },
-            204: function() {
-                fillWithData('#user-meals-list p', 'You have no meals');
-            }
-        }
-    });
-}
-
 function removeUserProduct(id) {
     url = '/product/' + id + '/';
     let csrftoken = getCookie('csrftoken');
@@ -243,7 +238,7 @@ function exportData() {
         let pulse = Number($('#pulse').prop('checked'));
         if(!kcal && !protein && !carbohydrates && !fats && !activity && !steps && !burnedKcal && !water && !weight && !pulse) {
             swal({
-                title: 'Check at least one', 
+                title: 'Check at least one data type to export', 
                 icon: 'warning'
             });
         }

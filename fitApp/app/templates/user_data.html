@@ -26,21 +26,21 @@
                     </div>
                     <div class="form-group first-part">
                         <label for="age">Age</label>
-                        <input id="age" class="form-control" type="number" name="age" placeholder="Enter age" required>
+                        <input id="age" class="form-control" type="number" value="{{ user.userprofile.age }}" name="age" placeholder="Enter age" required>
                         {% for error in form.age.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group first-part">
                         <label for="weight">Weight [kg]</label>
-                        <input id="weight" class="form-control" step="0.1" type="number" name="weight" placeholder="Enter weight" required>
+                        <input id="weight" class="form-control" step="0.1" type="number" value="{{ user.userprofile.weight }}" name="weight" placeholder="Enter weight" required>
                         {% for error in form.weight.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}
                     </div>
                     <div class="form-group first-part">
                         <label for="height">Height [cm]</label>
-                        <input id="height" class="form-control" type="number" name="height" placeholder="Enter height" required>
+                        <input id="height" class="form-control" type="number" value="{{ user.userprofile.height }}" name="height" placeholder="Enter height" required>
                         {% for error in form.height.errors %}
                             <p class="invalid_data">[{{ error }}]</p>
                         {% endfor %}

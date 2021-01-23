@@ -13,7 +13,7 @@
                 <form id="custom_form" class="form" action="/product/{{ product.id }}/" method="post">
                     {% csrf_token %}
                     <input id="next" type="hidden" name="next" value="">
-                    <h1 class="text-center text-header">Dodaj produkt</h1>
+                    <h1 class="text-center text-header">Edytuj produkt</h1>
                     <div class="form-group">
                         <label for="name">Nazwa produktu</label>
                         <input id="name" class="form-control" type="text" name="name" value="{{ product.name }}" placeholder="Nazwa" required>

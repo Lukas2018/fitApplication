@@ -19,14 +19,39 @@
             <div id="account-data">
                 <h1>Account Data</h1>
                 <div class ="form-group">
-                    <div>E-mail: {{ user }}</div>
-                    <div>Hasło: ********<a href="/password_change/">Zmień hasło</a></div>
-                    <p>Age: {{ user.userprofile.age }}</p>
-                    <p>Height: {{ user.userprofile.height }} [cm]</p>
+                    <div class="basic-data">
+                        <div>E-mail: {{ user }}</div>
+                        <div>Hasło: ********<a href="/password_change/">Zmień hasło</a></div>
+                    </div>
+                    <div class="data-headers">
+                        <h3>Personal Data</h3>
+                        <h3>Daily Goals</h3>
+                    </div>
+                    <div class="user-data">
+                        <div class="personal-data">
+                            <div>Age: {{ user.userprofile.age }}</div>
+                            <div>Height: {{ user.userprofile.height }} [cm]</div>
+                            <div>Weight: {{ user.userprofile.weight }} [kg]</div>
+                            {% if user.userprofile.sex == '1' %}
+                                <div>Sex: Male</div>
+                            {% else %}
+                                <div>Sex: Female</div>
+                            {% endif %}
+                        </div>
+                        <div class="goal-data">
+                            <div>Kcal: {{ user.userprofile.kcal }}</div>
+                            <div>Protein: {{ user.userprofile.protein }} [g]</div>
+                            <div>Carbohydrates: {{ user.userprofile.carbohydrates }} [g]</div>
+                            <div>Fats: {{ user.userprofile.fats }} [g]</div>
+                            <div>Water: {{ user.userprofile.water }} [ml]</div>
+                            <div>Steps: {{ user.userprofile.steps }}</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary active" type="sumbit" onclick="location.href='/user_data'">Edit data</button>
                 </div>
             </div>
             <div id="user-products">
-                <h1>Your products</h1>
+                <h1>My products</h1>
                 <div class="sub-header">
                     <div class="search">
                         <div class="input-group md-form form-sm form-1 pl-0">

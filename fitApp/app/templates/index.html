@@ -129,7 +129,7 @@
                         <h3>Breakfast</h3>
                     </div>
                     <div class="col-md-1"></div>
-                    <div class="col-md-1"><div class="image plus size-40"></div></div>
+                    <div class="col-md-1"><a href="/meal/?date={{ date }}&meal_type=Breakfast"><div class="image plus size-40"></div></a></div>
                     <div class="col-md-1"><div class="image arrow arrow-down size-40"></div></div>
                     <div class="col-md-1"></div>
                 </div>
@@ -187,7 +187,7 @@
                         <h3>Lunch</h3>
                     </div>
                     <div class="col-md-1"></div>
-                    <div class="col-md-1"><div class="image plus size-40"></div></div>
+                    <div class="col-md-1"><a href="/meal/?date={{ date }}&meal_type=Lunch"><div class="image plus size-40"></div></a></div>
                     <div class="col-md-1"><div class="image arrow arrow-down size-40"></div></div>
                     <div class="col-md-1"></div>
                 </div>
@@ -245,7 +245,7 @@
                         <h3>Dinner</h3>
                     </div>
                     <div class="col-md-1"></div>
-                    <div class="col-md-1"><div class="image plus size-40"></div></div>
+                    <div class="col-md-1"><a href="/meal/?date={{ date }}&meal_type=Dinner"><div class="image plus size-40"></div></a></div>
                     <div class="col-md-1"><div class="image arrow arrow-down size-40"></div></div>
                     <div class="col-md-1"></div>
                 </div>
@@ -271,7 +271,7 @@
                             </div>
                         {% endif %}
                     {% endfor %}
-                    <div id="lunch-summary" class="meal-summary">
+                    <div id="dinner-summary" class="meal-summary">
                         {% for meal in meals %}
                             {% if meal.meal_type.name == 'Lunch' %}
                                 <div>
@@ -303,7 +303,7 @@
                         <h3>Other Meals</h3>
                     </div>
                     <div class="col-md-1"></div>
-                    <div class="col-md-1"><div class="image plus size-40"></div></div>
+                    <div class="col-md-1"><a href="/meal/?date={{ date }}&meal_type=Other"><div class="image plus size-40"></div></a></div>
                     <div class="col-md-1"><div class="image arrow arrow-down size-40"></div></div>
                     <div class="col-md-1"></div>
                 </div>
@@ -429,7 +429,6 @@
     <div class="row p-4">
         <div class="col-md-10"></div>
         <div id="menu" class="col-md-2">
-            <p><a href="/index/"><img src="/static/media/house.svg"/></a></p>
             <p><a href="/calendar/"><img src="/static/media/calendar.svg"/></a></p>
             <p><a href="/analyze/"><img src="/static/media/stats.svg"/></a></p>
             <p><a href="/user_panel/"><img src="/static/media/person.svg"/></a></p>

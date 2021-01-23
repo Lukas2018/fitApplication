@@ -1,0 +1,44 @@
+.c-meal {
+	display: flex;
+	justify-content: space-between;
+    flex-direction: row;
+    color: white;
+}
+
+.c-meal-style {
+	background-color: #00407b;
+	margin: 20px;
+	padding: 10px;
+}
+
+.c-meal-container {
+	position: relative;
+	width: 80%;
+	height: auto;
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
+    text-align: center;
+}
+
+#meal-products {
+    border-bottom: 1px solid #dee2e6;
+}
+
+table {
+    margin-top: 20px;
+}
+
+.product-operations {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.product:first-child .product-operations{
+    border: none;
+}
+#save-meal-button {
+    margin-top: 20px;
+    margin-bottom: 15px;
+}

@@ -152,17 +152,32 @@ def user_data(request):
             user.userprofile.fats = form.cleaned_data['fats']
             user.userprofile.water = form.cleaned_data['water']
             user.userprofile.steps = form.cleaned_data['steps']
-            user.userprofile.first_login = 0
-            user.userprofile.pulse = 60
             user.save()
-            meal_set = MealSet()
-            meal_set.save()
-            day = Day(date=datetime.datetime.now(), weight=user.userprofile.weight, pulse=user.userprofile.pulse, 
-                        expected_kcal=user.userprofile.kcal, expected_protein = user.userprofile.protein, 
-                        expected_carbohydrates = user.userprofile.carbohydrates, expected_fats = user.userprofile.fats,
-                        expected_water = user.userprofile.water, expected_steps = user.userprofile.steps, meal_set=meal_set, user=user)
-            day.save()
+            if user.userprofile.first_login == 1:
+                user.userprofile.first_login = 0
+                user.userprofile.pulse = 60
+                user.save()
+                meal_set = MealSet()
+                meal_set.save()
+                day = Day(date=datetime.datetime.now(), weight=user.userprofile.weight, pulse=user.userprofile.pulse, 
+                            expected_kcal=user.userprofile.kcal, expected_protein = user.userprofile.protein, 
+                            expected_carbohydrates = user.userprofile.carbohydrates, expected_fats = user.userprofile.fats,
+                            expected_water = user.userprofile.water, expected_steps = user.userprofile.steps, meal_set=meal_set, user=user)
+                day.save()
+            else:
+                day = user.day_set.filter(date=datetime.datetime.now()).first()
+                day.weight = form.cleaned_data['weight']
+                day.expected_kcal = form.cleaned_data['kcal']
+                day.expected_protein = form.cleaned_data['protein']
+                day.expected_carbohydrates = form.cleaned_data['carbohydrates']
+                day.expected_fats = form.cleaned_data['fats']
+                day.expected_water = form.cleaned_data['water']
+                day.expected_steps = form.cleaned_data['steps']
+                day.save()
+                return redirect('/user_panel')
             return redirect('/index')
+    if request.user.userprofile.first_login == 0:
+        form = UserDataForm(initial={'sex': request.user.userprofile.sex})
     context = {
         'form': form
     }
@@ -265,6 +280,30 @@ def product_operation(request, id):
     return render(request, 'product_create.html', context)
 
 @login_required
+def meal(request):
+    user = request.user
+    meal_type = request.GET['meal_type']
+    year = int(request.GET['date'].split('/')[2])
+    month = int(request.GET['date'].split('/')[1])
+    day = int(request.GET['date'].split('/')[0])
+    date = datetime.date(year, month, day)
+    day = user.day_set.filter(date=date).first()
+    meal_set = day.meal_set
+    meal = meal_set.meal_set.filter(meal_type=MealType.objects.filter(name=meal_type).first()).first()
+    if meal is None:
+        meal = Meal(meal_type=MealType.objects.filter(name=meal_type).first(), meal_set=meal_set)
+        meal.save()
+    products = meal.mealproduct_set.all()
+    context = {
+        'meal_type': request.GET['meal_type'],
+        'day': day,
+        'meal': meal,
+        'date': request.GET['date'],
+        'products': products
+    }
+    return render(request, 'meal.html', context)
+
+@login_required
 def meal_creation(request):
     if request.is_ajax():
         if request.method == 'POST':
@@ -326,6 +365,18 @@ def meal_creation(request):
                         return HttpResponse('OK', status=200)
             return HttpResponse('Bad request', status=400)
     return HttpResponse('Method not allowed', status=405)
+
+@login_required
+def meal_operation(request, id):
+    if request.is_ajax():
+        if request.method == 'POST':
+            user = request.user
+            data = json.loads(request.body)
+            year = int(data['date'].split('-')[0])
+            month = int(data['date'].split('-')[1])
+            day = int(data['date'].split('-')[2])
+            date = datetime.date(year, month, day)
+            day = user.day_set.filter(date=date).first()
 
 @login_required
 def delete_product_from_meal(request):

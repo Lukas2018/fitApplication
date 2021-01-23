@@ -93,6 +93,7 @@ window.addEventListener('load', function() {
             'steps': steps
         });
         $('.steps-data .data .current').text(steps);
+        changeStatus($('.steps-data'));
         sendData('/save_steps/', data);
     })
     $('.product-operations .trash').each(function() {
@@ -116,7 +117,7 @@ window.addEventListener('load', function() {
     $('.sport-activity').click(function() {
         createTraining(this);
     });
-    $('.training-operation .trash').each(function() {
+    $('.training-operations .trash').each(function() {
         $(this).on('click', function() {
             deleteTraining(this);
         })
@@ -196,31 +197,36 @@ function addBottle() {
 }
 
 function fillBottle(bottleElem) {
+    somethingChanged = 1;
     bottleElem.removeClass('empty-bottle').addClass('full-bottle');
-    changeWaterData($('.full-bottle').length);
+    let value = $('.full-bottle').length * 250;
+    $('.water-data .data .current').text(value);
+    changeStatus($('.water-data'))
     bottleElem.click(function() {
         emptyBottle(bottleElem);
     });
 }
 
 function emptyBottle(bottleElem) {
+    somethingChanged = 1;
     bottleElem.removeClass('full-bottle').addClass('empty-bottle');
-    changeWaterData($('.full-bottle').length);
+    let value = $('.full-bottle').length * 250;
+    $('.water-data .data .current').text(value);
+    changeStatus($('.water-data'))
     bottleElem.click(function() {
         fillBottle(bottleElem);
     });
 }
 
-function changeWaterData(numOfBottles) {
-    somethingChanged = 1;
-    let value = numOfBottles * 250;
-    let expectedValue = parseInt($('.water-data .data .expected').text());
-    $('.water-data .data .current').text(value);
-    if(expectedValue > value) {
-        $('.water-data .status').removeClass('good').addClass('bad');
+function changeStatus(element) {
+    let current = parseFloat($(element).find('.data .current').text())
+    let expected = parseFloat($(element).find('.data .expected').text())
+    let status = $(element).find('.status');
+    if(current >= expected) {
+        status.removeClass('bad').addClass('good');
     }
     else {
-        $('.water-data .status').removeClass('bad').addClass('good');
+        status.removeClass('good').addClass('bad');
     }
 }
 
@@ -589,6 +595,7 @@ function editTraining(training) {
 }
 
 function deleteTraining(training) {
+    console.log(training);
     swal({
         title: 'Removing training',
         text: 'Are you sure you want to remove this training?',

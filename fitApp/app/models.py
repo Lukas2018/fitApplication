@@ -28,19 +28,9 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     instance.userprofile.save()
 
-class Dish(models.Model):
-    name = models.CharField(max_length=60)
-    summary_kcal = models.FloatField()
-    summary_protein = models.FloatField()
-    summary_carbohydrates = models.FloatField()
-    summary_fats = models.FloatField()
-    summary_water = models.IntegerField()
-    products = models.ManyToManyField('Product')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
 class Product(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=60)
+    name = models.CharField(max_length=256)
     manufacturer = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     nutrient = models.OneToOneField('Nutrientes', on_delete=models.CASCADE)
@@ -82,10 +72,10 @@ class MealType(models.Model):
 
 class Meal(models.Model):
     id = models.AutoField(primary_key=True)
-    summary_kcal = models.FloatField()
-    summary_protein = models.FloatField()
-    summary_carbohydrates = models.FloatField()
-    summary_fats = models.FloatField()
+    summary_kcal = models.FloatField(default=0)
+    summary_protein = models.FloatField(default=0)
+    summary_carbohydrates = models.FloatField(default=0)
+    summary_fats = models.FloatField(default=0)
     meal_type = models.ForeignKey('MealType', on_delete=models.CASCADE)
     meal_set = models.ForeignKey('MealSet', on_delete=models.CASCADE)
 

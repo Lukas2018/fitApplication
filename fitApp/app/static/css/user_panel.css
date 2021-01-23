@@ -44,6 +44,40 @@ body {
     text-align: center;
 }
 
+#account-data div a {
+    color: white;
+    margin-left: 15px;
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+.data-headers {
+    margin-top: 15px;
+    display: flex;
+}
+
+.data-headers h3 {
+    flex-basis: 50%;
+}
+
+.user-data {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.goal-data {
+    margin-left: 15%;
+    text-align: left;
+}
+
+.personal-data {
+    margin-right: 15%;
+    align-self: center;
+    text-align: left;
+}
+
 #user-products-list p {
     font-size: xx-large;
     text-align: center;
