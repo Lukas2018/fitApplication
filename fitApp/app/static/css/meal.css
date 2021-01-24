@@ -38,7 +38,31 @@ table {
 .product:first-child .product-operations{
     border: none;
 }
-#save-meal-button {
-    margin-top: 20px;
-    margin-bottom: 15px;
+
+.save-meal {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+}
+
+#add-product-button {
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+.summary {
+    font-weight: 700;
+}
+
+.modal-product-name{
+    font-size: large;
+    margin-bottom: 10px;
+}
+
+.detail-content {
+    display: flex;
+    justify-content: space-around;
+}
+
+.modal-portion-name {
+    width: 100%;
 }

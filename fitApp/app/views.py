@@ -298,6 +298,7 @@ def meal(request):
         'meal_type': request.GET['meal_type'],
         'day': day,
         'meal': meal,
+        'meal_set': meal_set,
         'date': request.GET['date'],
         'products': products
     }
@@ -367,7 +368,7 @@ def meal_creation(request):
     return HttpResponse('Method not allowed', status=405)
 
 @login_required
-def meal_operation(request, id):
+def meal_operation(request):
     if request.is_ajax():
         if request.method == 'POST':
             user = request.user
@@ -377,6 +378,42 @@ def meal_operation(request, id):
             day = int(data['date'].split('-')[2])
             date = datetime.date(year, month, day)
             day = user.day_set.filter(date=date).first()
+            if day is not None:
+                meal_set = MealSet.objects.filter(id=int(data['mealSetId'])).first()
+                if day.meal_set == meal_set:
+                    meal = Meal.objects.filter(id=int(data['mealId']), meal_set=meal_set).first()
+                    if meal is not None:
+                        meal_product = meal.mealproduct_set.filter(id=int(data['mealProductId'])).first()
+                        if meal_product is not None:
+                            kcal = float(data['kcal'])
+                            portion = float(data['portion'])
+                            protein = float(data['protein'])
+                            carbohydrates = float(data['carbohydrates'])
+                            fats = float(data['fats'])
+                            try:
+                                meal.summary_kcal = round(meal.summary_kcal - meal_product.kcal + kcal, 1)
+                                meal.summary_portion = round(meal.summary_portion - meal_product.portion + portion, 1)
+                                meal.summary_protein = round(meal.summary_protein - meal_product.protein + protein, 1)
+                                meal.summary_carbohydrates = round(meal.summary_carbohydrates - meal_product.carbohydrates + carbohydrates, 1)
+                                meal.summary_fats = round(meal.summary_fats - meal_product.fats + fats, 1)
+                                day.summary_kcal = round(day.summary_kcal - meal_product.kcal + kcal, 1)
+                                day.summary_protein = round(day.summary_protein - meal_product.protein + protein, 1)
+                                day.summary_carbohydrates = round(day.summary_carbohydrates - meal_product.carbohydrates + carbohydrates, 1)
+                                day.summary_fats = round(day.summary_fats - meal_product.fats + fats, 1)
+                                meal_product.kcal = kcal
+                                meal_product.portion = portion
+                                meal_product.protein = protein
+                                meal_product.carbohydrates = carbohydrates
+                                meal_product.fats = fats
+                                meal.save()
+                                day.save()
+                                meal_product.save()
+                            except:
+                                return HttpResponse('Server error occured', status=500)
+                            return HttpResponse('Ok', status=200)
+            return HttpResponse('Bad request', status=400)
+    return HttpResponse('Method not allowed', status=405)
+
 
 @login_required
 def delete_product_from_meal(request):
@@ -398,6 +435,7 @@ def delete_product_from_meal(request):
                         if meal_product is not None:
                             try:
                                 meal.summary_kcal = round(meal.summary_kcal - meal_product.kcal, 1)
+                                meal.summary_portion = round(meal.summary_portion - meal_product.portion, 1)
                                 meal.summary_protein = round(meal.summary_protein - meal_product.protein, 1)
                                 meal.summary_carbohydrates = round(meal.summary_carbohydrates - meal_product.carbohydrates, 1)
                                 meal.summary_fats = round(meal.summary_fats - meal_product.fats, 1)

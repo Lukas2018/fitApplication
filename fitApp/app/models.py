@@ -73,6 +73,7 @@ class MealType(models.Model):
 class Meal(models.Model):
     id = models.AutoField(primary_key=True)
     summary_kcal = models.FloatField(default=0)
+    summary_portion = models.FloatField(default=0)
     summary_protein = models.FloatField(default=0)
     summary_carbohydrates = models.FloatField(default=0)
     summary_fats = models.FloatField(default=0)

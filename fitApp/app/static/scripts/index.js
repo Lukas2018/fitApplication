@@ -262,8 +262,9 @@ function sendData(endpoint, data) {
     });
 }
 
-function editMealProduct() {
-    let content = createModalProductContent();
+function editMealProduct(product) {
+    product = $(product).parent().parent();
+    let content = createModalProductContent(product);
     swal({
         title: 'Product edit', 
         content: content,
@@ -274,22 +275,26 @@ function editMealProduct() {
         allowOutsideClick: 'true' 
     }).then(function(willEdit) {
         if(willEdit) {
-            let mealProductId = 0;
-            let kcal = 0;
-            let portion = 0;
-            let protein = 0;
-            let carbohydrates = 0;
-            let fats = 0;
+            let mealSetId = $('#meals').attr('class').split('meal-set-id-')[1].split(' ')[0];
+            let mealId = product.parent().attr('class').split('meal-id-')[1].split(' ')[0];
+            let mealProductId = $('.modal-product-id').val();
+            let kcal = $('.modal-kcal-value').text();
+            let portion = $('.modal-portion-value').val();
+            let protein = $('.modal-protein-value').text();
+            let carbohydrates = $('.modal-carbohydrates-value').text();
+            let fats = $('.modal-fats-value').text();
             let data = JSON.stringify({
                 'date': getDateFromCurrentDay(),
-                'id': mealProductId,
+                'mealSetId': mealSetId,
+                'mealId': mealId,
+                'mealProductId': mealProductId,
                 'kcal': kcal,
                 'portion': portion,
                 'protein': protein,
                 'carbohydrates': carbohydrates,
                 'fats': fats
             });
-
+            editMealProductInDatabase(data);
         }
     });
 }
@@ -334,54 +339,153 @@ function detailMealProduct(product) {
 
 function createModalProductContent(productElement) {
     let content = document.createElement('div');
+    let id = document.createElement('input');
+    id.className = 'modal-product-id';
+    id.type = 'hidden';
+    id.value = $(productElement).attr('class').split('product-id-')[1].split(' ')[0];
     content.className = 'content';
     let productName = document.createElement('div');
-    productName.innerHTML = productElement.find('.product-name').text();
+    productName.className = 'modal-product-name';
+    productName.innerHTML = $(productElement).find('.product-name').text();
+    let portionName = document.createElement('label');
+    portionName.innerHTML = 'Portion [g]';
+    portionName.className = 'modal-portion-name';
+    let portionValueHidden = document.createElement('input');
+    portionValueHidden.type = 'hidden';
+    portionValueHidden.value = $(productElement).find('.product-portion').val();
+    portionValueHidden.className = 'modal-portion-value-hidden';
+    let portionValue = document.createElement('input');
+    portionValue.type = 'number';
+    portionValue.value = $(productElement).find('.product-portion').val();
+    portionValue.className = 'modal-portion-value';
+    portionValue.setAttribute('min', 0.1);
+    portionValue.setAttribute('step', 0.1);
+    portionValue.addEventListener('change', recalculateProductSummary);
     let detailContent = document.createElement('div');
     detailContent.className = 'detail-content';
     let kcalContainer = document.createElement('div');
     let kcalName = document.createElement('div');
-    kcalName.innerHTML = 'Kcal:';
+    kcalName.innerHTML = 'Calories [kcal]';
     let kcalValue = document.createElement('div');
-    kcalValue.innerHTML = productElement.find('.product-kcal .data').text();
+    kcalValue.innerHTML = $(productElement).find('.product-kcal .data').text();
+    kcalValue.className = 'modal-kcal-value';
+    let kcalValueHidden = document.createElement('input');
+    kcalValueHidden.type = 'hidden';
+    kcalValueHidden.value = $(productElement).find('.product-kcal .data').text();
+    kcalValueHidden.className = 'modal-kcal-value-hidden';
     kcalContainer.appendChild(kcalName);
     kcalContainer.appendChild(kcalValue);
-    let portionContainer = document.createElement('div');
-    let portionName = document.createElement('div');
-    portionName.innerHTML = 'Portion:';
-    let portionValue = document.createElement('div');
-    portionValue.innerHTML = productElement.find('.product-portion').val() + 'g';
-    portionContainer.appendChild(portionName);
-    portionContainer.appendChild(portionValue);
+    kcalContainer.appendChild(kcalValueHidden);
     let proteinContainer = document.createElement('div');
     let proteinName = document.createElement('div');
-    proteinName.innerHTML = 'Protein:';
+    proteinName.innerHTML = 'Protein [g]';
     let proteinValue = document.createElement('div');
-    proteinValue.innerHTML = productElement.find('.product-protein').val() + 'g';
+    proteinValue.innerHTML = $(productElement).find('.product-protein').val();
+    proteinValue.className = 'modal-protein-value';
+    let proteinValueHidden = document.createElement('input');
+    proteinValueHidden.type = 'hidden';
+    proteinValueHidden.value = $(productElement).find('.product-protein').val();
+    proteinValueHidden.className = 'modal-protein-value-hidden';
     proteinContainer.appendChild(proteinName);
     proteinContainer.appendChild(proteinValue);
+    proteinContainer.appendChild(proteinValueHidden);
     let carboContainer = document.createElement('div');
     let carboName = document.createElement('div');
-    carboName.innerHTML = 'Carbohydrates:';
+    carboName.innerHTML = 'Carbohydrates [g]';
     let carboValue = document.createElement('div');
-    carboValue.innerHTML = productElement.find('.product-carbohydrates').val() + 'g';
+    carboValue.innerHTML = $(productElement).find('.product-carbohydrates').val();
+    carboValue.className = 'modal-carbohydrates-value';
+    let carboValueHidden = document.createElement('input');
+    carboValueHidden.type = 'hidden';
+    carboValueHidden.value = $(productElement).find('.product-carbohydrates').val();
+    carboValueHidden.className = 'modal-carbohydrates-value-hidden';
     carboContainer.appendChild(carboName);
     carboContainer.appendChild(carboValue);
+    carboContainer.appendChild(carboValueHidden);
     let fatsContainer = document.createElement('div');
     let fatsName = document.createElement('div');
-    fatsName.innerHTML = 'Fats:';
+    fatsName.innerHTML = 'Fats [g]';
     let fatsValue = document.createElement('div');
-    fatsValue.innerHTML = productElement.find('.product-fats').val() + 'g';
+    fatsValue.innerHTML = $(productElement).find('.product-fats').val();
+    fatsValue.className = 'modal-fats-value';
+    let fatsValueHidden = document.createElement('input');
+    fatsValueHidden.type = 'hidden';
+    fatsValueHidden.value = $(productElement).find('.product-fats').val();
+    fatsValueHidden.className = 'modal-fats-value-hidden';
     fatsContainer.appendChild(fatsName);
     fatsContainer.appendChild(fatsValue);
+    fatsContainer.appendChild(fatsValueHidden);
     detailContent.appendChild(kcalContainer);
-    detailContent.appendChild(portionContainer);
     detailContent.appendChild(proteinContainer);
     detailContent.appendChild(carboContainer);
     detailContent.appendChild(fatsContainer);
+    content.appendChild(id);
     content.appendChild(productName);
+    content.appendChild(portionName);
+    content.appendChild(portionValueHidden);
+    content.appendChild(portionValue);
     content.appendChild(detailContent);
     return content;
+}
+
+function editMealProductInDatabase(data) {
+    let csrftoken = getCookie('csrftoken');
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                xhr.setRequestHeader('content-type', 'application/json');
+            }
+        }
+    });
+    $.ajax({
+        type: 'POST',
+        url: '/meal_edit/',
+        data: data,
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        statusCode: {
+            200: function() {
+                swal({
+                    title: 'Product has been updated', 
+                    icon: 'success'
+                });
+                data = JSON.parse(data);
+                let id = data.mealProductId;
+                let kcal = parseFloat($('.product-id-' + id).find('.product-kcal .data').text());
+                let protein = parseFloat($('.product-id-' + id).find('.product-protein').val());
+                let carbohydrates = parseFloat($('.product-id-' + id).find('.product-carbohydrates').val());
+                let fats = parseFloat($('.product-id-' + id).find('.product-fats').val());
+                updateMealSummary(data.mealId, kcal, protein, carbohydrates, fats, data.kcal, data.protein, data.carbohydrates, data.fats);
+                updateFoodSummary(kcal, protein, carbohydrates, fats, data.kcal, data.protein, data.carbohydrates, data.fats);
+                updateProductSummary(id, data.kcal, data.portion, data.protein, data.carbohydrates, data.fats);
+            },
+            400: function() {
+                swal({
+                    title: 'Bad request', 
+                    icon: 'error'
+                });
+            },
+            404: function() {
+                swal({
+                    title: 'Not found', 
+                    icon: 'error'
+                });
+            },
+            405: function() {
+                swal({
+                    title: 'Method not allowed', 
+                    icon: 'error'
+                });
+            },
+            500: function() {
+                swal({
+                    title: 'Sorry, an server error occured',
+                    icon: 'error'
+                });
+            }
+        }
+    });
 }
 
 function removeMealProduct(data) {
@@ -447,35 +551,61 @@ function removeProductElement(id) {
     $('.meal-product.product-id-' + id).remove();
 }
 
+function recalculateProductSummary() {
+    let oldPortion = parseFloat($('.modal-portion-value-hidden').val());
+    let newPortion = parseFloat($('.modal-portion-value').val());
+    let ratio = parseFloat((newPortion/oldPortion).toFixed(2));
+    let oldKcal = parseFloat($('.modal-kcal-value-hidden').val());
+    $('.modal-kcal-value').text((oldKcal * ratio).toFixed(1));
+    let oldProtein = parseFloat($('.modal-protein-value-hidden').val());
+    $('.modal-protein-value').text((oldProtein * ratio).toFixed(1));
+    let oldCarbohydrates = parseFloat($('.modal-carbohydrates-value-hidden').val());
+    $('.modal-carbohydrates-value').text((oldCarbohydrates * ratio).toFixed(1));
+    let oldFats = parseFloat($('.modal-fats-value-hidden').val());
+    $('.modal-fats-value').text((oldFats * ratio).toFixed(1));
+}
+
 function updateFoodSummary(oldKcal, oldProtein, oldCarbohydrates, oldFats, kcal, protein, carbohydrates, fats) {
     let totalKcal = parseFloat($('.kcal-data .data .current').text());
-    totalKcal = totalKcal - oldKcal + kcal;
+    totalKcal = totalKcal - oldKcal + parseFloat(kcal);
     $('.kcal-data .data .current').text(totalKcal.toFixed(1));
     let totalProtein = parseFloat($('.protein-data .data .current').text());
-    totalProtein = totalProtein - oldProtein + protein;
+    totalProtein = totalProtein - oldProtein + parseFloat(protein);
     $('.protein-data .data .current').text(totalProtein.toFixed(1));
     let totalCarbo = parseFloat($('.carbohydrates-data .data .current').text());
-    totalCarbo = totalCarbo - oldCarbohydrates + carbohydrates;
+    totalCarbo = totalCarbo - oldCarbohydrates + parseFloat(carbohydrates);
     $('.carbohydrates-data .data .current').text(totalCarbo.toFixed(1));
     let totalFats = parseFloat($('.fats-data .data .current').text());
-    totalFats = totalFats - oldFats + fats;
+    totalFats = totalFats - oldFats + parseFloat(fats);
     $('.fats-data .data .current').text(totalFats.toFixed(1));
+    changeStatus($('.kcal-data'));
+    changeStatus($('.protein-data'));
+    changeStatus($('.carbohydrates-data'));
+    changeStatus($('.fats-data'));
 }
 
 function updateMealSummary(id, oldKcal, oldProtein, oldCarbohydrates, oldFats, kcal, protein, carbohydrates, fats) {
     let mealSummary = $('.meal-id-' + id).parent().find('.meal-summary');
     let totalKcal = parseFloat(mealSummary.find('.summary-kcal').text());
-    totalKcal = totalKcal - oldKcal + kcal;
+    totalKcal = totalKcal - oldKcal + parseFloat(kcal);
     mealSummary.find('.summary-kcal').text(totalKcal.toFixed(1));
     let totalProtein = parseFloat(mealSummary.find('.summary-protein').text());
-    totalProtein = totalProtein - oldProtein + protein;
+    totalProtein = totalProtein - oldProtein + parseFloat(protein);
     mealSummary.find('.summary-protein').text(totalProtein.toFixed(1));
     let totalCarbo = parseFloat(mealSummary.find('.summary-carbohydrates').text());
-    totalCarbo = totalCarbo - oldCarbohydrates + carbohydrates;
+    totalCarbo = totalCarbo - oldCarbohydrates + parseFloat(carbohydrates);
     mealSummary.find('.summary-carbohydrates').text(totalCarbo.toFixed(1));
     let totalFats = parseFloat(mealSummary.find('.summary-fats').text());
-    totalFats = totalFats - oldFats + fats;
+    totalFats = totalFats - oldFats + parseFloat(fats);
     mealSummary.find('.summary-fats').text(totalFats.toFixed(1));
+}
+
+function updateProductSummary(id, kcal, portion, protein, carbohydrates, fats) {
+    $('.product-id-' + id + ' .product-kcal .data').text(kcal);
+    $('.product-id-' + id + ' .product-portion').val(portion);
+    $('.product-id-' + id + ' .product-protein').val(protein);
+    $('.product-id-' + id + ' .product-carbohydrates').val(carbohydrates);
+    $('.product-id-' + id + ' .product-fats').val(fats);
 }
 
 function searchItems(search) {
